@@ -457,6 +457,1161 @@ class AsistenciaTableCompanion extends UpdateCompanion<AsistenciaTableData> {
   }
 }
 
+class $CombustibleRegistrosTableTable extends CombustibleRegistrosTable
+    with
+        TableInfo<
+          $CombustibleRegistrosTableTable,
+          CombustibleRegistrosTableData
+        > {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $CombustibleRegistrosTableTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _usuarioIdMeta = const VerificationMeta(
+    'usuarioId',
+  );
+  @override
+  late final GeneratedColumn<String> usuarioId = GeneratedColumn<String>(
+    'usuario_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _modoMeta = const VerificationMeta('modo');
+  @override
+  late final GeneratedColumn<String> modo = GeneratedColumn<String>(
+    'modo',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _nombreMeta = const VerificationMeta('nombre');
+  @override
+  late final GeneratedColumn<String> nombre = GeneratedColumn<String>(
+    'nombre',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _destinoMeta = const VerificationMeta(
+    'destino',
+  );
+  @override
+  late final GeneratedColumn<String> destino = GeneratedColumn<String>(
+    'destino',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _horaInicioMeta = const VerificationMeta(
+    'horaInicio',
+  );
+  @override
+  late final GeneratedColumn<String> horaInicio = GeneratedColumn<String>(
+    'hora_inicio',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _horaFinalMeta = const VerificationMeta(
+    'horaFinal',
+  );
+  @override
+  late final GeneratedColumn<String> horaFinal = GeneratedColumn<String>(
+    'hora_final',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _combustibleInicialMeta =
+      const VerificationMeta('combustibleInicial');
+  @override
+  late final GeneratedColumn<String> combustibleInicial =
+      GeneratedColumn<String>(
+        'combustible_inicial',
+        aliasedName,
+        true,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _kilometrajeInicialMeta =
+      const VerificationMeta('kilometrajeInicial');
+  @override
+  late final GeneratedColumn<int> kilometrajeInicial = GeneratedColumn<int>(
+    'kilometraje_inicial',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _combustibleFinalMeta = const VerificationMeta(
+    'combustibleFinal',
+  );
+  @override
+  late final GeneratedColumn<String> combustibleFinal = GeneratedColumn<String>(
+    'combustible_final',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _kilometrajeFinalMeta = const VerificationMeta(
+    'kilometrajeFinal',
+  );
+  @override
+  late final GeneratedColumn<int> kilometrajeFinal = GeneratedColumn<int>(
+    'kilometraje_final',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _fechaCargaMeta = const VerificationMeta(
+    'fechaCarga',
+  );
+  @override
+  late final GeneratedColumn<String> fechaCarga = GeneratedColumn<String>(
+    'fecha_carga',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _operadorMeta = const VerificationMeta(
+    'operador',
+  );
+  @override
+  late final GeneratedColumn<String> operador = GeneratedColumn<String>(
+    'operador',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _kmAntesMeta = const VerificationMeta(
+    'kmAntes',
+  );
+  @override
+  late final GeneratedColumn<int> kmAntes = GeneratedColumn<int>(
+    'km_antes',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _kmDespuesMeta = const VerificationMeta(
+    'kmDespues',
+  );
+  @override
+  late final GeneratedColumn<int> kmDespues = GeneratedColumn<int>(
+    'km_despues',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _metadataMeta = const VerificationMeta(
+    'metadata',
+  );
+  @override
+  late final GeneratedColumn<String> metadata = GeneratedColumn<String>(
+    'metadata',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _syncErrorMeta = const VerificationMeta(
+    'syncError',
+  );
+  @override
+  late final GeneratedColumn<String> syncError = GeneratedColumn<String>(
+    'sync_error',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _syncInfoMeta = const VerificationMeta(
+    'syncInfo',
+  );
+  @override
+  late final GeneratedColumn<String> syncInfo = GeneratedColumn<String>(
+    'sync_info',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _sincronizadoMeta = const VerificationMeta(
+    'sincronizado',
+  );
+  @override
+  late final GeneratedColumn<bool> sincronizado = GeneratedColumn<bool>(
+    'sincronizado',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("sincronizado" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  static const VerificationMeta _creadoEnMeta = const VerificationMeta(
+    'creadoEn',
+  );
+  @override
+  late final GeneratedColumn<DateTime> creadoEn = GeneratedColumn<DateTime>(
+    'creado_en',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+    defaultValue: currentDateAndTime,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    usuarioId,
+    modo,
+    nombre,
+    destino,
+    horaInicio,
+    horaFinal,
+    combustibleInicial,
+    kilometrajeInicial,
+    combustibleFinal,
+    kilometrajeFinal,
+    fechaCarga,
+    operador,
+    kmAntes,
+    kmDespues,
+    metadata,
+    syncError,
+    syncInfo,
+    sincronizado,
+    creadoEn,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'combustible_registros_table';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<CombustibleRegistrosTableData> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('usuario_id')) {
+      context.handle(
+        _usuarioIdMeta,
+        usuarioId.isAcceptableOrUnknown(data['usuario_id']!, _usuarioIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_usuarioIdMeta);
+    }
+    if (data.containsKey('modo')) {
+      context.handle(
+        _modoMeta,
+        modo.isAcceptableOrUnknown(data['modo']!, _modoMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_modoMeta);
+    }
+    if (data.containsKey('nombre')) {
+      context.handle(
+        _nombreMeta,
+        nombre.isAcceptableOrUnknown(data['nombre']!, _nombreMeta),
+      );
+    }
+    if (data.containsKey('destino')) {
+      context.handle(
+        _destinoMeta,
+        destino.isAcceptableOrUnknown(data['destino']!, _destinoMeta),
+      );
+    }
+    if (data.containsKey('hora_inicio')) {
+      context.handle(
+        _horaInicioMeta,
+        horaInicio.isAcceptableOrUnknown(data['hora_inicio']!, _horaInicioMeta),
+      );
+    }
+    if (data.containsKey('hora_final')) {
+      context.handle(
+        _horaFinalMeta,
+        horaFinal.isAcceptableOrUnknown(data['hora_final']!, _horaFinalMeta),
+      );
+    }
+    if (data.containsKey('combustible_inicial')) {
+      context.handle(
+        _combustibleInicialMeta,
+        combustibleInicial.isAcceptableOrUnknown(
+          data['combustible_inicial']!,
+          _combustibleInicialMeta,
+        ),
+      );
+    }
+    if (data.containsKey('kilometraje_inicial')) {
+      context.handle(
+        _kilometrajeInicialMeta,
+        kilometrajeInicial.isAcceptableOrUnknown(
+          data['kilometraje_inicial']!,
+          _kilometrajeInicialMeta,
+        ),
+      );
+    }
+    if (data.containsKey('combustible_final')) {
+      context.handle(
+        _combustibleFinalMeta,
+        combustibleFinal.isAcceptableOrUnknown(
+          data['combustible_final']!,
+          _combustibleFinalMeta,
+        ),
+      );
+    }
+    if (data.containsKey('kilometraje_final')) {
+      context.handle(
+        _kilometrajeFinalMeta,
+        kilometrajeFinal.isAcceptableOrUnknown(
+          data['kilometraje_final']!,
+          _kilometrajeFinalMeta,
+        ),
+      );
+    }
+    if (data.containsKey('fecha_carga')) {
+      context.handle(
+        _fechaCargaMeta,
+        fechaCarga.isAcceptableOrUnknown(data['fecha_carga']!, _fechaCargaMeta),
+      );
+    }
+    if (data.containsKey('operador')) {
+      context.handle(
+        _operadorMeta,
+        operador.isAcceptableOrUnknown(data['operador']!, _operadorMeta),
+      );
+    }
+    if (data.containsKey('km_antes')) {
+      context.handle(
+        _kmAntesMeta,
+        kmAntes.isAcceptableOrUnknown(data['km_antes']!, _kmAntesMeta),
+      );
+    }
+    if (data.containsKey('km_despues')) {
+      context.handle(
+        _kmDespuesMeta,
+        kmDespues.isAcceptableOrUnknown(data['km_despues']!, _kmDespuesMeta),
+      );
+    }
+    if (data.containsKey('metadata')) {
+      context.handle(
+        _metadataMeta,
+        metadata.isAcceptableOrUnknown(data['metadata']!, _metadataMeta),
+      );
+    }
+    if (data.containsKey('sync_error')) {
+      context.handle(
+        _syncErrorMeta,
+        syncError.isAcceptableOrUnknown(data['sync_error']!, _syncErrorMeta),
+      );
+    }
+    if (data.containsKey('sync_info')) {
+      context.handle(
+        _syncInfoMeta,
+        syncInfo.isAcceptableOrUnknown(data['sync_info']!, _syncInfoMeta),
+      );
+    }
+    if (data.containsKey('sincronizado')) {
+      context.handle(
+        _sincronizadoMeta,
+        sincronizado.isAcceptableOrUnknown(
+          data['sincronizado']!,
+          _sincronizadoMeta,
+        ),
+      );
+    }
+    if (data.containsKey('creado_en')) {
+      context.handle(
+        _creadoEnMeta,
+        creadoEn.isAcceptableOrUnknown(data['creado_en']!, _creadoEnMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  CombustibleRegistrosTableData map(
+    Map<String, dynamic> data, {
+    String? tablePrefix,
+  }) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return CombustibleRegistrosTableData(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      usuarioId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}usuario_id'],
+      )!,
+      modo: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}modo'],
+      )!,
+      nombre: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}nombre'],
+      ),
+      destino: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}destino'],
+      ),
+      horaInicio: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}hora_inicio'],
+      ),
+      horaFinal: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}hora_final'],
+      ),
+      combustibleInicial: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}combustible_inicial'],
+      ),
+      kilometrajeInicial: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}kilometraje_inicial'],
+      ),
+      combustibleFinal: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}combustible_final'],
+      ),
+      kilometrajeFinal: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}kilometraje_final'],
+      ),
+      fechaCarga: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}fecha_carga'],
+      ),
+      operador: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}operador'],
+      ),
+      kmAntes: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}km_antes'],
+      ),
+      kmDespues: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}km_despues'],
+      ),
+      metadata: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}metadata'],
+      ),
+      syncError: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}sync_error'],
+      ),
+      syncInfo: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}sync_info'],
+      ),
+      sincronizado: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}sincronizado'],
+      )!,
+      creadoEn: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}creado_en'],
+      )!,
+    );
+  }
+
+  @override
+  $CombustibleRegistrosTableTable createAlias(String alias) {
+    return $CombustibleRegistrosTableTable(attachedDatabase, alias);
+  }
+}
+
+class CombustibleRegistrosTableData extends DataClass
+    implements Insertable<CombustibleRegistrosTableData> {
+  final String id;
+  final String usuarioId;
+
+  /// usar_vehiculo | cargar_combustible
+  final String modo;
+  final String? nombre;
+  final String? destino;
+  final String? horaInicio;
+  final String? horaFinal;
+  final String? combustibleInicial;
+  final int? kilometrajeInicial;
+  final String? combustibleFinal;
+  final int? kilometrajeFinal;
+  final String? fechaCarga;
+  final String? operador;
+  final int? kmAntes;
+  final int? kmDespues;
+
+  /// JSON libre (ej. rutas locales de fotos)
+  final String? metadata;
+
+  /// Último error de sincronización (para diagnóstico en UI)
+  final String? syncError;
+
+  /// Última respuesta/resultado de sincronización (para auditoría/diagnóstico)
+  final String? syncInfo;
+  final bool sincronizado;
+  final DateTime creadoEn;
+  const CombustibleRegistrosTableData({
+    required this.id,
+    required this.usuarioId,
+    required this.modo,
+    this.nombre,
+    this.destino,
+    this.horaInicio,
+    this.horaFinal,
+    this.combustibleInicial,
+    this.kilometrajeInicial,
+    this.combustibleFinal,
+    this.kilometrajeFinal,
+    this.fechaCarga,
+    this.operador,
+    this.kmAntes,
+    this.kmDespues,
+    this.metadata,
+    this.syncError,
+    this.syncInfo,
+    required this.sincronizado,
+    required this.creadoEn,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['usuario_id'] = Variable<String>(usuarioId);
+    map['modo'] = Variable<String>(modo);
+    if (!nullToAbsent || nombre != null) {
+      map['nombre'] = Variable<String>(nombre);
+    }
+    if (!nullToAbsent || destino != null) {
+      map['destino'] = Variable<String>(destino);
+    }
+    if (!nullToAbsent || horaInicio != null) {
+      map['hora_inicio'] = Variable<String>(horaInicio);
+    }
+    if (!nullToAbsent || horaFinal != null) {
+      map['hora_final'] = Variable<String>(horaFinal);
+    }
+    if (!nullToAbsent || combustibleInicial != null) {
+      map['combustible_inicial'] = Variable<String>(combustibleInicial);
+    }
+    if (!nullToAbsent || kilometrajeInicial != null) {
+      map['kilometraje_inicial'] = Variable<int>(kilometrajeInicial);
+    }
+    if (!nullToAbsent || combustibleFinal != null) {
+      map['combustible_final'] = Variable<String>(combustibleFinal);
+    }
+    if (!nullToAbsent || kilometrajeFinal != null) {
+      map['kilometraje_final'] = Variable<int>(kilometrajeFinal);
+    }
+    if (!nullToAbsent || fechaCarga != null) {
+      map['fecha_carga'] = Variable<String>(fechaCarga);
+    }
+    if (!nullToAbsent || operador != null) {
+      map['operador'] = Variable<String>(operador);
+    }
+    if (!nullToAbsent || kmAntes != null) {
+      map['km_antes'] = Variable<int>(kmAntes);
+    }
+    if (!nullToAbsent || kmDespues != null) {
+      map['km_despues'] = Variable<int>(kmDespues);
+    }
+    if (!nullToAbsent || metadata != null) {
+      map['metadata'] = Variable<String>(metadata);
+    }
+    if (!nullToAbsent || syncError != null) {
+      map['sync_error'] = Variable<String>(syncError);
+    }
+    if (!nullToAbsent || syncInfo != null) {
+      map['sync_info'] = Variable<String>(syncInfo);
+    }
+    map['sincronizado'] = Variable<bool>(sincronizado);
+    map['creado_en'] = Variable<DateTime>(creadoEn);
+    return map;
+  }
+
+  CombustibleRegistrosTableCompanion toCompanion(bool nullToAbsent) {
+    return CombustibleRegistrosTableCompanion(
+      id: Value(id),
+      usuarioId: Value(usuarioId),
+      modo: Value(modo),
+      nombre: nombre == null && nullToAbsent
+          ? const Value.absent()
+          : Value(nombre),
+      destino: destino == null && nullToAbsent
+          ? const Value.absent()
+          : Value(destino),
+      horaInicio: horaInicio == null && nullToAbsent
+          ? const Value.absent()
+          : Value(horaInicio),
+      horaFinal: horaFinal == null && nullToAbsent
+          ? const Value.absent()
+          : Value(horaFinal),
+      combustibleInicial: combustibleInicial == null && nullToAbsent
+          ? const Value.absent()
+          : Value(combustibleInicial),
+      kilometrajeInicial: kilometrajeInicial == null && nullToAbsent
+          ? const Value.absent()
+          : Value(kilometrajeInicial),
+      combustibleFinal: combustibleFinal == null && nullToAbsent
+          ? const Value.absent()
+          : Value(combustibleFinal),
+      kilometrajeFinal: kilometrajeFinal == null && nullToAbsent
+          ? const Value.absent()
+          : Value(kilometrajeFinal),
+      fechaCarga: fechaCarga == null && nullToAbsent
+          ? const Value.absent()
+          : Value(fechaCarga),
+      operador: operador == null && nullToAbsent
+          ? const Value.absent()
+          : Value(operador),
+      kmAntes: kmAntes == null && nullToAbsent
+          ? const Value.absent()
+          : Value(kmAntes),
+      kmDespues: kmDespues == null && nullToAbsent
+          ? const Value.absent()
+          : Value(kmDespues),
+      metadata: metadata == null && nullToAbsent
+          ? const Value.absent()
+          : Value(metadata),
+      syncError: syncError == null && nullToAbsent
+          ? const Value.absent()
+          : Value(syncError),
+      syncInfo: syncInfo == null && nullToAbsent
+          ? const Value.absent()
+          : Value(syncInfo),
+      sincronizado: Value(sincronizado),
+      creadoEn: Value(creadoEn),
+    );
+  }
+
+  factory CombustibleRegistrosTableData.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return CombustibleRegistrosTableData(
+      id: serializer.fromJson<String>(json['id']),
+      usuarioId: serializer.fromJson<String>(json['usuarioId']),
+      modo: serializer.fromJson<String>(json['modo']),
+      nombre: serializer.fromJson<String?>(json['nombre']),
+      destino: serializer.fromJson<String?>(json['destino']),
+      horaInicio: serializer.fromJson<String?>(json['horaInicio']),
+      horaFinal: serializer.fromJson<String?>(json['horaFinal']),
+      combustibleInicial: serializer.fromJson<String?>(
+        json['combustibleInicial'],
+      ),
+      kilometrajeInicial: serializer.fromJson<int?>(json['kilometrajeInicial']),
+      combustibleFinal: serializer.fromJson<String?>(json['combustibleFinal']),
+      kilometrajeFinal: serializer.fromJson<int?>(json['kilometrajeFinal']),
+      fechaCarga: serializer.fromJson<String?>(json['fechaCarga']),
+      operador: serializer.fromJson<String?>(json['operador']),
+      kmAntes: serializer.fromJson<int?>(json['kmAntes']),
+      kmDespues: serializer.fromJson<int?>(json['kmDespues']),
+      metadata: serializer.fromJson<String?>(json['metadata']),
+      syncError: serializer.fromJson<String?>(json['syncError']),
+      syncInfo: serializer.fromJson<String?>(json['syncInfo']),
+      sincronizado: serializer.fromJson<bool>(json['sincronizado']),
+      creadoEn: serializer.fromJson<DateTime>(json['creadoEn']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'usuarioId': serializer.toJson<String>(usuarioId),
+      'modo': serializer.toJson<String>(modo),
+      'nombre': serializer.toJson<String?>(nombre),
+      'destino': serializer.toJson<String?>(destino),
+      'horaInicio': serializer.toJson<String?>(horaInicio),
+      'horaFinal': serializer.toJson<String?>(horaFinal),
+      'combustibleInicial': serializer.toJson<String?>(combustibleInicial),
+      'kilometrajeInicial': serializer.toJson<int?>(kilometrajeInicial),
+      'combustibleFinal': serializer.toJson<String?>(combustibleFinal),
+      'kilometrajeFinal': serializer.toJson<int?>(kilometrajeFinal),
+      'fechaCarga': serializer.toJson<String?>(fechaCarga),
+      'operador': serializer.toJson<String?>(operador),
+      'kmAntes': serializer.toJson<int?>(kmAntes),
+      'kmDespues': serializer.toJson<int?>(kmDespues),
+      'metadata': serializer.toJson<String?>(metadata),
+      'syncError': serializer.toJson<String?>(syncError),
+      'syncInfo': serializer.toJson<String?>(syncInfo),
+      'sincronizado': serializer.toJson<bool>(sincronizado),
+      'creadoEn': serializer.toJson<DateTime>(creadoEn),
+    };
+  }
+
+  CombustibleRegistrosTableData copyWith({
+    String? id,
+    String? usuarioId,
+    String? modo,
+    Value<String?> nombre = const Value.absent(),
+    Value<String?> destino = const Value.absent(),
+    Value<String?> horaInicio = const Value.absent(),
+    Value<String?> horaFinal = const Value.absent(),
+    Value<String?> combustibleInicial = const Value.absent(),
+    Value<int?> kilometrajeInicial = const Value.absent(),
+    Value<String?> combustibleFinal = const Value.absent(),
+    Value<int?> kilometrajeFinal = const Value.absent(),
+    Value<String?> fechaCarga = const Value.absent(),
+    Value<String?> operador = const Value.absent(),
+    Value<int?> kmAntes = const Value.absent(),
+    Value<int?> kmDespues = const Value.absent(),
+    Value<String?> metadata = const Value.absent(),
+    Value<String?> syncError = const Value.absent(),
+    Value<String?> syncInfo = const Value.absent(),
+    bool? sincronizado,
+    DateTime? creadoEn,
+  }) => CombustibleRegistrosTableData(
+    id: id ?? this.id,
+    usuarioId: usuarioId ?? this.usuarioId,
+    modo: modo ?? this.modo,
+    nombre: nombre.present ? nombre.value : this.nombre,
+    destino: destino.present ? destino.value : this.destino,
+    horaInicio: horaInicio.present ? horaInicio.value : this.horaInicio,
+    horaFinal: horaFinal.present ? horaFinal.value : this.horaFinal,
+    combustibleInicial: combustibleInicial.present
+        ? combustibleInicial.value
+        : this.combustibleInicial,
+    kilometrajeInicial: kilometrajeInicial.present
+        ? kilometrajeInicial.value
+        : this.kilometrajeInicial,
+    combustibleFinal: combustibleFinal.present
+        ? combustibleFinal.value
+        : this.combustibleFinal,
+    kilometrajeFinal: kilometrajeFinal.present
+        ? kilometrajeFinal.value
+        : this.kilometrajeFinal,
+    fechaCarga: fechaCarga.present ? fechaCarga.value : this.fechaCarga,
+    operador: operador.present ? operador.value : this.operador,
+    kmAntes: kmAntes.present ? kmAntes.value : this.kmAntes,
+    kmDespues: kmDespues.present ? kmDespues.value : this.kmDespues,
+    metadata: metadata.present ? metadata.value : this.metadata,
+    syncError: syncError.present ? syncError.value : this.syncError,
+    syncInfo: syncInfo.present ? syncInfo.value : this.syncInfo,
+    sincronizado: sincronizado ?? this.sincronizado,
+    creadoEn: creadoEn ?? this.creadoEn,
+  );
+  CombustibleRegistrosTableData copyWithCompanion(
+    CombustibleRegistrosTableCompanion data,
+  ) {
+    return CombustibleRegistrosTableData(
+      id: data.id.present ? data.id.value : this.id,
+      usuarioId: data.usuarioId.present ? data.usuarioId.value : this.usuarioId,
+      modo: data.modo.present ? data.modo.value : this.modo,
+      nombre: data.nombre.present ? data.nombre.value : this.nombre,
+      destino: data.destino.present ? data.destino.value : this.destino,
+      horaInicio: data.horaInicio.present
+          ? data.horaInicio.value
+          : this.horaInicio,
+      horaFinal: data.horaFinal.present ? data.horaFinal.value : this.horaFinal,
+      combustibleInicial: data.combustibleInicial.present
+          ? data.combustibleInicial.value
+          : this.combustibleInicial,
+      kilometrajeInicial: data.kilometrajeInicial.present
+          ? data.kilometrajeInicial.value
+          : this.kilometrajeInicial,
+      combustibleFinal: data.combustibleFinal.present
+          ? data.combustibleFinal.value
+          : this.combustibleFinal,
+      kilometrajeFinal: data.kilometrajeFinal.present
+          ? data.kilometrajeFinal.value
+          : this.kilometrajeFinal,
+      fechaCarga: data.fechaCarga.present
+          ? data.fechaCarga.value
+          : this.fechaCarga,
+      operador: data.operador.present ? data.operador.value : this.operador,
+      kmAntes: data.kmAntes.present ? data.kmAntes.value : this.kmAntes,
+      kmDespues: data.kmDespues.present ? data.kmDespues.value : this.kmDespues,
+      metadata: data.metadata.present ? data.metadata.value : this.metadata,
+      syncError: data.syncError.present ? data.syncError.value : this.syncError,
+      syncInfo: data.syncInfo.present ? data.syncInfo.value : this.syncInfo,
+      sincronizado: data.sincronizado.present
+          ? data.sincronizado.value
+          : this.sincronizado,
+      creadoEn: data.creadoEn.present ? data.creadoEn.value : this.creadoEn,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('CombustibleRegistrosTableData(')
+          ..write('id: $id, ')
+          ..write('usuarioId: $usuarioId, ')
+          ..write('modo: $modo, ')
+          ..write('nombre: $nombre, ')
+          ..write('destino: $destino, ')
+          ..write('horaInicio: $horaInicio, ')
+          ..write('horaFinal: $horaFinal, ')
+          ..write('combustibleInicial: $combustibleInicial, ')
+          ..write('kilometrajeInicial: $kilometrajeInicial, ')
+          ..write('combustibleFinal: $combustibleFinal, ')
+          ..write('kilometrajeFinal: $kilometrajeFinal, ')
+          ..write('fechaCarga: $fechaCarga, ')
+          ..write('operador: $operador, ')
+          ..write('kmAntes: $kmAntes, ')
+          ..write('kmDespues: $kmDespues, ')
+          ..write('metadata: $metadata, ')
+          ..write('syncError: $syncError, ')
+          ..write('syncInfo: $syncInfo, ')
+          ..write('sincronizado: $sincronizado, ')
+          ..write('creadoEn: $creadoEn')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    usuarioId,
+    modo,
+    nombre,
+    destino,
+    horaInicio,
+    horaFinal,
+    combustibleInicial,
+    kilometrajeInicial,
+    combustibleFinal,
+    kilometrajeFinal,
+    fechaCarga,
+    operador,
+    kmAntes,
+    kmDespues,
+    metadata,
+    syncError,
+    syncInfo,
+    sincronizado,
+    creadoEn,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is CombustibleRegistrosTableData &&
+          other.id == this.id &&
+          other.usuarioId == this.usuarioId &&
+          other.modo == this.modo &&
+          other.nombre == this.nombre &&
+          other.destino == this.destino &&
+          other.horaInicio == this.horaInicio &&
+          other.horaFinal == this.horaFinal &&
+          other.combustibleInicial == this.combustibleInicial &&
+          other.kilometrajeInicial == this.kilometrajeInicial &&
+          other.combustibleFinal == this.combustibleFinal &&
+          other.kilometrajeFinal == this.kilometrajeFinal &&
+          other.fechaCarga == this.fechaCarga &&
+          other.operador == this.operador &&
+          other.kmAntes == this.kmAntes &&
+          other.kmDespues == this.kmDespues &&
+          other.metadata == this.metadata &&
+          other.syncError == this.syncError &&
+          other.syncInfo == this.syncInfo &&
+          other.sincronizado == this.sincronizado &&
+          other.creadoEn == this.creadoEn);
+}
+
+class CombustibleRegistrosTableCompanion
+    extends UpdateCompanion<CombustibleRegistrosTableData> {
+  final Value<String> id;
+  final Value<String> usuarioId;
+  final Value<String> modo;
+  final Value<String?> nombre;
+  final Value<String?> destino;
+  final Value<String?> horaInicio;
+  final Value<String?> horaFinal;
+  final Value<String?> combustibleInicial;
+  final Value<int?> kilometrajeInicial;
+  final Value<String?> combustibleFinal;
+  final Value<int?> kilometrajeFinal;
+  final Value<String?> fechaCarga;
+  final Value<String?> operador;
+  final Value<int?> kmAntes;
+  final Value<int?> kmDespues;
+  final Value<String?> metadata;
+  final Value<String?> syncError;
+  final Value<String?> syncInfo;
+  final Value<bool> sincronizado;
+  final Value<DateTime> creadoEn;
+  final Value<int> rowid;
+  const CombustibleRegistrosTableCompanion({
+    this.id = const Value.absent(),
+    this.usuarioId = const Value.absent(),
+    this.modo = const Value.absent(),
+    this.nombre = const Value.absent(),
+    this.destino = const Value.absent(),
+    this.horaInicio = const Value.absent(),
+    this.horaFinal = const Value.absent(),
+    this.combustibleInicial = const Value.absent(),
+    this.kilometrajeInicial = const Value.absent(),
+    this.combustibleFinal = const Value.absent(),
+    this.kilometrajeFinal = const Value.absent(),
+    this.fechaCarga = const Value.absent(),
+    this.operador = const Value.absent(),
+    this.kmAntes = const Value.absent(),
+    this.kmDespues = const Value.absent(),
+    this.metadata = const Value.absent(),
+    this.syncError = const Value.absent(),
+    this.syncInfo = const Value.absent(),
+    this.sincronizado = const Value.absent(),
+    this.creadoEn = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  CombustibleRegistrosTableCompanion.insert({
+    required String id,
+    required String usuarioId,
+    required String modo,
+    this.nombre = const Value.absent(),
+    this.destino = const Value.absent(),
+    this.horaInicio = const Value.absent(),
+    this.horaFinal = const Value.absent(),
+    this.combustibleInicial = const Value.absent(),
+    this.kilometrajeInicial = const Value.absent(),
+    this.combustibleFinal = const Value.absent(),
+    this.kilometrajeFinal = const Value.absent(),
+    this.fechaCarga = const Value.absent(),
+    this.operador = const Value.absent(),
+    this.kmAntes = const Value.absent(),
+    this.kmDespues = const Value.absent(),
+    this.metadata = const Value.absent(),
+    this.syncError = const Value.absent(),
+    this.syncInfo = const Value.absent(),
+    this.sincronizado = const Value.absent(),
+    this.creadoEn = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       usuarioId = Value(usuarioId),
+       modo = Value(modo);
+  static Insertable<CombustibleRegistrosTableData> custom({
+    Expression<String>? id,
+    Expression<String>? usuarioId,
+    Expression<String>? modo,
+    Expression<String>? nombre,
+    Expression<String>? destino,
+    Expression<String>? horaInicio,
+    Expression<String>? horaFinal,
+    Expression<String>? combustibleInicial,
+    Expression<int>? kilometrajeInicial,
+    Expression<String>? combustibleFinal,
+    Expression<int>? kilometrajeFinal,
+    Expression<String>? fechaCarga,
+    Expression<String>? operador,
+    Expression<int>? kmAntes,
+    Expression<int>? kmDespues,
+    Expression<String>? metadata,
+    Expression<String>? syncError,
+    Expression<String>? syncInfo,
+    Expression<bool>? sincronizado,
+    Expression<DateTime>? creadoEn,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (usuarioId != null) 'usuario_id': usuarioId,
+      if (modo != null) 'modo': modo,
+      if (nombre != null) 'nombre': nombre,
+      if (destino != null) 'destino': destino,
+      if (horaInicio != null) 'hora_inicio': horaInicio,
+      if (horaFinal != null) 'hora_final': horaFinal,
+      if (combustibleInicial != null) 'combustible_inicial': combustibleInicial,
+      if (kilometrajeInicial != null) 'kilometraje_inicial': kilometrajeInicial,
+      if (combustibleFinal != null) 'combustible_final': combustibleFinal,
+      if (kilometrajeFinal != null) 'kilometraje_final': kilometrajeFinal,
+      if (fechaCarga != null) 'fecha_carga': fechaCarga,
+      if (operador != null) 'operador': operador,
+      if (kmAntes != null) 'km_antes': kmAntes,
+      if (kmDespues != null) 'km_despues': kmDespues,
+      if (metadata != null) 'metadata': metadata,
+      if (syncError != null) 'sync_error': syncError,
+      if (syncInfo != null) 'sync_info': syncInfo,
+      if (sincronizado != null) 'sincronizado': sincronizado,
+      if (creadoEn != null) 'creado_en': creadoEn,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  CombustibleRegistrosTableCompanion copyWith({
+    Value<String>? id,
+    Value<String>? usuarioId,
+    Value<String>? modo,
+    Value<String?>? nombre,
+    Value<String?>? destino,
+    Value<String?>? horaInicio,
+    Value<String?>? horaFinal,
+    Value<String?>? combustibleInicial,
+    Value<int?>? kilometrajeInicial,
+    Value<String?>? combustibleFinal,
+    Value<int?>? kilometrajeFinal,
+    Value<String?>? fechaCarga,
+    Value<String?>? operador,
+    Value<int?>? kmAntes,
+    Value<int?>? kmDespues,
+    Value<String?>? metadata,
+    Value<String?>? syncError,
+    Value<String?>? syncInfo,
+    Value<bool>? sincronizado,
+    Value<DateTime>? creadoEn,
+    Value<int>? rowid,
+  }) {
+    return CombustibleRegistrosTableCompanion(
+      id: id ?? this.id,
+      usuarioId: usuarioId ?? this.usuarioId,
+      modo: modo ?? this.modo,
+      nombre: nombre ?? this.nombre,
+      destino: destino ?? this.destino,
+      horaInicio: horaInicio ?? this.horaInicio,
+      horaFinal: horaFinal ?? this.horaFinal,
+      combustibleInicial: combustibleInicial ?? this.combustibleInicial,
+      kilometrajeInicial: kilometrajeInicial ?? this.kilometrajeInicial,
+      combustibleFinal: combustibleFinal ?? this.combustibleFinal,
+      kilometrajeFinal: kilometrajeFinal ?? this.kilometrajeFinal,
+      fechaCarga: fechaCarga ?? this.fechaCarga,
+      operador: operador ?? this.operador,
+      kmAntes: kmAntes ?? this.kmAntes,
+      kmDespues: kmDespues ?? this.kmDespues,
+      metadata: metadata ?? this.metadata,
+      syncError: syncError ?? this.syncError,
+      syncInfo: syncInfo ?? this.syncInfo,
+      sincronizado: sincronizado ?? this.sincronizado,
+      creadoEn: creadoEn ?? this.creadoEn,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (usuarioId.present) {
+      map['usuario_id'] = Variable<String>(usuarioId.value);
+    }
+    if (modo.present) {
+      map['modo'] = Variable<String>(modo.value);
+    }
+    if (nombre.present) {
+      map['nombre'] = Variable<String>(nombre.value);
+    }
+    if (destino.present) {
+      map['destino'] = Variable<String>(destino.value);
+    }
+    if (horaInicio.present) {
+      map['hora_inicio'] = Variable<String>(horaInicio.value);
+    }
+    if (horaFinal.present) {
+      map['hora_final'] = Variable<String>(horaFinal.value);
+    }
+    if (combustibleInicial.present) {
+      map['combustible_inicial'] = Variable<String>(combustibleInicial.value);
+    }
+    if (kilometrajeInicial.present) {
+      map['kilometraje_inicial'] = Variable<int>(kilometrajeInicial.value);
+    }
+    if (combustibleFinal.present) {
+      map['combustible_final'] = Variable<String>(combustibleFinal.value);
+    }
+    if (kilometrajeFinal.present) {
+      map['kilometraje_final'] = Variable<int>(kilometrajeFinal.value);
+    }
+    if (fechaCarga.present) {
+      map['fecha_carga'] = Variable<String>(fechaCarga.value);
+    }
+    if (operador.present) {
+      map['operador'] = Variable<String>(operador.value);
+    }
+    if (kmAntes.present) {
+      map['km_antes'] = Variable<int>(kmAntes.value);
+    }
+    if (kmDespues.present) {
+      map['km_despues'] = Variable<int>(kmDespues.value);
+    }
+    if (metadata.present) {
+      map['metadata'] = Variable<String>(metadata.value);
+    }
+    if (syncError.present) {
+      map['sync_error'] = Variable<String>(syncError.value);
+    }
+    if (syncInfo.present) {
+      map['sync_info'] = Variable<String>(syncInfo.value);
+    }
+    if (sincronizado.present) {
+      map['sincronizado'] = Variable<bool>(sincronizado.value);
+    }
+    if (creadoEn.present) {
+      map['creado_en'] = Variable<DateTime>(creadoEn.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('CombustibleRegistrosTableCompanion(')
+          ..write('id: $id, ')
+          ..write('usuarioId: $usuarioId, ')
+          ..write('modo: $modo, ')
+          ..write('nombre: $nombre, ')
+          ..write('destino: $destino, ')
+          ..write('horaInicio: $horaInicio, ')
+          ..write('horaFinal: $horaFinal, ')
+          ..write('combustibleInicial: $combustibleInicial, ')
+          ..write('kilometrajeInicial: $kilometrajeInicial, ')
+          ..write('combustibleFinal: $combustibleFinal, ')
+          ..write('kilometrajeFinal: $kilometrajeFinal, ')
+          ..write('fechaCarga: $fechaCarga, ')
+          ..write('operador: $operador, ')
+          ..write('kmAntes: $kmAntes, ')
+          ..write('kmDespues: $kmDespues, ')
+          ..write('metadata: $metadata, ')
+          ..write('syncError: $syncError, ')
+          ..write('syncInfo: $syncInfo, ')
+          ..write('sincronizado: $sincronizado, ')
+          ..write('creadoEn: $creadoEn, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 class $NotificationsTableTable extends NotificationsTable
     with TableInfo<$NotificationsTableTable, NotificationsTableData> {
   @override
@@ -4631,6 +5786,8 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $AsistenciaTableTable asistenciaTable = $AsistenciaTableTable(
     this,
   );
+  late final $CombustibleRegistrosTableTable combustibleRegistrosTable =
+      $CombustibleRegistrosTableTable(this);
   late final $NotificationsTableTable notificationsTable =
       $NotificationsTableTable(this);
   late final $SyncQueueTableTable syncQueueTable = $SyncQueueTableTable(this);
@@ -4652,6 +5809,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   @override
   List<DatabaseSchemaEntity> get allSchemaEntities => [
     asistenciaTable,
+    combustibleRegistrosTable,
     notificationsTable,
     syncQueueTable,
     tareasTable,
@@ -4906,6 +6064,524 @@ typedef $$AsistenciaTableTableProcessedTableManager =
         >,
       ),
       AsistenciaTableData,
+      PrefetchHooks Function()
+    >;
+typedef $$CombustibleRegistrosTableTableCreateCompanionBuilder =
+    CombustibleRegistrosTableCompanion Function({
+      required String id,
+      required String usuarioId,
+      required String modo,
+      Value<String?> nombre,
+      Value<String?> destino,
+      Value<String?> horaInicio,
+      Value<String?> horaFinal,
+      Value<String?> combustibleInicial,
+      Value<int?> kilometrajeInicial,
+      Value<String?> combustibleFinal,
+      Value<int?> kilometrajeFinal,
+      Value<String?> fechaCarga,
+      Value<String?> operador,
+      Value<int?> kmAntes,
+      Value<int?> kmDespues,
+      Value<String?> metadata,
+      Value<String?> syncError,
+      Value<String?> syncInfo,
+      Value<bool> sincronizado,
+      Value<DateTime> creadoEn,
+      Value<int> rowid,
+    });
+typedef $$CombustibleRegistrosTableTableUpdateCompanionBuilder =
+    CombustibleRegistrosTableCompanion Function({
+      Value<String> id,
+      Value<String> usuarioId,
+      Value<String> modo,
+      Value<String?> nombre,
+      Value<String?> destino,
+      Value<String?> horaInicio,
+      Value<String?> horaFinal,
+      Value<String?> combustibleInicial,
+      Value<int?> kilometrajeInicial,
+      Value<String?> combustibleFinal,
+      Value<int?> kilometrajeFinal,
+      Value<String?> fechaCarga,
+      Value<String?> operador,
+      Value<int?> kmAntes,
+      Value<int?> kmDespues,
+      Value<String?> metadata,
+      Value<String?> syncError,
+      Value<String?> syncInfo,
+      Value<bool> sincronizado,
+      Value<DateTime> creadoEn,
+      Value<int> rowid,
+    });
+
+class $$CombustibleRegistrosTableTableFilterComposer
+    extends Composer<_$AppDatabase, $CombustibleRegistrosTableTable> {
+  $$CombustibleRegistrosTableTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get usuarioId => $composableBuilder(
+    column: $table.usuarioId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get modo => $composableBuilder(
+    column: $table.modo,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get nombre => $composableBuilder(
+    column: $table.nombre,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get destino => $composableBuilder(
+    column: $table.destino,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get horaInicio => $composableBuilder(
+    column: $table.horaInicio,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get horaFinal => $composableBuilder(
+    column: $table.horaFinal,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get combustibleInicial => $composableBuilder(
+    column: $table.combustibleInicial,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get kilometrajeInicial => $composableBuilder(
+    column: $table.kilometrajeInicial,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get combustibleFinal => $composableBuilder(
+    column: $table.combustibleFinal,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get kilometrajeFinal => $composableBuilder(
+    column: $table.kilometrajeFinal,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get fechaCarga => $composableBuilder(
+    column: $table.fechaCarga,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get operador => $composableBuilder(
+    column: $table.operador,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get kmAntes => $composableBuilder(
+    column: $table.kmAntes,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get kmDespues => $composableBuilder(
+    column: $table.kmDespues,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get metadata => $composableBuilder(
+    column: $table.metadata,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get syncError => $composableBuilder(
+    column: $table.syncError,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get syncInfo => $composableBuilder(
+    column: $table.syncInfo,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get sincronizado => $composableBuilder(
+    column: $table.sincronizado,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get creadoEn => $composableBuilder(
+    column: $table.creadoEn,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$CombustibleRegistrosTableTableOrderingComposer
+    extends Composer<_$AppDatabase, $CombustibleRegistrosTableTable> {
+  $$CombustibleRegistrosTableTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get usuarioId => $composableBuilder(
+    column: $table.usuarioId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get modo => $composableBuilder(
+    column: $table.modo,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get nombre => $composableBuilder(
+    column: $table.nombre,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get destino => $composableBuilder(
+    column: $table.destino,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get horaInicio => $composableBuilder(
+    column: $table.horaInicio,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get horaFinal => $composableBuilder(
+    column: $table.horaFinal,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get combustibleInicial => $composableBuilder(
+    column: $table.combustibleInicial,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get kilometrajeInicial => $composableBuilder(
+    column: $table.kilometrajeInicial,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get combustibleFinal => $composableBuilder(
+    column: $table.combustibleFinal,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get kilometrajeFinal => $composableBuilder(
+    column: $table.kilometrajeFinal,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get fechaCarga => $composableBuilder(
+    column: $table.fechaCarga,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get operador => $composableBuilder(
+    column: $table.operador,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get kmAntes => $composableBuilder(
+    column: $table.kmAntes,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get kmDespues => $composableBuilder(
+    column: $table.kmDespues,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get metadata => $composableBuilder(
+    column: $table.metadata,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get syncError => $composableBuilder(
+    column: $table.syncError,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get syncInfo => $composableBuilder(
+    column: $table.syncInfo,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get sincronizado => $composableBuilder(
+    column: $table.sincronizado,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get creadoEn => $composableBuilder(
+    column: $table.creadoEn,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$CombustibleRegistrosTableTableAnnotationComposer
+    extends Composer<_$AppDatabase, $CombustibleRegistrosTableTable> {
+  $$CombustibleRegistrosTableTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get usuarioId =>
+      $composableBuilder(column: $table.usuarioId, builder: (column) => column);
+
+  GeneratedColumn<String> get modo =>
+      $composableBuilder(column: $table.modo, builder: (column) => column);
+
+  GeneratedColumn<String> get nombre =>
+      $composableBuilder(column: $table.nombre, builder: (column) => column);
+
+  GeneratedColumn<String> get destino =>
+      $composableBuilder(column: $table.destino, builder: (column) => column);
+
+  GeneratedColumn<String> get horaInicio => $composableBuilder(
+    column: $table.horaInicio,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get horaFinal =>
+      $composableBuilder(column: $table.horaFinal, builder: (column) => column);
+
+  GeneratedColumn<String> get combustibleInicial => $composableBuilder(
+    column: $table.combustibleInicial,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get kilometrajeInicial => $composableBuilder(
+    column: $table.kilometrajeInicial,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get combustibleFinal => $composableBuilder(
+    column: $table.combustibleFinal,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get kilometrajeFinal => $composableBuilder(
+    column: $table.kilometrajeFinal,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get fechaCarga => $composableBuilder(
+    column: $table.fechaCarga,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get operador =>
+      $composableBuilder(column: $table.operador, builder: (column) => column);
+
+  GeneratedColumn<int> get kmAntes =>
+      $composableBuilder(column: $table.kmAntes, builder: (column) => column);
+
+  GeneratedColumn<int> get kmDespues =>
+      $composableBuilder(column: $table.kmDespues, builder: (column) => column);
+
+  GeneratedColumn<String> get metadata =>
+      $composableBuilder(column: $table.metadata, builder: (column) => column);
+
+  GeneratedColumn<String> get syncError =>
+      $composableBuilder(column: $table.syncError, builder: (column) => column);
+
+  GeneratedColumn<String> get syncInfo =>
+      $composableBuilder(column: $table.syncInfo, builder: (column) => column);
+
+  GeneratedColumn<bool> get sincronizado => $composableBuilder(
+    column: $table.sincronizado,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get creadoEn =>
+      $composableBuilder(column: $table.creadoEn, builder: (column) => column);
+}
+
+class $$CombustibleRegistrosTableTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $CombustibleRegistrosTableTable,
+          CombustibleRegistrosTableData,
+          $$CombustibleRegistrosTableTableFilterComposer,
+          $$CombustibleRegistrosTableTableOrderingComposer,
+          $$CombustibleRegistrosTableTableAnnotationComposer,
+          $$CombustibleRegistrosTableTableCreateCompanionBuilder,
+          $$CombustibleRegistrosTableTableUpdateCompanionBuilder,
+          (
+            CombustibleRegistrosTableData,
+            BaseReferences<
+              _$AppDatabase,
+              $CombustibleRegistrosTableTable,
+              CombustibleRegistrosTableData
+            >,
+          ),
+          CombustibleRegistrosTableData,
+          PrefetchHooks Function()
+        > {
+  $$CombustibleRegistrosTableTableTableManager(
+    _$AppDatabase db,
+    $CombustibleRegistrosTableTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$CombustibleRegistrosTableTableFilterComposer(
+                $db: db,
+                $table: table,
+              ),
+          createOrderingComposer: () =>
+              $$CombustibleRegistrosTableTableOrderingComposer(
+                $db: db,
+                $table: table,
+              ),
+          createComputedFieldComposer: () =>
+              $$CombustibleRegistrosTableTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> usuarioId = const Value.absent(),
+                Value<String> modo = const Value.absent(),
+                Value<String?> nombre = const Value.absent(),
+                Value<String?> destino = const Value.absent(),
+                Value<String?> horaInicio = const Value.absent(),
+                Value<String?> horaFinal = const Value.absent(),
+                Value<String?> combustibleInicial = const Value.absent(),
+                Value<int?> kilometrajeInicial = const Value.absent(),
+                Value<String?> combustibleFinal = const Value.absent(),
+                Value<int?> kilometrajeFinal = const Value.absent(),
+                Value<String?> fechaCarga = const Value.absent(),
+                Value<String?> operador = const Value.absent(),
+                Value<int?> kmAntes = const Value.absent(),
+                Value<int?> kmDespues = const Value.absent(),
+                Value<String?> metadata = const Value.absent(),
+                Value<String?> syncError = const Value.absent(),
+                Value<String?> syncInfo = const Value.absent(),
+                Value<bool> sincronizado = const Value.absent(),
+                Value<DateTime> creadoEn = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => CombustibleRegistrosTableCompanion(
+                id: id,
+                usuarioId: usuarioId,
+                modo: modo,
+                nombre: nombre,
+                destino: destino,
+                horaInicio: horaInicio,
+                horaFinal: horaFinal,
+                combustibleInicial: combustibleInicial,
+                kilometrajeInicial: kilometrajeInicial,
+                combustibleFinal: combustibleFinal,
+                kilometrajeFinal: kilometrajeFinal,
+                fechaCarga: fechaCarga,
+                operador: operador,
+                kmAntes: kmAntes,
+                kmDespues: kmDespues,
+                metadata: metadata,
+                syncError: syncError,
+                syncInfo: syncInfo,
+                sincronizado: sincronizado,
+                creadoEn: creadoEn,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String usuarioId,
+                required String modo,
+                Value<String?> nombre = const Value.absent(),
+                Value<String?> destino = const Value.absent(),
+                Value<String?> horaInicio = const Value.absent(),
+                Value<String?> horaFinal = const Value.absent(),
+                Value<String?> combustibleInicial = const Value.absent(),
+                Value<int?> kilometrajeInicial = const Value.absent(),
+                Value<String?> combustibleFinal = const Value.absent(),
+                Value<int?> kilometrajeFinal = const Value.absent(),
+                Value<String?> fechaCarga = const Value.absent(),
+                Value<String?> operador = const Value.absent(),
+                Value<int?> kmAntes = const Value.absent(),
+                Value<int?> kmDespues = const Value.absent(),
+                Value<String?> metadata = const Value.absent(),
+                Value<String?> syncError = const Value.absent(),
+                Value<String?> syncInfo = const Value.absent(),
+                Value<bool> sincronizado = const Value.absent(),
+                Value<DateTime> creadoEn = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => CombustibleRegistrosTableCompanion.insert(
+                id: id,
+                usuarioId: usuarioId,
+                modo: modo,
+                nombre: nombre,
+                destino: destino,
+                horaInicio: horaInicio,
+                horaFinal: horaFinal,
+                combustibleInicial: combustibleInicial,
+                kilometrajeInicial: kilometrajeInicial,
+                combustibleFinal: combustibleFinal,
+                kilometrajeFinal: kilometrajeFinal,
+                fechaCarga: fechaCarga,
+                operador: operador,
+                kmAntes: kmAntes,
+                kmDespues: kmDespues,
+                metadata: metadata,
+                syncError: syncError,
+                syncInfo: syncInfo,
+                sincronizado: sincronizado,
+                creadoEn: creadoEn,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$CombustibleRegistrosTableTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $CombustibleRegistrosTableTable,
+      CombustibleRegistrosTableData,
+      $$CombustibleRegistrosTableTableFilterComposer,
+      $$CombustibleRegistrosTableTableOrderingComposer,
+      $$CombustibleRegistrosTableTableAnnotationComposer,
+      $$CombustibleRegistrosTableTableCreateCompanionBuilder,
+      $$CombustibleRegistrosTableTableUpdateCompanionBuilder,
+      (
+        CombustibleRegistrosTableData,
+        BaseReferences<
+          _$AppDatabase,
+          $CombustibleRegistrosTableTable,
+          CombustibleRegistrosTableData
+        >,
+      ),
+      CombustibleRegistrosTableData,
       PrefetchHooks Function()
     >;
 typedef $$NotificationsTableTableCreateCompanionBuilder =
@@ -7173,6 +8849,11 @@ class $AppDatabaseManager {
   $AppDatabaseManager(this._db);
   $$AsistenciaTableTableTableManager get asistenciaTable =>
       $$AsistenciaTableTableTableManager(_db, _db.asistenciaTable);
+  $$CombustibleRegistrosTableTableTableManager get combustibleRegistrosTable =>
+      $$CombustibleRegistrosTableTableTableManager(
+        _db,
+        _db.combustibleRegistrosTable,
+      );
   $$NotificationsTableTableTableManager get notificationsTable =>
       $$NotificationsTableTableTableManager(_db, _db.notificationsTable);
   $$SyncQueueTableTableTableManager get syncQueueTable =>

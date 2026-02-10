@@ -33,6 +33,24 @@ migrate_working_dir/
 /build/
 /coverage/
 
+# Android local files
+**/android/local.properties
+**/android/**/key.properties
+**/*.jks
+**/*.keystore
+
+# iOS / macOS (CocoaPods & Xcode user data)
+**/ios/Pods/
+**/ios/.symlinks/
+**/ios/Flutter/ephemeral/
+**/ios/Flutter/Flutter.framework
+**/ios/Flutter/Flutter.podspec
+**/macos/Pods/
+**/macos/Flutter/ephemeral/
+**/*.xcuserstate
+**/xcuserdata/
+**/DerivedData/
+
 # Symbolication related
 app.*.symbols
 

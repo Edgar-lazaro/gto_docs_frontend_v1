@@ -5,14 +5,10 @@ const prodConfig = AppConfig(
   env: AppEnv.prod,
 
   // Red / LAN
-  allowedIpRanges: [
-    '192.168.0.0/16',
-    '10.0.0.0/8',
-    '172.16.0.0/12',
-  ],
+  allowedIpRanges: ['ip_ait/16', '10.0.0.0/8', '172.16.0.0/12'],
 
   // Backend
-  apiBaseUrl: 'gto-docs-server.lan',
+  apiBaseUrl: 'ip_ait',
   apiPort: 3000,
   useHttps: false,
 
@@ -21,7 +17,7 @@ const prodConfig = AppConfig(
   useJwt: true,
 
   // GLPI
-  glpiBaseUrl: 'http://gto-docs-server.lan/glpi',
+  glpiBaseUrl: 'http://ip_ait/glpi',
   glpiApiToken: 'PENDIENTE_DE_TI',
   glpiEntityId: 0,
 

@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:gto_docs_v2_ad/modules/reportes/presentation/reports_builder_page.dart';
 import 'dart:io';
 
 import '../../../core/auth/auth_providers.dart';
 import '../../../core/auth/auth_models.dart';
 import '../../../core/auth/role_utils.dart';
+import '../../../core/network/lan_gate.dart';
+import '../../../core/network/lan_status.dart';
+import '../../../core/network/lan_status_provider.dart';
 import '../../../core/pdfs/generated_pdf.dart';
 import '../../../core/pdfs/generated_pdf_providers.dart';
+import '../../../core/pdfs/pdf_upload_providers.dart';
 import '../../../core/reports_engine/pdf_file_service.dart';
 import '../../../shared/ui/theme/gerencia_config.dart';
 import '../../../shared/ui/widgets/gerencia_app_bar.dart';
@@ -24,6 +27,7 @@ class ReportesPage extends ConsumerStatefulWidget {
 class _ReportesPageState extends ConsumerState<ReportesPage> {
   final _searchController = TextEditingController();
   String _searchQuery = '';
+  bool _uploading = false;
 
   @override
   void dispose() {
@@ -33,6 +37,9 @@ class _ReportesPageState extends ConsumerState<ReportesPage> {
 
   @override
   Widget build(BuildContext context) {
+    final lanConnected = ref
+        .watch(lanStatusProvider)
+        .maybeWhen(data: (s) => s == LanStatus.connected, orElse: () => false);
     final isTablet = MediaQuery.of(context).size.width >= 600;
     final width = MediaQuery.of(context).size.width;
     final horizontalPadding = width >= 1200
@@ -58,20 +65,11 @@ class _ReportesPageState extends ConsumerState<ReportesPage> {
         title: 'Reportes',
         actions: [
           IconButton(
-            tooltip: 'Generador de reportes',
-            icon: const Icon(Icons.picture_as_pdf),
-            onPressed: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (_) => ReportsBuilderPage(theme: widget.theme),
-                ),
-              );
-            },
-          ),
-          IconButton(
-            tooltip: 'Actualizar',
-            icon: const Icon(Icons.refresh),
-            onPressed: () => ref.invalidate(generatedPdfsProvider),
+            tooltip: 'Subir pendientes',
+            icon: const Icon(Icons.cloud_upload),
+            onPressed: _uploading || !lanConnected
+                ? null
+                : () => _uploadPendientes(user),
           ),
         ],
       ),
@@ -150,6 +148,68 @@ class _ReportesPageState extends ConsumerState<ReportesPage> {
       return;
     }
     await PdfFileService.openFile(file);
+  }
+
+  Future<void> _uploadPendientes(AuthUser user) async {
+    if (!await LanGate.isOnLan()) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Subida disponible solo en LAN corporativa'),
+        ),
+      );
+      return;
+    }
+
+    setState(() => _uploading = true);
+    try {
+      final repo = ref.read(generatedPdfRepositoryProvider);
+      final uploader = ref.read(pdfUploadApiRepositoryProvider);
+      final all = repo.listAll();
+      final pending = all.where((p) => !p.uploaded).toList();
+
+      if (pending.isEmpty) {
+        if (!mounted) return;
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text('No hay PDFs pendientes')));
+        return;
+      }
+
+      for (final p in pending) {
+        final file = File(p.localPath);
+        if (!await file.exists()) {
+          continue;
+        }
+        final url = await uploader.uploadPdf(
+          file: file,
+          filename: p.filename,
+          metadata: {
+            'usuarioNombre': p.createdByName.isNotEmpty
+                ? p.createdByName
+                : p.createdByUserId,
+            'gerenciaId': p.gerenciaId,
+            'jefaturaId': p.jefaturaId,
+            'checklistNombre': p.checklistNombre ?? p.filename,
+            'source': p.source,
+          }..removeWhere((_, v) => v == null),
+        );
+        await repo.markUploaded(id: p.id, url: url);
+      }
+
+      ref.invalidate(generatedPdfsProvider);
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('PDFs subidos correctamente')),
+      );
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('No se pudo subir PDFs: $e')));
+    } finally {
+      if (mounted) setState(() => _uploading = false);
+    }
   }
 }
 
@@ -230,7 +290,7 @@ class _PdfCard extends StatelessWidget {
                             ),
                           Chip(
                             label: Text(
-                              pdf.uploaded ? 'Subido' : 'Local',
+                              pdf.uploaded ? 'Online' : 'Local',
                               style: const TextStyle(fontSize: 14),
                             ),
                             visualDensity: VisualDensity.compact,

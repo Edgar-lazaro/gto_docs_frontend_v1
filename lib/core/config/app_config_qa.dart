@@ -5,11 +5,7 @@ const qaConfig = AppConfig(
   env: AppEnv.qa,
 
   //  Red / LAN
-  allowedIpRanges: [
-    '192.168.0.0/16',
-    '10.0.0.0/8',
-    '172.16.0.0/12',
-  ],
+  allowedIpRanges: ['192.168.1.72/16', '10.0.0.0/8', '172.16.0.0/12'],
 
   //  Backend
   apiBaseUrl: 'gto-docs-server.lan',

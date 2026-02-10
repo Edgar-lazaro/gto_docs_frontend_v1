@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gto_docs_v2_ad/core/network/providers.dart';
 import 'package:gto_docs_v2_ad/modules/notificacions/presentation/notificacion_providers.dart';
 
+import '../auth/auth_providers.dart';
 import '../database/database_providers.dart';
 import '../network/lan_status.dart';
 import '../network/lan_status_provider.dart';
@@ -15,6 +16,7 @@ final syncServiceProvider = Provider<SyncService>((ref) {
   return SyncService(
     db: ref.read(appDatabaseProvider),
     dio: ref.read(dioProvider),
+    session: ref.read(sessionManagerProvider),
   );
 });
 
@@ -54,7 +56,6 @@ final syncListenerProvider = Provider<void>((ref) {
       lastStatus = status;
 
       if (status == LanStatus.connected) {
-        
         ref.read(syncWorkerProvider).run(status);
         ensureTimerRunning();
         return;

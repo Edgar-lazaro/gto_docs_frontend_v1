@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:dio/dio.dart';
+import 'package:flutter/services.dart';
 
 import '../../core/auth/auth_models.dart';
 import '../../core/auth/auth_providers.dart';
+import '../../core/network/providers.dart';
+import '../../core/config/config_provider.dart';
 import '../../modules/check_list/presentation/jefaturas_list_page.dart';
 import '../../modules/combustible/presentation/combustible_page.dart';
 import '../../modules/inventarios/presentation/inventario_page.dart';
@@ -399,6 +403,126 @@ class _ProfileTab extends ConsumerWidget {
                     ),
                   ),
                   SizedBox(height: isTablet ? 48 : 32),
+                  SizedBox(
+                    width: double.infinity,
+                    child: OutlinedButton.icon(
+                      onPressed: () async {
+                        final config = ref.read(appConfigProvider);
+                        final session = ref.read(sessionManagerProvider);
+                        final token = (await session.getToken())?.trim() ?? '';
+
+                        String redact(String value) {
+                          if (value.isEmpty) return '(vacío)';
+                          if (value.length <= 14) return value;
+                          return '${value.substring(0, 8)}…${value.substring(value.length - 6)}';
+                        }
+
+                        String prettyData(dynamic data) {
+                          if (data == null) return '(sin body)';
+                          final s = data is String ? data : data.toString();
+                          return s.length > 2000
+                              ? '${s.substring(0, 2000)}…'
+                              : s;
+                        }
+
+                        int? status;
+                        dynamic body;
+                        String? error;
+                        final dio = ref.read(dioProvider);
+                        try {
+                          if (token.isEmpty) {
+                            error = 'No hay token guardado en el dispositivo.';
+                          } else {
+                            final res = await dio.get('/auth/me');
+                            status = res.statusCode;
+                            body = res.data;
+                          }
+                        } on DioException catch (e) {
+                          error = e.toString();
+                          status = e.response?.statusCode;
+                          body = e.response?.data;
+                        } catch (e) {
+                          error = e.toString();
+                        }
+
+                        if (!context.mounted) return;
+
+                        await showDialog<void>(
+                          context: context,
+                          builder: (_) {
+                            var revealToken = false;
+                            return StatefulBuilder(
+                              builder: (context, setState) {
+                                final tokenLine = revealToken
+                                    ? token
+                                    : redact(token);
+
+                                return AlertDialog(
+                                  title: const Text('Diagnóstico de token'),
+                                  content: SingleChildScrollView(
+                                    child: SelectableText(
+                                      [
+                                        'BaseUrl: ${dio.options.baseUrl}',
+                                        'Auth endpoint: ${config.authEndpoint}',
+                                        'Tiene token: ${token.isNotEmpty}',
+                                        'Token: $tokenLine',
+                                        'GET /auth/me status: ${status ?? '-'}',
+                                        if (error != null) 'Error: $error',
+                                        if (body != null)
+                                          'Body: ${prettyData(body)}',
+                                      ].join('\n'),
+                                    ),
+                                  ),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: token.isEmpty
+                                          ? null
+                                          : () async {
+                                              await Clipboard.setData(
+                                                ClipboardData(text: token),
+                                              );
+                                              if (!context.mounted) return;
+                                              ScaffoldMessenger.of(
+                                                context,
+                                              ).showSnackBar(
+                                                const SnackBar(
+                                                  content: Text(
+                                                    'Token copiado al portapapeles.',
+                                                  ),
+                                                ),
+                                              );
+                                            },
+                                      child: const Text('Copiar token'),
+                                    ),
+                                    TextButton(
+                                      onPressed: token.isEmpty
+                                          ? null
+                                          : () => setState(
+                                              () => revealToken = !revealToken,
+                                            ),
+                                      child: Text(
+                                        revealToken
+                                            ? 'Ocultar token'
+                                            : 'Mostrar token',
+                                      ),
+                                    ),
+                                    TextButton(
+                                      onPressed: () =>
+                                          Navigator.of(context).maybePop(),
+                                      child: const Text('Cerrar'),
+                                    ),
+                                  ],
+                                );
+                              },
+                            );
+                          },
+                        );
+                      },
+                      icon: const Icon(Icons.vpn_key),
+                      label: const Text('Diagnóstico token'),
+                    ),
+                  ),
+                  SizedBox(height: isTablet ? 16 : 12),
                   SizedBox(
                     width: double.infinity,
                     child: ElevatedButton.icon(

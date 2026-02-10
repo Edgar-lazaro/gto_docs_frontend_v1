@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter/foundation.dart';
 import 'auth_models.dart';
 import 'auth_repository.dart';
 import 'session_manager.dart';
@@ -40,11 +41,6 @@ class AuthController extends StateNotifier<AuthState> {
         .read(lanStatusProvider)
         .maybeWhen(data: (s) => s, orElse: () => LanStatus.disconnected);
 
-    if (lanStatus != LanStatus.connected) {
-      state = AuthState.unauthenticated();
-      return;
-    }
-
     try {
       final sessionData = await repo.login(
         username: username,
@@ -54,7 +50,11 @@ class AuthController extends StateNotifier<AuthState> {
       await session.save(sessionData);
 
       state = AuthState.authenticated(sessionData.user);
-    } catch (_) {
+    } catch (e, st) {
+      if (kDebugMode) {
+        debugPrint('[AUTH] login failed (lan=$lanStatus): $e');
+        debugPrint('$st');
+      }
       state = AuthState.unauthenticated();
     }
   }
@@ -64,7 +64,6 @@ class AuthController extends StateNotifier<AuthState> {
     state = AuthState.unauthenticated();
   }
 
- 
   void blockApp() {
     state = AuthState.blocked();
   }

@@ -8,11 +8,13 @@ class ServerProbe {
 
   Future<bool> ping(String url) async {
     final client = HttpClient();
-    client.connectionTimeout = const Duration(seconds: 3);
+    client.connectionTimeout = const Duration(seconds: 5);
 
     try {
       final request = await client.getUrl(Uri.parse(url));
-      final response = await request.close();
+      final response = await request.close().timeout(
+        const Duration(seconds: 5),
+      );
 
       if (kDebugMode) {
         final last = _lastLoggedStatusByUrl[url];

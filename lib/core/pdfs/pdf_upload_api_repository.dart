@@ -13,9 +13,14 @@ class PdfUploadApiRepository {
     required String filename,
     required Map<String, dynamic> metadata,
   }) async {
+    final normalized = _normalizeMetadataForUpload(
+      file: file,
+      filename: filename,
+      metadata: metadata,
+    );
+
     return FormData.fromMap({
-      ...metadata,
-      'filename': filename,
+      ...normalized,
       'file': await MultipartFile.fromFile(
         file.path,
         filename: filename,
@@ -33,6 +38,8 @@ class PdfUploadApiRepository {
 
     // Prefer the new endpoints (served under baseUrl .../api).
     final preferred = <String>[
+      '/documentos-pdf/upload',
+      '/documentos_pdf/upload',
       if (source == 'checklist') '/checklists/adjuntos',
       if (source == 'reporte') '/reportes/adjuntos',
       // Safe fallback if source is missing/unknown.
@@ -63,8 +70,8 @@ class PdfUploadApiRepository {
         final data = res.data;
         if (data is Map) {
           final m = data.cast<String, dynamic>();
-          final url =
-              (m['url'] ?? m['publicUrl'] ?? m['url_storage'] ?? '').toString();
+          final url = (m['url'] ?? m['publicUrl'] ?? m['url_storage'] ?? '')
+              .toString();
           if (url.isNotEmpty) return url;
         }
         // Respuesta sin URL: este endpoint no es compatible para nuestra necesidad.
@@ -79,5 +86,47 @@ class PdfUploadApiRepository {
 
     if (last != null) throw last;
     throw StateError('No se encontró un endpoint para subir PDF');
+  }
+
+  Map<String, dynamic> _normalizeMetadataForUpload({
+    required File file,
+    required String filename,
+    required Map<String, dynamic> metadata,
+  }) {
+    final source = (metadata['source'] ?? '').toString().toLowerCase().trim();
+    final tipoDocumento = switch (source) {
+      'checklist' => 'checklist',
+      'reporte' => 'reporte',
+      _ => 'reporte',
+    };
+
+    int? asInt(dynamic v) {
+      if (v == null) return null;
+      if (v is int) return v;
+      return int.tryParse(v.toString());
+    }
+
+    final usuarioNombre =
+        metadata['usuarioNombre'] ??
+        metadata['usuario_nombre'] ??
+        metadata['usuario'];
+    final gerenciaId = asInt(metadata['gerenciaId'] ?? metadata['gerencia_id']);
+    final jefaturaId = asInt(metadata['jefaturaId'] ?? metadata['jefatura_id']);
+    final checklistNombre =
+        metadata['checklistNombre'] ?? metadata['checklist_nombre'];
+
+    if (usuarioNombre == null || usuarioNombre.toString().trim().isEmpty) {
+      throw StateError('usuario_nombre es requerido para subir el PDF');
+    }
+
+    return <String, dynamic>{
+      'tipo_documento': tipoDocumento,
+      'usuario_nombre': usuarioNombre,
+      'gerencia_id': gerenciaId ?? 0,
+      'jefatura_id': jefaturaId ?? 0,
+      'checklist_nombre': (checklistNombre ?? filename).toString(),
+      'nombre_archivo': filename,
+      'tamano_bytes': file.lengthSync().toString(),
+    };
   }
 }

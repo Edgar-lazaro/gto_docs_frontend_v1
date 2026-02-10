@@ -6,6 +6,7 @@ import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 
 import 'tables/asistencia_table.dart';
+import 'tables/combustible_registros_table.dart';
 import 'tables/notifications_table.dart';
 import 'tables/sync_queue_table.dart';
 import 'tables/tareas_table.dart';
@@ -21,6 +22,7 @@ part 'app_database.g.dart';
 @DriftDatabase(
   tables: [
     AsistenciaTable,
+    CombustibleRegistrosTable,
     NotificationsTable,
     SyncQueueTable,
     TareasTable,
@@ -37,7 +39,7 @@ class AppDatabase extends _$AppDatabase {
 
   /// Versión 1: esquema inicial
   @override
-  int get schemaVersion => 6;
+  int get schemaVersion => 9;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -60,6 +62,24 @@ class AppDatabase extends _$AppDatabase {
       if (from < 6) {
         await m.createTable(tareaComentariosTable);
         await m.createTable(tareaAdjuntosTable);
+      }
+
+      if (from < 7) {
+        await m.createTable(combustibleRegistrosTable);
+      }
+
+      if (from < 8) {
+        await m.addColumn(
+          combustibleRegistrosTable,
+          combustibleRegistrosTable.syncError,
+        );
+      }
+
+      if (from < 9) {
+        await m.addColumn(
+          combustibleRegistrosTable,
+          combustibleRegistrosTable.syncInfo,
+        );
       }
     },
   );

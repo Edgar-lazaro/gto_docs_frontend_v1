@@ -21,6 +21,15 @@ class LanGuard {
     if (!hasNetwork) {
       return LanStatus.disconnected;
     }
+
+    // Si se requiere LAN, validar que sea WiFi/Ethernet.
+    if (enforceLanOnly) {
+      final onLan = await networkChecker.isLanConnection();
+      if (!onLan) {
+        return LanStatus.disconnected;
+      }
+    }
+
     // ¿Servidor interno responde?
     var serverOk = await serverProbe.ping(healthUrl);
     if (!serverOk) {

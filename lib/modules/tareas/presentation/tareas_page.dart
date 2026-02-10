@@ -62,11 +62,7 @@ class TareasPage extends ConsumerWidget {
           final created = await Navigator.push<bool>(
             context,
             MaterialPageRoute(
-              builder: (_) => CrearTareaPage(
-                theme: theme,
-                creadoPor: user.id,
-                fixedAsignadoA: user.id,
-              ),
+              builder: (_) => CrearTareaPage(theme: theme, creadoPor: user.id),
             ),
           );
 

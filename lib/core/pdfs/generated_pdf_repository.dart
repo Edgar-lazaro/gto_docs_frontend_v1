@@ -20,9 +20,7 @@ class GeneratedPdfRepository {
         if (m is Map) {
           out.add(GeneratedPdf.fromJson(m.cast<String, dynamic>()));
         }
-      } catch (_) {
-     
-      }
+      } catch (_) {}
     }
     out.sort((a, b) => b.createdAt.compareTo(a.createdAt));
     return out;
@@ -30,19 +28,23 @@ class GeneratedPdfRepository {
 
   Future<void> add(GeneratedPdf pdf) async {
     final list = listAll();
-    final next = [pdf, ...list]
-        .map((e) => jsonEncode(e.toJson()))
-        .toList(growable: false);
+    final next = [
+      pdf,
+      ...list,
+    ].map((e) => jsonEncode(e.toJson())).toList(growable: false);
     await prefs.setStringList(_key, next);
   }
 
-  Future<void> markUploaded({
-    required String id,
-    required String url,
-  }) async {
+  bool existsByPath(String path) {
+    return listAll().any((p) => p.localPath == path);
+  }
+
+  Future<void> markUploaded({required String id, required String url}) async {
     final list = listAll();
     final next = list
-        .map((e) => e.id == id ? e.copyWith(uploaded: true, uploadedUrl: url) : e)
+        .map(
+          (e) => e.id == id ? e.copyWith(uploaded: true, uploadedUrl: url) : e,
+        )
         .map((e) => jsonEncode(e.toJson()))
         .toList(growable: false);
     await prefs.setStringList(_key, next);

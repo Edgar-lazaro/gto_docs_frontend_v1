@@ -1,21 +1,28 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:path/path.dart' as p;
+import 'package:path_provider/path_provider.dart';
 
+import '../../../core/auth/auth_providers.dart';
+import '../../../core/auth/role_utils.dart';
 import '../../../shared/ui/theme/gerencia_config.dart';
 import '../../../shared/ui/widgets/gerencia_app_bar.dart';
+import 'combustible_providers.dart';
+import 'combustible_historial_page.dart';
 
-class CombustiblePage extends StatefulWidget {
+class CombustiblePage extends ConsumerStatefulWidget {
   final GerenciaTheme theme;
 
   const CombustiblePage({super.key, required this.theme});
 
   @override
-  State<CombustiblePage> createState() => _CombustiblePageState();
+  ConsumerState<CombustiblePage> createState() => _CombustiblePageState();
 }
 
-class _CombustiblePageState extends State<CombustiblePage> {
+class _CombustiblePageState extends ConsumerState<CombustiblePage> {
   String _selectedMode = 'usar_vehiculo';
   final ImagePicker _picker = ImagePicker();
 
@@ -30,6 +37,7 @@ class _CombustiblePageState extends State<CombustiblePage> {
 
   // Controllers para Usar Vehículo
   final _nombreController = TextEditingController();
+  final _vehiculoController = TextEditingController();
   final _destinoController = TextEditingController();
   final _horaInicioController = TextEditingController();
   final _combustibleInicialController = TextEditingController();
@@ -41,12 +49,14 @@ class _CombustiblePageState extends State<CombustiblePage> {
   // Controllers para Cargar Combustible
   final _fechaCargaController = TextEditingController();
   final _operadorController = TextEditingController();
+  final _vehiculoCargaController = TextEditingController();
   final _kmAntesCargaController = TextEditingController();
   final _kmDespuesCargaController = TextEditingController();
 
   @override
   void dispose() {
     _nombreController.dispose();
+    _vehiculoController.dispose();
     _destinoController.dispose();
     _horaInicioController.dispose();
     _combustibleInicialController.dispose();
@@ -56,6 +66,7 @@ class _CombustiblePageState extends State<CombustiblePage> {
     _kilometrajeFinalController.dispose();
     _fechaCargaController.dispose();
     _operadorController.dispose();
+    _vehiculoCargaController.dispose();
     _kmAntesCargaController.dispose();
     _kmDespuesCargaController.dispose();
     super.dispose();
@@ -66,6 +77,24 @@ class _CombustiblePageState extends State<CombustiblePage> {
     end: Alignment.bottomRight,
     colors: [widget.theme.colorPrimario, widget.theme.colorSecundario],
   );
+
+  Future<XFile?> _persistImage(XFile file, {required String prefix}) async {
+    final sourcePath = file.path;
+    final sourceFile = File(sourcePath);
+    if (!await sourceFile.exists()) return null;
+
+    final dir = await getApplicationDocumentsDirectory();
+    final targetDir = Directory(p.join(dir.path, 'combustible_images'));
+    if (!await targetDir.exists()) {
+      await targetDir.create(recursive: true);
+    }
+
+    final ext = p.extension(sourcePath);
+    final fileName = '${prefix}_${DateTime.now().millisecondsSinceEpoch}$ext';
+    final newPath = p.join(targetDir.path, fileName);
+    await sourceFile.copy(newPath);
+    return XFile(newPath);
+  }
 
   Future<void> _pickImage(String tipo) async {
     showModalBottomSheet(
@@ -89,21 +118,31 @@ class _CombustiblePageState extends State<CombustiblePage> {
                   Navigator.pop(context);
                   final photo = await _picker.pickImage(
                     source: ImageSource.camera,
+                    imageQuality: 70,
+                    maxWidth: 1600,
+                    maxHeight: 1600,
                   );
                   if (photo == null || !mounted) return;
-                  setState(() {
-                    if (tipo == 'kmAntes') {
-                      _fotosKmAntes.add(photo);
-                    } else if (tipo == 'kmDespues') {
-                      _fotosKmDespues.add(photo);
-                    } else if (tipo == 'ticket') {
-                      _fotosTicket.add(photo);
-                    } else if (tipo == 'registroInicial') {
-                      _fotosRegistroInicial.add(photo);
-                    } else if (tipo == 'registroFinal') {
-                      _fotosRegistroFinal.add(photo);
-                    }
-                  });
+                  try {
+                    final stored = await _persistImage(photo, prefix: tipo);
+                    if (stored == null || !mounted) return;
+                    setState(() {
+                      if (tipo == 'kmAntes') {
+                        _fotosKmAntes.add(stored);
+                      } else if (tipo == 'kmDespues') {
+                        _fotosKmDespues.add(stored);
+                      } else if (tipo == 'ticket') {
+                        _fotosTicket.add(stored);
+                      } else if (tipo == 'registroInicial') {
+                        _fotosRegistroInicial.add(stored);
+                      } else if (tipo == 'registroFinal') {
+                        _fotosRegistroFinal.add(stored);
+                      }
+                    });
+                  } catch (_) {
+                    if (!mounted) return;
+                    _showError('No se pudo guardar la foto.');
+                  }
                 },
               ),
               ListTile(
@@ -116,26 +155,185 @@ class _CombustiblePageState extends State<CombustiblePage> {
                   Navigator.pop(context);
                   final photo = await _picker.pickImage(
                     source: ImageSource.gallery,
+                    imageQuality: 70,
+                    maxWidth: 1600,
+                    maxHeight: 1600,
                   );
                   if (photo == null || !mounted) return;
-                  setState(() {
-                    if (tipo == 'kmAntes') {
-                      _fotosKmAntes.add(photo);
-                    } else if (tipo == 'kmDespues') {
-                      _fotosKmDespues.add(photo);
-                    } else if (tipo == 'ticket') {
-                      _fotosTicket.add(photo);
-                    } else if (tipo == 'registroInicial') {
-                      _fotosRegistroInicial.add(photo);
-                    } else if (tipo == 'registroFinal') {
-                      _fotosRegistroFinal.add(photo);
-                    }
-                  });
+                  try {
+                    final stored = await _persistImage(photo, prefix: tipo);
+                    if (stored == null || !mounted) return;
+                    setState(() {
+                      if (tipo == 'kmAntes') {
+                        _fotosKmAntes.add(stored);
+                      } else if (tipo == 'kmDespues') {
+                        _fotosKmDespues.add(stored);
+                      } else if (tipo == 'ticket') {
+                        _fotosTicket.add(stored);
+                      } else if (tipo == 'registroInicial') {
+                        _fotosRegistroInicial.add(stored);
+                      } else if (tipo == 'registroFinal') {
+                        _fotosRegistroFinal.add(stored);
+                      }
+                    });
+                  } catch (_) {
+                    if (!mounted) return;
+                    _showError('No se pudo guardar la foto.');
+                  }
                 },
               ),
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  void _showError(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Row(
+          children: [
+            const Icon(Icons.error_outline, color: Colors.white),
+            const SizedBox(width: 12),
+            Expanded(child: Text(message)),
+          ],
+        ),
+        backgroundColor: Colors.red,
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      ),
+    );
+  }
+
+  Future<void> _guardarRegistroUsoVehiculo() async {
+    final auth = ref.read(authControllerProvider);
+    final userId = auth.user?.id;
+    final gerenciaNombre = auth.user?.gerencia;
+    final gerenciaId = auth.user?.resolvedGerenciaId;
+    if (userId == null || userId.isEmpty) {
+      _showError('Sesión no válida. Inicia sesión de nuevo.');
+      return;
+    }
+
+    final nombre = _nombreController.text.trim();
+    final destino = _destinoController.text.trim();
+    final vehiculo = _vehiculoController.text.trim();
+    if (nombre.isEmpty || destino.isEmpty || vehiculo.isEmpty) {
+      _showError('Completa nombre, vehículo y destino.');
+      return;
+    }
+
+    final kmIni = int.tryParse(_kilometrajeInicialController.text.trim());
+    final kmFin = int.tryParse(_kilometrajeFinalController.text.trim());
+
+    final metadata = <String, dynamic>{
+      'fotosRegistroInicial': _fotosRegistroInicial.map((f) => f.path).toList(),
+      'fotosRegistroFinal': _fotosRegistroFinal.map((f) => f.path).toList(),
+    };
+
+    await ref
+        .read(combustibleRepositoryProvider)
+        .guardarUsoVehiculo(
+          usuarioId: userId,
+          gerenciaNombre: gerenciaNombre,
+          gerenciaId: gerenciaId,
+          nombre: nombre,
+          vehiculo: vehiculo,
+          destino: destino,
+          horaInicio: _horaInicioController.text.trim().isEmpty
+              ? null
+              : _horaInicioController.text.trim(),
+          combustibleInicial: _combustibleInicialController.text.trim().isEmpty
+              ? null
+              : _combustibleInicialController.text.trim(),
+          kilometrajeInicial: kmIni,
+          horaFinal: _horaFinalController.text.trim().isEmpty
+              ? null
+              : _horaFinalController.text.trim(),
+          combustibleFinal: _combustibleFinalController.text.trim().isEmpty
+              ? null
+              : _combustibleFinalController.text.trim(),
+          kilometrajeFinal: kmFin,
+          metadata: metadata,
+        );
+
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Row(
+          children: const [
+            Icon(Icons.check_circle, color: Colors.white),
+            SizedBox(width: 12),
+            Text('Registro guardado'),
+          ],
+        ),
+        backgroundColor: Colors.green,
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      ),
+    );
+  }
+
+  Future<void> _guardarCargaCombustible() async {
+    final auth = ref.read(authControllerProvider);
+    final userId = auth.user?.id;
+    final gerenciaNombre = auth.user?.gerencia;
+    final gerenciaId = auth.user?.resolvedGerenciaId;
+    if (userId == null || userId.isEmpty) {
+      _showError('Sesión no válida. Inicia sesión de nuevo.');
+      return;
+    }
+
+    final operador = _operadorController.text.trim();
+    final vehiculo = _vehiculoCargaController.text.trim();
+    if (operador.isEmpty || vehiculo.isEmpty) {
+      _showError('Ingresa operador y vehículo.');
+      return;
+    }
+
+    final kmAntes = int.tryParse(_kmAntesCargaController.text.trim());
+    final kmDespues = int.tryParse(_kmDespuesCargaController.text.trim());
+    if (kmAntes == null || kmDespues == null) {
+      _showError('Ingresa kilometraje antes y después.');
+      return;
+    }
+
+    final metadata = <String, dynamic>{
+      'fotosKmAntes': _fotosKmAntes.map((f) => f.path).toList(),
+      'fotosKmDespues': _fotosKmDespues.map((f) => f.path).toList(),
+      'fotosTicket': _fotosTicket.map((f) => f.path).toList(),
+    };
+
+    await ref
+        .read(combustibleRepositoryProvider)
+        .guardarCargaCombustible(
+          usuarioId: userId,
+          fechaCarga: _fechaCargaController.text.trim().isEmpty
+              ? null
+              : _fechaCargaController.text.trim(),
+          operador: operador,
+          vehiculo: vehiculo,
+          gerenciaNombre: gerenciaNombre,
+          gerenciaId: gerenciaId,
+          kmAntes: kmAntes,
+          kmDespues: kmDespues,
+          metadata: metadata,
+        );
+
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Row(
+          children: const [
+            Icon(Icons.check_circle, color: Colors.white),
+            SizedBox(width: 12),
+            Text('Carga de combustible registrada'),
+          ],
+        ),
+        backgroundColor: Colors.green,
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       ),
     );
   }
@@ -158,6 +356,7 @@ class _CombustiblePageState extends State<CombustiblePage> {
 
   @override
   Widget build(BuildContext context) {
+    final pendientesAsync = ref.watch(combustiblePendientesCountProvider);
     final isTablet = MediaQuery.of(context).size.width >= 600;
     final width = MediaQuery.of(context).size.width;
     final horizontalPadding = width >= 1200
@@ -174,6 +373,20 @@ class _CombustiblePageState extends State<CombustiblePage> {
         theme: widget.theme,
         title: 'Combustible',
         showBack: false,
+        actions: [
+          IconButton(
+            tooltip: 'Historial',
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => CombustibleHistorialPage(theme: widget.theme),
+                ),
+              );
+            },
+            icon: const Icon(Icons.history),
+          ),
+        ],
       ),
       body: Center(
         child: SingleChildScrollView(
@@ -185,6 +398,28 @@ class _CombustiblePageState extends State<CombustiblePage> {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
+              pendientesAsync.when(
+                data: (count) {
+                  if (count <= 0) return const SizedBox.shrink();
+                  return Container(
+                    width: double.infinity,
+                    margin: const EdgeInsets.only(bottom: 12),
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: Colors.orange.withValues(alpha: 0.12),
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(
+                        color: Colors.orange.withValues(alpha: 0.25),
+                      ),
+                    ),
+                    child: Text(
+                      'Tienes $count registros pendientes por subir. Se enviarán cuando haya conexión al servidor.',
+                    ),
+                  );
+                },
+                loading: () => const SizedBox.shrink(),
+                error: (err, _) => const SizedBox.shrink(),
+              ),
               // Header
               Container(
                 padding: const EdgeInsets.all(20.0),
@@ -288,6 +523,14 @@ class _CombustiblePageState extends State<CombustiblePage> {
               label: 'Nombre del conductor',
               hint: 'Ingrese nombre completo',
               icon: Icons.badge,
+              theme: widget.theme,
+            ),
+            const SizedBox(height: 16),
+            _TextField(
+              controller: _vehiculoController,
+              label: 'Vehículo',
+              hint: 'Ej: unidad / placas / ID',
+              icon: Icons.directions_car,
               theme: widget.theme,
             ),
             const SizedBox(height: 16),
@@ -462,22 +705,7 @@ class _CombustiblePageState extends State<CombustiblePage> {
               elevation: 4,
             ),
             onPressed: () {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Row(
-                    children: const [
-                      Icon(Icons.check_circle, color: Colors.white),
-                      SizedBox(width: 12),
-                      Text('Registro guardado'),
-                    ],
-                  ),
-                  backgroundColor: Colors.green,
-                  behavior: SnackBarBehavior.floating,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                ),
-              );
+              _guardarRegistroUsoVehiculo();
             },
             icon: const Icon(Icons.save, size: 20),
             label: const Text(
@@ -548,6 +776,14 @@ class _CombustiblePageState extends State<CombustiblePage> {
               label: 'Operador',
               hint: 'Nombre del operador',
               icon: Icons.person,
+              theme: widget.theme,
+            ),
+            const SizedBox(height: 16),
+            _TextField(
+              controller: _vehiculoCargaController,
+              label: 'Vehículo',
+              hint: 'Ej: unidad / placas / ID',
+              icon: Icons.directions_car,
               theme: widget.theme,
             ),
           ],
@@ -629,22 +865,7 @@ class _CombustiblePageState extends State<CombustiblePage> {
               elevation: 4,
             ),
             onPressed: () {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Row(
-                    children: const [
-                      Icon(Icons.check_circle, color: Colors.white),
-                      SizedBox(width: 12),
-                      Text('Carga de combustible registrada'),
-                    ],
-                  ),
-                  backgroundColor: Colors.green,
-                  behavior: SnackBarBehavior.floating,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                ),
-              );
+              _guardarCargaCombustible();
             },
             icon: const Icon(Icons.save, size: 20),
             label: const Text('Guardar Carga', style: TextStyle(fontSize: 16)),

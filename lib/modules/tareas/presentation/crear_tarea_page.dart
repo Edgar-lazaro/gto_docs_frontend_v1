@@ -160,7 +160,6 @@ class _CrearTareaPageState extends ConsumerState<CrearTareaPage> {
   Widget build(BuildContext context) {
     final auth = ref.watch(authControllerProvider);
     final gerenciaId = auth.user?.resolvedGerenciaId;
-    final canPickAsignador = auth.user?.isSupervisor ?? false;
     final asignadorLabel = auth.user?.nombre ?? widget.creadoPor;
 
     final isTablet = MediaQuery.of(context).size.width >= 600;
@@ -250,7 +249,7 @@ class _CrearTareaPageState extends ConsumerState<CrearTareaPage> {
                 child: Column(
                   children: [
                     // Quién asigna / crea la tarea (puede ser distinto del usuario logueado).
-                    if (!canPickAsignador) ...[
+                    if (auth.user == null) ...[
                       TextFormField(
                         initialValue: asignadorLabel,
                         readOnly: true,
@@ -402,7 +401,7 @@ class _CrearTareaPageState extends ConsumerState<CrearTareaPage> {
                                       },
                                 child: InputDecorator(
                                   decoration: const InputDecoration(
-                                    labelText: 'Asignar a',
+                                    labelText: 'Asignado a',
                                     suffixIcon: Icon(Icons.arrow_drop_down),
                                   ),
                                   child: Text(
