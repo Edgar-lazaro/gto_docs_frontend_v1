@@ -7,19 +7,25 @@ import '../../../core/auth/auth_models.dart';
 import '../../../shared/ui/theme/gerencia_config.dart';
 import '../../../shared/ui/widgets/gerencia_app_bar.dart';
 import 'admin_tareas_page.dart';
-import 'crear_tarea_page.dart';
-import 'tarea_detalle_page.dart';
-import 'tarea_grupo_detalle_page.dart';
+import 'crear_ticket_glpi_page.dart';
+import 'ticket_glpi_detalle_page.dart';
 import 'tareas_providers.dart';
-import '../domain/tarea.dart';
+import '../data/glpi_ticket_api_repository.dart';
 
-class Zzy12mIJOO extends ConsumerWidget {
-  final GerenciaTheme dWmw3;
+class TareasPage extends ConsumerStatefulWidget {
+  final GerenciaTheme theme;
 
-  const Zzy12mIJOO({super.key, required this.dWmw3});
+  const TareasPage({super.key, required this.theme});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<TareasPage> createState() => _TareasPageState();
+}
+
+class _TareasPageState extends ConsumerState<TareasPage> {
+  int _selectedScope = 0; // 0=Creados, 1=Asignados, 2=Todos
+
+  @override
+  Widget build(BuildContext context) {
     final isTablet = MediaQuery.of(context).size.width >= 600;
     final width = MediaQuery.of(context).size.width;
     final horizontalPadding = width >= 1200
@@ -37,22 +43,29 @@ class Zzy12mIJOO extends ConsumerWidget {
     }
 
     final user = auth.user!;
-    final isSupervisor = user.isSupervisor;
 
-    if (isSupervisor) {
-      return BxcwXKwTw1RSLl7(st9rH: dWmw3);
+    if (user.isSupervisor) {
+      return AdminTareasPage(theme: widget.theme);
     }
 
-    final tareasAsync = ref.watch(tareasPorAsignadoProvider(user.id));
+    final ticketsAsync = switch (_selectedScope) {
+      0 => ref.watch(glpiTicketsCreadosProvider),
+      1 => ref.watch(glpiTicketsAsignadosProvider),
+      _ => ref.watch(glpiTodosLosTicketsProvider),
+    };
 
     return Scaffold(
       appBar: GerenciaAppBar(
-        theme: dWmw3,
-        title: 'Tareas',
+        theme: widget.theme,
+        title: 'Tickets',
         actions: [
           IconButton(
             icon: const Icon(Icons.refresh),
-            onPressed: () => ref.invalidate(tareasPorAsignadoProvider(user.id)),
+            onPressed: () {
+              ref.invalidate(glpiTicketsCreadosProvider);
+              ref.invalidate(glpiTicketsAsignadosProvider);
+              ref.invalidate(glpiTodosLosTicketsProvider);
+            },
             tooltip: 'Actualizar',
           ),
         ],
@@ -62,79 +75,126 @@ class Zzy12mIJOO extends ConsumerWidget {
           final created = await Navigator.push<bool>(
             context,
             MaterialPageRoute(
-              builder: (_) => K8NwCbJv8ZuhjZ(yiiNG: dWmw3, yIzgxjLvS: user.id),
+              builder: (_) => CrearTicketGlpiPage(theme: widget.theme),
             ),
           );
-
           if (created == true) {
-            ref.invalidate(tareasPorAsignadoProvider(user.id));
+            ref.invalidate(glpiTicketsCreadosProvider);
+            ref.invalidate(glpiTicketsAsignadosProvider);
+            ref.invalidate(glpiTodosLosTicketsProvider);
           }
         },
-        icon: const Icon(Icons.add),
-        label: const Text('Añadir'),
+        icon: const Icon(Icons.confirmation_number_outlined),
+        label: const Text('Nuevo ticket'),
       ),
-      body: tareasAsync.when(
-        loading: () => const Center(child: CircularProgressIndicator()),
-        error: (e, _) => Center(child: Text('Error: $e')),
-        data: (items) {
-          if (items.isEmpty) {
-            return const Center(child: Text('No hay tareas'));
-          }
-
-          return ListView.separated(
-            padding: EdgeInsets.symmetric(
-              horizontal: horizontalPadding,
-              vertical: isTablet ? 32 : 24,
+      body: Column(
+        children: [
+          Padding(
+            padding: EdgeInsets.fromLTRB(
+              horizontalPadding, 16, horizontalPadding, 8,
             ),
-            itemCount: items.length,
-            separatorBuilder: (context, index) => const SizedBox(height: 8),
-            itemBuilder: (_, i) {
-              final t = items[i];
-              return _J8goYbw2U(
-                fy6oF: t,
-                r7N7K: () {
-                  final gid =
-                      (t.groupId != null && t.groupId!.trim().isNotEmpty)
-                      ? t.groupId!.trim()
-                      : null;
-
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => gid == null
-                          ? Iom0ztcBxmImKVs2(u4Wka: dWmw3, aLTtu: t)
-                          : UxxIZKOxhp0dVMt9SSl7a(
-                              meoZv: dWmw3,
-                              nRze6RO: gid,
-                              bg6QWa2E: t,
-                            ),
-                    ),
-                  );
-                },
-              );
-            },
-          );
-        },
+            child: Row(
+              children: [
+                Expanded(
+                  child: SegmentedButton<int>(
+                    segments: const [
+                      ButtonSegment(value: 0, label: Text('Creados')),
+                      ButtonSegment(value: 1, label: Text('Asignados')),
+                      ButtonSegment(value: 2, label: Text('Todos')),
+                    ],
+                    selected: <int>{_selectedScope},
+                    onSelectionChanged: (s) =>
+                        setState(() => _selectedScope = s.first),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Expanded(
+            child: ticketsAsync.when(
+              loading: () => const Center(child: CircularProgressIndicator()),
+              error: (e, _) => Center(child: Text('Error: $e')),
+              data: (tickets) =>
+                  _buildTicketList(tickets, horizontalPadding, isTablet),
+            ),
+          ),
+        ],
       ),
+    );
+  }
+
+  Widget _buildTicketList(
+    List<GlpiTicket> tickets,
+    double horizontalPadding,
+    bool isTablet,
+  ) {
+    if (tickets.isEmpty) {
+      return const Center(child: Text('No hay tickets'));
+    }
+
+    return ListView.separated(
+      padding: EdgeInsets.symmetric(
+        horizontal: horizontalPadding,
+        vertical: isTablet ? 32 : 24,
+      ),
+      itemCount: tickets.length,
+      separatorBuilder: (_, __) => const SizedBox(height: 8),
+      itemBuilder: (_, i) {
+        final ticket = tickets[i];
+        return _GlpiTicketCard(
+          ticket: ticket,
+          onTap: () => Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => TicketGlpiDetallePage(
+                theme: widget.theme,
+                ticketId: ticket.id,
+              ),
+            ),
+          ),
+        );
+      },
     );
   }
 }
 
-class _J8goYbw2U extends StatelessWidget {
-  final Tarea fy6oF;
-  final VoidCallback r7N7K;
+class _GlpiTicketCard extends StatelessWidget {
+  final GlpiTicket ticket;
+  final VoidCallback? onTap;
+  const _GlpiTicketCard({required this.ticket, this.onTap});
 
-  const _J8goYbw2U({required this.fy6oF, required this.r7N7K});
+  IconData _statusIcon(int status) {
+    switch (status) {
+      case 1: return Icons.fiber_new;
+      case 2: return Icons.play_circle;
+      case 3: return Icons.schedule;
+      case 4: return Icons.pause_circle;
+      case 5: return Icons.check_circle;
+      case 6: return Icons.lock;
+      default: return Icons.help;
+    }
+  }
+
+  Color _statusColor(int status) {
+    switch (status) {
+      case 1: return Colors.orange;
+      case 2: return Colors.blue;
+      case 3: return Colors.amber;
+      case 4: return Colors.purple;
+      case 5: return Colors.green;
+      case 6: return Colors.grey;
+      default: return Colors.grey;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     final isTablet = MediaQuery.of(context).size.width >= 600;
-
     return Card(
       child: Material(
         color: Colors.transparent,
         child: InkWell(
-          onTap: r7N7K,
+          onTap: onTap,
           borderRadius: BorderRadius.circular(isTablet ? 20 : 16),
           child: Padding(
             padding: EdgeInsets.all(isTablet ? 20 : 16),
@@ -144,12 +204,12 @@ class _J8goYbw2U extends StatelessWidget {
                   width: isTablet ? 56 : 48,
                   height: isTablet ? 56 : 48,
                   decoration: BoxDecoration(
-                    color: Colors.blue[50],
+                    color: _statusColor(ticket.status).withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(isTablet ? 16 : 12),
                   ),
                   child: Icon(
-                    Icons.task_alt,
-                    color: Colors.blue[700],
+                    _statusIcon(ticket.status),
+                    color: _statusColor(ticket.status),
                     size: isTablet ? 30 : 26,
                   ),
                 ),
@@ -159,7 +219,7 @@ class _J8goYbw2U extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        fy6oF.titulo,
+                        ticket.name,
                         style: TextStyle(
                           fontSize: isTablet ? 18 : 16,
                           fontWeight: FontWeight.bold,
@@ -170,7 +230,7 @@ class _J8goYbw2U extends StatelessWidget {
                       ),
                       const SizedBox(height: 4),
                       Text(
-                        'Estado: ${fy6oF.estado.name}',
+                        '#${ticket.id} · ${ticket.statusLabel}',
                         style: TextStyle(
                           fontSize: isTablet ? 14 : 12,
                           color: Colors.grey[700],
