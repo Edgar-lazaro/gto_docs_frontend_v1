@@ -540,23 +540,24 @@ class _TicketGlpiDetallePageState
                 data: (timelineItems) {
                   final docs = documentosAsync.valueOrNull ?? [];
 
-                  // Agrupa documentos usando los docIds nativos de GLPI por followup
+                  // Agrupa documentos usando los docIds nativos de GLPI
                   final docById = <int, GlpiDocumento>{
                     for (final d in docs) d.id: d,
                   };
-                  final followupAttachments =
+                  final itemAttachments =
                       <TareaTimelineItem, List<GlpiDocumento>>{};
                   for (final item in timelineItems) {
-                    if (item.tipo != 'followup' || item.docIds.isEmpty) continue;
+                    if ((item.tipo != 'followup' && item.tipo != 'solution') ||
+                        item.docIds.isEmpty) continue;
                     final attached = item.docIds
                         .map((id) => docById[id])
                         .whereType<GlpiDocumento>()
                         .toList();
                     if (attached.isNotEmpty) {
-                      followupAttachments[item] = attached;
+                      itemAttachments[item] = attached;
                     }
                   }
-                  final attachedDocIds = followupAttachments.values
+                  final attachedDocIds = itemAttachments.values
                       .expand((list) => list)
                       .map((d) => d.id)
                       .toSet();
@@ -567,7 +568,7 @@ class _TicketGlpiDetallePageState
                       (
                         fecha: DateTime.tryParse(i.fecha) ?? DateTime(0),
                         item: i as Object,
-                        attachments: followupAttachments[i] ?? [],
+                        attachments: itemAttachments[i] ?? [],
                       ),
                     for (final d in docs)
                       if (!attachedDocIds.contains(d.id))
@@ -787,7 +788,7 @@ class _GlpiReplySheetState extends ConsumerState<_GlpiReplySheet> {
             _snack('Escribe el contenido de la solución', error: true);
             return;
           }
-          await repo.crearSolucion(
+          final solutionId = await repo.crearSolucion(
             widget.ticketId,
             content: contenido,
             tipoId: _solucionTipoId,
@@ -799,6 +800,7 @@ class _GlpiReplySheetState extends ConsumerState<_GlpiReplySheet> {
               bytes: doc.bytes,
               mimeType: doc.mime,
               usuarioId: currentUserId,
+              solutionId: solutionId > 0 ? solutionId : null,
             );
           }
           _snack('Solución enviada — pendiente de aprobación del supervisor');

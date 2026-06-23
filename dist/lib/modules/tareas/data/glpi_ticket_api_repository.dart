@@ -289,6 +289,7 @@ class GlpiTicketApiRepository {
     required String mimeType,
     int? usuarioId,
     int? followupId,
+    int? solutionId,
   }) async {
     final parts = mimeType.split('/');
     final mediaType = parts.length == 2
@@ -299,6 +300,7 @@ class GlpiTicketApiRepository {
       'nombre': nombre,
       if (usuarioId != null) 'usuarioId': usuarioId.toString(),
       if (followupId != null) 'followupId': followupId.toString(),
+      if (solutionId != null) 'solutionId': solutionId.toString(),
       'file': dio_lib.MultipartFile.fromBytes(
         bytes,
         filename: nombre,
@@ -327,16 +329,17 @@ class GlpiTicketApiRepository {
     );
   }
 
-  Future<void> crearSolucion(
+  Future<int> crearSolucion(
     int ticketId, {
     required String content,
     int tipoId = 1,
   }) async {
-    await _dio.post(
+    final res = await _dio.post(
       '/glpi/tickets/$ticketId/solution',
       data: {'content': content, 'solutiontypes_id': tipoId, 'status': 1},
       options: _longTimeout(),
     );
+    return (res.data?['id'] as num?)?.toInt() ?? 0;
   }
 
   Future<void> aprobarSolucion(int solutionId, {required bool aprobada}) async {
