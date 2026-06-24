@@ -1,5 +1,5 @@
-class XyPYpOt4wpQevOe {
-  static Future<bool> jqcIk8() async {
+class AntiTamperGuard {
+  static Future<bool> verify() async {
   
     return true;
   }

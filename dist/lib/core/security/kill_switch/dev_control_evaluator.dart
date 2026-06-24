@@ -3,8 +3,8 @@ import '../kill_switch/kill_switch_models.dart';
 import '../storage/local_flags.dart';
 
 
-class WLJrYbz5JZj0Piu6Liv {
-  static Future<void> ez3zCfMx(Map<String, dynamic> json) async {
+class DevControlEvaluator {
+  static Future<void> evaluate(Map<String, dynamic> json) async {
 
     if (!json.containsKey('signature')) return;
 

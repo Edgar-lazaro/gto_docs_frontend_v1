@@ -5,23 +5,23 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'user_ref.dart';
 
-class R7hXKM6tAZNKFFb {
-  static const _nlo9omyp = 'users_cache_v1';
+class UsersRepository {
+  static const _cacheKey = 'users_cache_v1';
 
-  final Dio iVC;
-  final SharedPreferences mznVX;
+  final Dio dio;
+  final SharedPreferences prefs;
 
-  R7hXKM6tAZNKFFb({required this.iVC, required this.mznVX});
+  UsersRepository({required this.dio, required this.prefs});
 
-  List<SpHMLML>? ooogGHMNl() {
-    final raw = mznVX.getString(_nlo9omyp);
+  List<UserRef>? getCached() {
+    final raw = prefs.getString(_cacheKey);
     if (raw == null || raw.trim().isEmpty) return null;
 
     try {
       final decoded = jsonDecode(raw);
       if (decoded is! List) return null;
 
-      final users = <SpHMLML>[];
+      final users = <UserRef>[];
       for (final item in decoded) {
         if (item is! Map) continue;
         final map = item.cast<String, dynamic>();
@@ -29,10 +29,10 @@ class R7hXKM6tAZNKFFb {
         final name = (map['name'] ?? map['nombre'] ?? map['username'] ?? '')
             .toString();
         if (id.trim().isEmpty || name.trim().isEmpty) continue;
-        users.add(SpHMLML(bf: id, xQjl: name));
+        users.add(UserRef(id: id, name: name));
       }
       users.sort(
-        (a, b) => a.xQjl.toLowerCase().compareTo(b.xQjl.toLowerCase()),
+        (a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()),
       );
       return users;
     } catch (_) {
@@ -40,41 +40,41 @@ class R7hXKM6tAZNKFFb {
     }
   }
 
-  Future<List<SpHMLML>> tnAEvwmAeq4fL({int? gerenciaId}) async {
-    final candidates = <_LoaO5tvtUmF7Oa>[
+  Future<List<UserRef>> fetchAndCache({int? gerenciaId}) async {
+    final candidates = <_UsersCandidate>[
       // Preferimos endpoints genéricos, para evitar routers que tratan subrutas como /tareas/:id (ej. "Invalid id").
-      _LoaO5tvtUmF7Oa('/users', _tsemKMb1xo(gerenciaId)),
-      _LoaO5tvtUmF7Oa('/usuarios', _tsemKMb1xo(gerenciaId)),
+      _UsersCandidate('/users', _qpGerencia(gerenciaId)),
+      _UsersCandidate('/usuarios', _qpGerencia(gerenciaId)),
 
       // Endpoints legacy/alternativos (si existen)
-      _LoaO5tvtUmF7Oa('/tareas/asignables', null),
-      _LoaO5tvtUmF7Oa('/tareas/usuarios', null),
+      _UsersCandidate('/tareas/asignables', null),
+      _UsersCandidate('/tareas/usuarios', null),
     ];
 
-    Future<Response<dynamic>> eQL0NrHQgvt34VqKy4dT0qjgYZ(
-      _LoaO5tvtUmF7Oa candidate,
+    Future<Response<dynamic>> getWithOptionalApiFallback(
+      _UsersCandidate candidate,
     ) async {
       try {
-        return await iVC.get(
-          candidate.a4Xl,
-          queryParameters: candidate.em352AitxMEvujH,
+        return await dio.get(
+          candidate.path,
+          queryParameters: candidate.queryParameters,
         );
       } on DioException catch (e) {
         final status = e.response?.statusCode;
-        final baseUrl = iVC.options.baseUrl;
+        final baseUrl = dio.options.baseUrl;
         final canTryWithoutApi =
             status == 404 &&
             baseUrl.endsWith('/api') &&
-            candidate.a4Xl.startsWith('/');
+            candidate.path.startsWith('/');
         if (!canTryWithoutApi) rethrow;
 
         final baseWithoutApi = baseUrl.substring(0, baseUrl.length - 4);
-        final uri = Uri.parse('$baseWithoutApi${candidate.a4Xl}').replace(
-          queryParameters: candidate.em352AitxMEvujH?.map(
+        final uri = Uri.parse('$baseWithoutApi${candidate.path}').replace(
+          queryParameters: candidate.queryParameters?.map(
             (k, v) => MapEntry(k, v?.toString() ?? ''),
           ),
         );
-        return await iVC.getUri(uri);
+        return await dio.getUri(uri);
       }
     }
 
@@ -82,13 +82,13 @@ class R7hXKM6tAZNKFFb {
 
     for (final c in candidates) {
       try {
-        final res = await eQL0NrHQgvt34VqKy4dT0qjgYZ(c);
-        final parsed = _eSMOJdmYSKImEHtQz(res.data);
+        final res = await getWithOptionalApiFallback(c);
+        final parsed = _parseUsersPayload(res.data);
         if (parsed.isEmpty) {
           continue;
         }
 
-        await _mLgVOeSoCd(parsed);
+        await _writeCache(parsed);
         return parsed;
       } on DioException catch (e) {
         final status = e.response?.statusCode;
@@ -121,15 +121,15 @@ class R7hXKM6tAZNKFFb {
     );
   }
 
-  Future<List<SpHMLML>> bFJUUKdn({int? gerenciaId}) async {
+  Future<List<UserRef>> getUsers({int? gerenciaId}) async {
     try {
-      return await tnAEvwmAeq4fL(gerenciaId: gerenciaId);
+      return await fetchAndCache(gerenciaId: gerenciaId);
     } on DioException catch (e) {
-      final cached = ooogGHMNl();
+      final cached = getCached();
       if (cached != null && cached.isNotEmpty) return cached;
 
-      if (_hpKTKk0iFEaGA7KXnEl(e)) {
-        final baseUrl = iVC.options.baseUrl;
+      if (_isConnectivityError(e)) {
+        final baseUrl = dio.options.baseUrl;
         throw StateError(
           'Servidor no disponible. Verifica que estés en la LAN/VPN y que el backend esté encendido. ($baseUrl)',
         );
@@ -137,27 +137,27 @@ class R7hXKM6tAZNKFFb {
 
       rethrow;
     } catch (_) {
-      final cached = ooogGHMNl();
+      final cached = getCached();
       if (cached != null && cached.isNotEmpty) return cached;
       rethrow;
     }
   }
 
-  bool _hpKTKk0iFEaGA7KXnEl(DioException e) {
+  bool _isConnectivityError(DioException e) {
     return e.type == DioExceptionType.connectionError ||
         e.type == DioExceptionType.connectionTimeout ||
         e.type == DioExceptionType.receiveTimeout ||
         e.type == DioExceptionType.sendTimeout;
   }
 
-  Future<void> _mLgVOeSoCd(List<SpHMLML> users) async {
+  Future<void> _writeCache(List<UserRef> users) async {
     final payload = users
-        .map((u) => <String, dynamic>{'id': u.bf, 'name': u.xQjl})
+        .map((u) => <String, dynamic>{'id': u.id, 'name': u.name})
         .toList(growable: false);
-    await mznVX.setString(_nlo9omyp, jsonEncode(payload));
+    await prefs.setString(_cacheKey, jsonEncode(payload));
   }
 
-  List<SpHMLML> _eSMOJdmYSKImEHtQz(dynamic data) {
+  List<UserRef> _parseUsersPayload(dynamic data) {
     dynamic listData = data;
 
     if (data is Map) {
@@ -171,9 +171,9 @@ class R7hXKM6tAZNKFFb {
           map['result'];
     }
 
-    if (listData is! List) return const <SpHMLML>[];
+    if (listData is! List) return const <UserRef>[];
 
-    final users = <SpHMLML>[];
+    final users = <UserRef>[];
     for (final item in listData) {
       if (item is! Map) continue;
       final map = item.cast<String, dynamic>();
@@ -198,14 +198,14 @@ class R7hXKM6tAZNKFFb {
               .trim();
 
       if (id.trim().isEmpty || displayName.isEmpty) continue;
-      users.add(SpHMLML(bf: id, xQjl: displayName));
+      users.add(UserRef(id: id, name: displayName));
     }
 
-    users.sort((a, b) => a.xQjl.toLowerCase().compareTo(b.xQjl.toLowerCase()));
+    users.sort((a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()));
     return users;
   }
 
-  Map<String, dynamic>? _tsemKMb1xo(int? gerenciaId) {
+  Map<String, dynamic>? _qpGerencia(int? gerenciaId) {
     if (gerenciaId == null) return null;
     return {
       'gerenciaId': gerenciaId,
@@ -213,9 +213,9 @@ class R7hXKM6tAZNKFFb {
   }
 }
 
-class _LoaO5tvtUmF7Oa {
-  final String a4Xl;
-  final Map<String, dynamic>? em352AitxMEvujH;
+class _UsersCandidate {
+  final String path;
+  final Map<String, dynamic>? queryParameters;
 
-  _LoaO5tvtUmF7Oa(this.a4Xl, this.em352AitxMEvujH);
+  _UsersCandidate(this.path, this.queryParameters);
 }

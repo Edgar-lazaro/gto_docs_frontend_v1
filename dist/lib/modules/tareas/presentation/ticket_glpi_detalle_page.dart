@@ -206,6 +206,41 @@ class _TicketGlpiDetallePageState
     }
   }
 
+  // ── Aprobación de solución ────────────────────────────────────────────────
+
+  Future<void> _aprobarSolucion(int solutionId, {required bool aprobada}) async {
+    final confirmar = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text(aprobada ? 'Aprobar solución' : 'Rechazar solución'),
+        content: Text(aprobada
+            ? '¿Confirmas que la solución es correcta y el ticket puede cerrarse?'
+            : '¿Confirmas que rechazas la solución? El ticket volverá a estar abierto.'),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('Cancelar')),
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, true),
+            child: Text(aprobada ? 'Aprobar' : 'Rechazar',
+                style: TextStyle(color: aprobada ? Colors.green : Colors.red)),
+          ),
+        ],
+      ),
+    );
+    if (confirmar != true) return;
+    try {
+      await ref.read(glpiTicketApiRepositoryProvider).aprobarSolucion(solutionId, aprobada: aprobada);
+      ref.invalidate(glpiTicketTimelineProvider(widget.ticketId));
+      ref.invalidate(glpiTicketDetalleProvider(widget.ticketId));
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text(aprobada ? 'Solución aprobada — ticket cerrado' : 'Solución rechazada — ticket reabierto'),
+        ));
+      }
+    } catch (e) {
+      if (mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error: $e')));
+    }
+  }
+
   // ── Hoja de respuesta principal ───────────────────────────────────────────
 
   void _abrirHojaRespuesta(GlpiTicket ticket) {
@@ -366,6 +401,7 @@ class _TicketGlpiDetallePageState
         bytes: f.bytes!,
         mimeType: mimeFromExt(f.extension ?? ''),
       );
+      ref.invalidate(glpiTicketTimelineProvider(widget.ticketId));
       ref.invalidate(glpiTicketDocumentosProvider(widget.ticketId));
       if (mounted) snack.showSnackBar(const SnackBar(content: Text('Documento actualizado')));
     } catch (e) {
@@ -599,6 +635,9 @@ class _TicketGlpiDetallePageState
                                 final esEditable = obj.tipo == 'followup' &&
                                     currentUserId != null &&
                                     obj.usuarioId == currentUserId;
+                                final puedeAprobar = obj.tipo == 'solution' &&
+                                    obj.estado == 1 &&
+                                    obj.usuarioId != currentUserId;
                                 return _TimelineItem(
                                   item: obj,
                                   tipoColor: _tipoColor(obj.tipo),
@@ -610,6 +649,12 @@ class _TicketGlpiDetallePageState
                                       : null,
                                   attachments: entry.attachments,
                                   onDocMenu: (doc) => _showDocumentoMenu(doc),
+                                  onAprobar: puedeAprobar
+                                      ? () => _aprobarSolucion(obj.id, aprobada: true)
+                                      : null,
+                                  onRechazar: puedeAprobar
+                                      ? () => _aprobarSolucion(obj.id, aprobada: false)
+                                      : null,
                                 );
                               }
 
@@ -1874,6 +1919,8 @@ class _TimelineItem extends StatelessWidget {
   final VoidCallback? onLongPress;
   final List<GlpiDocumento> attachments;
   final void Function(GlpiDocumento)? onDocMenu;
+  final VoidCallback? onAprobar;
+  final VoidCallback? onRechazar;
 
   const _TimelineItem({
     required this.item,
@@ -1884,6 +1931,8 @@ class _TimelineItem extends StatelessWidget {
     this.onLongPress,
     this.attachments = const [],
     this.onDocMenu,
+    this.onAprobar,
+    this.onRechazar,
   });
 
   IconData _iconForMime(String mime) {
@@ -1997,6 +2046,79 @@ class _TimelineItem extends StatelessWidget {
                         ],
                       ),
                     )),
+                  ],
+                  // Botones aprobar/rechazar para soluciones pendientes
+                  if (onAprobar != null && onRechazar != null) ...[
+                    const SizedBox(height: 10),
+                    const Divider(height: 1),
+                    const SizedBox(height: 8),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: OutlinedButton.icon(
+                            onPressed: onRechazar,
+                            icon: const Icon(Icons.close, size: 16),
+                            label: const Text('Rechazar'),
+                            style: OutlinedButton.styleFrom(
+                              foregroundColor: Colors.red,
+                              side: const BorderSide(color: Colors.red),
+                              padding: const EdgeInsets.symmetric(vertical: 6),
+                              textStyle: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: ElevatedButton.icon(
+                            onPressed: onAprobar,
+                            icon: const Icon(Icons.check, size: 16),
+                            label: const Text('Aprobar'),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.green,
+                              foregroundColor: Colors.white,
+                              padding: const EdgeInsets.symmetric(vertical: 6),
+                              textStyle: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                  // Chip de estado para soluciones ya procesadas
+                  if (item.tipo == 'solution' && item.estado != null && item.estado != 1 && onAprobar == null) ...[
+                    const SizedBox(height: 8),
+                    Row(
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                          decoration: BoxDecoration(
+                            color: item.estado == 3
+                                ? Colors.green.withValues(alpha: 0.12)
+                                : Colors.red.withValues(alpha: 0.12),
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(
+                                item.estado == 3 ? Icons.check_circle : Icons.cancel,
+                                size: 13,
+                                color: item.estado == 3 ? Colors.green : Colors.red,
+                              ),
+                              const SizedBox(width: 4),
+                              Text(
+                                item.estado == 3 ? 'Aprobada' : 'Rechazada',
+                                style: TextStyle(
+                                  fontSize: 11,
+                                  fontWeight: FontWeight.bold,
+                                  color: item.estado == 3 ? Colors.green : Colors.red,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
                   ],
                   const SizedBox(height: 4),
                   Text(formatDate(item.fecha),

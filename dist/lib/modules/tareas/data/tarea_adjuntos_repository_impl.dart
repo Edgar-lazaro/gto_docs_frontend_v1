@@ -4,12 +4,12 @@ import 'package:uuid/uuid.dart';
 import '../../../core/database/app_database.dart';
 import '../domain/tarea_adjunto.dart';
 
-class IpwipU2fEn4NVODke7Zr8A4 {
-  final AppDatabase bU;
+class TareaAdjuntosRepository {
+  final AppDatabase db;
 
-  IpwipU2fEn4NVODke7Zr8A4(this.bU);
+  TareaAdjuntosRepository(this.db);
 
-  Future<void> dAY90mcuKf0R7F({
+  Future<void> agregarAdjunto({
     required String tareaId,
     required TareaAdjuntoTipo tipo,
     required String nombre,
@@ -27,8 +27,8 @@ class IpwipU2fEn4NVODke7Zr8A4 {
       creadoEn: DateTime.now(),
     );
 
-    await bU
-        .into(bU.tareaAdjuntosTable)
+    await db
+        .into(db.tareaAdjuntosTable)
         .insert(
           TareaAdjuntosTableCompanion.insert(
             id: a.id,
@@ -42,8 +42,8 @@ class IpwipU2fEn4NVODke7Zr8A4 {
           ),
         );
 
-    await bU
-        .into(bU.syncQueueTable)
+    await db
+        .into(db.syncQueueTable)
         .insert(
           SyncQueueTableCompanion.insert(
             entidad: 'tarea_adjunto',
@@ -61,8 +61,8 @@ class IpwipU2fEn4NVODke7Zr8A4 {
         );
   }
 
-  Stream<List<TareaAdjunto>> hnGLtSIPUnj9wkv(String tareaId) {
-    return (bU.select(bU.tareaAdjuntosTable)
+  Stream<List<TareaAdjunto>> watchPorTareaId(String tareaId) {
+    return (db.select(db.tareaAdjuntosTable)
           ..where((a) => a.tareaId.equals(tareaId))
           ..orderBy([(a) => OrderingTerm.asc(a.creadoEn)]))
         .watch()

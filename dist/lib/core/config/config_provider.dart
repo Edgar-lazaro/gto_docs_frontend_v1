@@ -6,13 +6,13 @@ import 'app_config_dev.dart';
 import 'app_config_qa.dart';
 import 'app_config_prod.dart';
 
-const _currentEnv = IKhlHRPHkn4MPF.bRe;
+const _currentEnv = AppEnvironment.dev;
 
 String _readDefine(String key) {
   return String.fromEnvironment(key, defaultValue: '').trim();
 }
 
-QrcWKMuam _applyOverrides(QrcWKMuam base) {
+AppConfig _applyOverrides(AppConfig base) {
   final apiBaseUrl = _readDefine('API_BASE_URL');
   final apiPortRaw = _readDefine('API_PORT');
   final useHttpsRaw = _readDefine('USE_HTTPS');
@@ -25,32 +25,32 @@ QrcWKMuam _applyOverrides(QrcWKMuam base) {
     _ => null,
   };
 
-  return QrcWKMuam(
-    aLK: base.aLK,
-    lre0xaeol5A2xtH: base.lre0xaeol5A2xtH,
-    yvEsMkca7s: apiBaseUrl.isNotEmpty ? apiBaseUrl : base.yvEsMkca7s,
-    nXa1YWL: apiPort ?? base.nXa1YWL,
-    iPaqsyrv: useHttps ?? base.iPaqsyrv,
-    lXXb6wgZCAco: base.lXXb6wgZCAco,
-    eRP61H: base.eRP61H,
-    dSM4pBPjdVC: glpiBaseUrl.isNotEmpty ? glpiBaseUrl : base.dSM4pBPjdVC,
-    ijWnk6vFqfO9: base.ijWnk6vFqfO9,
-    ejYboNDRRcKW: base.ejYboNDRRcKW,
-    hxRM3fYjRiKhH: base.hxRM3fYjRiKhH,
-    v5CqdjIunXt7w2G0: base.v5CqdjIunXt7w2G0,
-    gduW6QmUraG3r8Bc: base.gduW6QmUraG3r8Bc,
-    jiT2qhvZ: base.jiT2qhvZ,
-    twzCpEycwe: base.twzCpEycwe,
+  return AppConfig(
+    env: base.env,
+    allowedIpRanges: base.allowedIpRanges,
+    apiBaseUrl: apiBaseUrl.isNotEmpty ? apiBaseUrl : base.apiBaseUrl,
+    apiPort: apiPort ?? base.apiPort,
+    useHttps: useHttps ?? base.useHttps,
+    authEndpoint: base.authEndpoint,
+    useJwt: base.useJwt,
+    glpiBaseUrl: glpiBaseUrl.isNotEmpty ? glpiBaseUrl : base.glpiBaseUrl,
+    glpiApiToken: base.glpiApiToken,
+    glpiEntityId: base.glpiEntityId,
+    maxFileSizeMb: base.maxFileSizeMb,
+    allowedFileTypes: base.allowedFileTypes,
+    enableBiometrics: base.enableBiometrics,
+    enableIA: base.enableIA,
+    enablePush: base.enablePush,
   );
 }
 
-final appConfigProvider = Provider<QrcWKMuam>((ref) {
+final appConfigProvider = Provider<AppConfig>((ref) {
   switch (_currentEnv) {
-    case IKhlHRPHkn4MPF.bRe:
+    case AppEnvironment.dev:
       return _applyOverrides(devConfig);
-    case IKhlHRPHkn4MPF.pa:
+    case AppEnvironment.qa:
       return _applyOverrides(qaConfig);
-    case IKhlHRPHkn4MPF.srdE:
+    case AppEnvironment.prod:
       return _applyOverrides(prodConfig);
   }
 });

@@ -3,49 +3,49 @@ import 'package:flutter/material.dart';
 import 'etp_models.dart';
 import '../../shared/ui/widgets/section_container.dart';
 
-class ETh6L6qff0BrwFJ7 extends StatefulWidget {
-  final TOrYuZvGOIatVhQ7HHjUs5 hBsWGTPeee;
-  final String uPRD7fZN;
-  final String fuk9FreG7PKP8;
+class EtpChecklistForm extends StatefulWidget {
+  final EtpChecklistDefinition definition;
+  final String userName;
+  final String checklistName;
 
-  final ValueChanged<NfW2LWZq2KjvbSa3C> bilLSzKS;
+  final ValueChanged<EtpChecklistDraft> onSubmit;
 
-  const ETh6L6qff0BrwFJ7({
+  const EtpChecklistForm({
     super.key,
-    required this.hBsWGTPeee,
-    required this.uPRD7fZN,
-    required this.fuk9FreG7PKP8,
-    required this.bilLSzKS,
+    required this.definition,
+    required this.userName,
+    required this.checklistName,
+    required this.onSubmit,
   });
 
   @override
-  State<ETh6L6qff0BrwFJ7> createState() => _HGdkmsxvkNNZXOfWZCb55();
+  State<EtpChecklistForm> createState() => _EtpChecklistFormState();
 }
 
-class _HGdkmsxvkNNZXOfWZCb55 extends State<ETh6L6qff0BrwFJ7> {
-  late final List<bool> _f70Kr;
-  late final List<bool> _wVl;
-  late final List<bool> _kQn27Jbh;
-  late final List<TextEditingController> _yGcaCAJfu;
-  late final List<TextEditingController> _l9mPPe5BBgrzx;
+class _EtpChecklistFormState extends State<EtpChecklistForm> {
+  late final List<bool> _cable;
+  late final List<bool> _red;
+  late final List<bool> _noAplica;
+  late final List<TextEditingController> _anomalias;
+  late final List<TextEditingController> _observaciones;
 
   @override
   void initState() {
     super.initState();
-    final n = widget.hBsWGTPeee.r6U77.length;
-    _f70Kr = List<bool>.filled(n, false);
-    _wVl = List<bool>.filled(n, false);
-    _kQn27Jbh = List<bool>.filled(n, false);
-    _yGcaCAJfu = List.generate(n, (_) => TextEditingController());
-    _l9mPPe5BBgrzx = List.generate(n, (_) => TextEditingController());
+    final n = widget.definition.items.length;
+    _cable = List<bool>.filled(n, false);
+    _red = List<bool>.filled(n, false);
+    _noAplica = List<bool>.filled(n, false);
+    _anomalias = List.generate(n, (_) => TextEditingController());
+    _observaciones = List.generate(n, (_) => TextEditingController());
   }
 
   @override
   void dispose() {
-    for (final c in _yGcaCAJfu) {
+    for (final c in _anomalias) {
       c.dispose();
     }
-    for (final c in _l9mPPe5BBgrzx) {
+    for (final c in _observaciones) {
       c.dispose();
     }
     super.dispose();
@@ -57,25 +57,25 @@ class _HGdkmsxvkNNZXOfWZCb55 extends State<ETh6L6qff0BrwFJ7> {
       padding: const EdgeInsets.all(16),
       children: [
         SectionContainer(
-          title: widget.hBsWGTPeee.cOAhH,
+          title: widget.definition.title,
           subtitle: 'Checklist ETP',
           icon: Icons.fact_check_outlined,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('Nombre: ${widget.uPRD7fZN}'),
-              Text('Área: ${widget.fuk9FreG7PKP8}'),
+              Text('Nombre: ${widget.userName}'),
+              Text('Área: ${widget.checklistName}'),
             ],
           ),
         ),
         const SizedBox(height: 16),
-        ...List.generate(widget.hBsWGTPeee.r6U77.length, (index) {
-          final item = widget.hBsWGTPeee.r6U77[index];
+        ...List.generate(widget.definition.items.length, (index) {
+          final item = widget.definition.items[index];
           return Padding(
             padding: const EdgeInsets.only(bottom: 12),
             child: SectionContainer(
               title: 'Punto ${index + 1}',
-              subtitle: item.tl0sv,
+              subtitle: item.label,
               icon: Icons.checklist_outlined,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -83,24 +83,24 @@ class _HGdkmsxvkNNZXOfWZCb55 extends State<ETh6L6qff0BrwFJ7> {
                   CheckboxListTile(
                     dense: true,
                     contentPadding: EdgeInsets.zero,
-                    value: _kQn27Jbh[index],
+                    value: _noAplica[index],
                     onChanged: (v) {
                       final value = v ?? false;
                       setState(() {
-                        _kQn27Jbh[index] = value;
+                        _noAplica[index] = value;
                         if (value) {
-                          _f70Kr[index] = false;
-                          _wVl[index] = false;
-                          _l9mPPe5BBgrzx[index].text = 'N/A';
-                          _l9mPPe5BBgrzx[index].selection =
+                          _cable[index] = false;
+                          _red[index] = false;
+                          _observaciones[index].text = 'N/A';
+                          _observaciones[index].selection =
                               TextSelection.fromPosition(
                                 TextPosition(
-                                  offset: _l9mPPe5BBgrzx[index].text.length,
+                                  offset: _observaciones[index].text.length,
                                 ),
                               );
                         } else {
-                          if (_l9mPPe5BBgrzx[index].text.trim() == 'N/A') {
-                            _l9mPPe5BBgrzx[index].clear();
+                          if (_observaciones[index].text.trim() == 'N/A') {
+                            _observaciones[index].clear();
                           }
                         }
                       });
@@ -113,11 +113,11 @@ class _HGdkmsxvkNNZXOfWZCb55 extends State<ETh6L6qff0BrwFJ7> {
                         child: CheckboxListTile(
                           dense: true,
                           contentPadding: EdgeInsets.zero,
-                          value: _f70Kr[index],
-                          onChanged: _kQn27Jbh[index]
+                          value: _cable[index],
+                          onChanged: _noAplica[index]
                               ? null
                               : (v) =>
-                                    setState(() => _f70Kr[index] = v ?? false),
+                                    setState(() => _cable[index] = v ?? false),
                           title: const Text('Cable roto'),
                         ),
                       ),
@@ -126,10 +126,10 @@ class _HGdkmsxvkNNZXOfWZCb55 extends State<ETh6L6qff0BrwFJ7> {
                         child: CheckboxListTile(
                           dense: true,
                           contentPadding: EdgeInsets.zero,
-                          value: _wVl[index],
-                          onChanged: _kQn27Jbh[index]
+                          value: _red[index],
+                          onChanged: _noAplica[index]
                               ? null
-                              : (v) => setState(() => _wVl[index] = v ?? false),
+                              : (v) => setState(() => _red[index] = v ?? false),
                           title: const Text('Falla red'),
                         ),
                       ),
@@ -137,15 +137,15 @@ class _HGdkmsxvkNNZXOfWZCb55 extends State<ETh6L6qff0BrwFJ7> {
                   ),
                   const SizedBox(height: 8),
                   TextField(
-                    controller: _yGcaCAJfu[index],
+                    controller: _anomalias[index],
                     minLines: 1,
                     maxLines: 2,
                     decoration: const InputDecoration(labelText: 'Anomalías'),
                   ),
                   const SizedBox(height: 10),
                   TextField(
-                    controller: _l9mPPe5BBgrzx[index],
-                    readOnly: _kQn27Jbh[index],
+                    controller: _observaciones[index],
+                    readOnly: _noAplica[index],
                     minLines: 1,
                     maxLines: 2,
                     decoration: const InputDecoration(
@@ -159,7 +159,7 @@ class _HGdkmsxvkNNZXOfWZCb55 extends State<ETh6L6qff0BrwFJ7> {
         }),
         const SizedBox(height: 8),
         FilledButton.icon(
-          onPressed: _zaovMm,
+          onPressed: _submit,
           icon: const Icon(Icons.picture_as_pdf),
           label: const Text('Generar PDF'),
         ),
@@ -167,31 +167,31 @@ class _HGdkmsxvkNNZXOfWZCb55 extends State<ETh6L6qff0BrwFJ7> {
     );
   }
 
-  void _zaovMm() {
-    final answers = <DSNmK1QNCAsvVrsnHK4lUg>[];
-    for (var i = 0; i < widget.hBsWGTPeee.r6U77.length; i++) {
-      final def = widget.hBsWGTPeee.r6U77[i];
-      final obs = _l9mPPe5BBgrzx[i].text.trim();
+  void _submit() {
+    final answers = <EtpChecklistItemAnswer>[];
+    for (var i = 0; i < widget.definition.items.length; i++) {
+      final def = widget.definition.items[i];
+      final obs = _observaciones[i].text.trim();
       answers.add(
-        DSNmK1QNCAsvVrsnHK4lUg(
-          bZ4FPt: def.jn,
-          gFSF1: def.tl0sv,
-          ybLGi2BbR: _f70Kr[i],
-          myA5Emfw: _wVl[i],
-          mKlRFyNhx: _yGcaCAJfu[i].text.trim(),
-          aBEipUYKaEqit: _kQn27Jbh[i] && obs.isEmpty ? 'N/A' : obs,
+        EtpChecklistItemAnswer(
+          itemId: def.id,
+          label: def.label,
+          cableRoto: _cable[i],
+          fallaRed: _red[i],
+          anomalias: _anomalias[i].text.trim(),
+          observaciones: _noAplica[i] && obs.isEmpty ? 'N/A' : obs,
         ),
       );
     }
 
-    widget.bilLSzKS(
-      NfW2LWZq2KjvbSa3C(
-        jonUKbKxt7pr: widget.hBsWGTPeee.jB,
-        aaymfjA3J6G: widget.hBsWGTPeee.cOAhH,
-        t3aSr7z2: widget.uPRD7fZN,
-        k7YAey0RC6sEJ: widget.fuk9FreG7PKP8,
-        qOp52xkYl: DateTime.now(),
-        kfQ8o: answers,
+    widget.onSubmit(
+      EtpChecklistDraft(
+        reportTypeId: widget.definition.id,
+        reportTitle: widget.definition.title,
+        userName: widget.userName,
+        checklistName: widget.checklistName,
+        createdAt: DateTime.now(),
+        items: answers,
       ),
     );
   }

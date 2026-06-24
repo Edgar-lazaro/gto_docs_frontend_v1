@@ -7,14 +7,14 @@ import 'core/auth/presentation/login_page.dart';
 import 'core/sync/sync_providers.dart';
 import 'shared/ui/unified_home_screen.dart';
 
-class PD5JtSIi extends ConsumerStatefulWidget {
-  const PD5JtSIi({super.key});
+class AppShell extends ConsumerStatefulWidget {
+  const AppShell({super.key});
 
   @override
-  ConsumerState<PD5JtSIi> createState() => _EQW4loSOcQADs();
+  ConsumerState<AppShell> createState() => _AppShellState();
 }
 
-class _EQW4loSOcQADs extends ConsumerState<PD5JtSIi> {
+class _AppShellState extends ConsumerState<AppShell> {
   @override
   Widget build(BuildContext context) {
     // Activa el listener global de sincronización (LAN → SyncWorker).

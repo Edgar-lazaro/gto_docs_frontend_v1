@@ -5,8 +5,8 @@ import 'shared/ui/lan_status_banner.dart';
 import 'shared/ui/theme/app_theme.dart';
 import 'app_shell.dart';
 
-class NLu extends ConsumerWidget {
-  const NLu({super.key});
+class App extends ConsumerWidget {
+  const App({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -18,7 +18,7 @@ class NLu extends ConsumerWidget {
       home: Scaffold(
         body: Stack(
           children: const [
-            PD5JtSIi(),
+            AppShell(),
             Positioned(left: 0, right: 0, top: 0, child: LanStatusBanner()),
           ],
         ),

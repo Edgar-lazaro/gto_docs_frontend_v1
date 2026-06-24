@@ -5,30 +5,30 @@ import 'package:uuid/uuid.dart';
 
 import '../../../core/database/app_database.dart';
 
-class N7ryjQbQHaTbZcmZy6MwR {
-  final AppDatabase j6;
+class CombustibleRepository {
+  final AppDatabase db;
 
-  N7ryjQbQHaTbZcmZy6MwR(this.j6);
+  CombustibleRepository(this.db);
 
-  Stream<List<CombustibleRegistrosTableData>> gMdD8Ei3rHejfR() {
-    final query = j6.select(j6.combustibleRegistrosTable)
+  Stream<List<CombustibleRegistrosTableData>> watchRegistros() {
+    final query = db.select(db.combustibleRegistrosTable)
       ..orderBy([
         (t) => OrderingTerm(expression: t.creadoEn, mode: OrderingMode.desc),
       ]);
     return query.watch();
   }
 
-  Stream<int> vrqvpgNUrkUJ3r4Ct9fT() {
-    final q = j6.selectOnly(j6.combustibleRegistrosTable)
-      ..addColumns([j6.combustibleRegistrosTable.id.count()])
-      ..where(j6.combustibleRegistrosTable.sincronizado.equals(false));
+  Stream<int> watchPendientesCount() {
+    final q = db.selectOnly(db.combustibleRegistrosTable)
+      ..addColumns([db.combustibleRegistrosTable.id.count()])
+      ..where(db.combustibleRegistrosTable.sincronizado.equals(false));
 
     return q.watchSingle().map((row) {
-      return row.read(j6.combustibleRegistrosTable.id.count()) ?? 0;
+      return row.read(db.combustibleRegistrosTable.id.count()) ?? 0;
     });
   }
 
-  Future<String> pUsacB2aUz1h3kcy3X({
+  Future<String> guardarUsoVehiculo({
     required String usuarioId,
     required String nombre,
     required String destino,
@@ -71,8 +71,8 @@ class N7ryjQbQHaTbZcmZy6MwR {
       'metadata': mergedMetadata.isEmpty ? null : mergedMetadata,
     }..removeWhere((_, v) => v == null);
 
-    await j6
-        .into(j6.combustibleRegistrosTable)
+    await db
+        .into(db.combustibleRegistrosTable)
         .insert(
           CombustibleRegistrosTableCompanion.insert(
             id: id,
@@ -93,8 +93,8 @@ class N7ryjQbQHaTbZcmZy6MwR {
           ),
         );
 
-    await j6
-        .into(j6.syncQueueTable)
+    await db
+        .into(db.syncQueueTable)
         .insert(
           SyncQueueTableCompanion.insert(
             entidad: 'combustible_registro',
@@ -107,7 +107,7 @@ class N7ryjQbQHaTbZcmZy6MwR {
     return id;
   }
 
-  Future<String> mJAHRmQYVj5b65jV1gP4nVa({
+  Future<String> guardarCargaCombustible({
     required String usuarioId,
     String? fechaCarga,
     required String operador,
@@ -140,8 +140,8 @@ class N7ryjQbQHaTbZcmZy6MwR {
       'metadata': mergedMetadata.isEmpty ? null : mergedMetadata,
     }..removeWhere((_, v) => v == null);
 
-    await j6
-        .into(j6.combustibleRegistrosTable)
+    await db
+        .into(db.combustibleRegistrosTable)
         .insert(
           CombustibleRegistrosTableCompanion.insert(
             id: id,
@@ -158,8 +158,8 @@ class N7ryjQbQHaTbZcmZy6MwR {
           ),
         );
 
-    await j6
-        .into(j6.syncQueueTable)
+    await db
+        .into(db.syncQueueTable)
         .insert(
           SyncQueueTableCompanion.insert(
             entidad: 'combustible_registro',

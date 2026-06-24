@@ -1,16 +1,16 @@
 import 'tarea.dart';
 
-abstract class EiegDY8Dyqfc3vZ {
-  Future<void> eTT4sEmecF(QJdYP tarea);
+abstract class TareaRepository {
+  Future<void> crearTarea(Tarea tarea);
 
-  Future<void> fOVxlmWkZDT0QkSJ({
+  Future<void> actualizarEstado({
     required String tareaId,
-    required FgLh1V42LZ8 estado,
+    required TareaEstado estado,
   });
 
-  Future<List<QJdYP>> mHHKR1uDOUWxqBHuzt(String asignadoA);
+  Future<List<Tarea>> obtenerPorAsignado(String asignadoA);
 
-  Future<List<QJdYP>> dEFo9xcvGkBa1Tfrz(String creadoPor);
+  Future<List<Tarea>> obtenerPorCreador(String creadoPor);
 
-  Future<List<QJdYP>> uRtIM4x4ida5();
+  Future<List<Tarea>> obtenerTodas();
 }

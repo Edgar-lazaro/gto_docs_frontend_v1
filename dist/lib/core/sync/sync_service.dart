@@ -10,56 +10,50 @@ import 'package:path_provider/path_provider.dart';
 import '../database/app_database.dart';
 import '../auth/session_manager.dart';
 
-class QDP06pvJjGc {
-  final AppDatabase f3;
-  final Dio jJP;
-  final SessionManager cr3TaX0;
+class SyncService {
+  final AppDatabase db;
+  final Dio dio;
+  final SessionManager session;
 
-  QDP06pvJjGc({required this.f3, required this.jJP, required this.cr3TaX0});
+  SyncService({required this.db, required this.dio, required this.session});
 
-  Future<Response<dynamic>> _xXtF0ovJ2ruRnzTIQHktmQulepu(
+  Future<Response<dynamic>> _postWithOptionalApiFallback(
     String endpoint, {
     required dynamic data,
     Options? options,
   }) async {
-    // Normalize to support callers using either '/path' or 'path'.
-    final normalized = endpoint.startsWith('/')
-        ? endpoint.substring(1)
-        : endpoint;
-
     try {
-      return await jJP.post(normalized, data: data, options: options);
+      return await dio.post(endpoint, data: data, options: options);
     } on DioException catch (e) {
       final status = e.response?.statusCode;
-      final baseUrl = jJP.options.baseUrl;
+      final baseUrl = dio.options.baseUrl;
       if (status != 404) rethrow;
 
-      // Fallback 1: baseUrl ends with /api but endpoint does not include /api
-      // Try without /api (legacy backend).
-      if (baseUrl.endsWith('/api') && !normalized.startsWith('api/')) {
+      // Dio concatenates baseUrl + endpoint when endpoint starts with '/'.
+      // baseUrl='http://.../api', endpoint='/tareas' → 'http://.../api/tareas'
+      // If that 404s, try without the /api prefix as fallback.
+      final hasApiPrefix = endpoint.contains('/api/');
+      if (!hasApiPrefix && baseUrl.contains('/api')) {
         final baseWithoutApi = baseUrl.substring(0, baseUrl.length - 4);
-        final uri = Uri.parse('$baseWithoutApi/$normalized');
-        return await jJP.postUri(uri, data: data, options: options);
+        final uri = Uri.parse('$baseWithoutApi$endpoint');
+        return await dio.postUri(uri, data: data, options: options);
       }
-
-      // Fallback 2: baseUrl does NOT end with /api and endpoint does NOT include /api
-      // Try with /api prefix.
-      if (!baseUrl.endsWith('/api') && !normalized.startsWith('api/')) {
-        return await jJP.post('api/$normalized', data: data, options: options);
+      if (hasApiPrefix && !baseUrl.contains('/api')) {
+        final withoutApi = endpoint.replaceFirst('/api/', '/');
+        return await dio.post(withoutApi, data: data, options: options);
       }
-
       rethrow;
     }
   }
 
   /// ASISTENCIA
-  Future<void> h08wM6fRLIWIW5(int asistenciaId) async {
-    final asistencia = await (f3.select(
-      f3.asistenciaTable,
+  Future<void> syncAsistencia(int asistenciaId) async {
+    final asistencia = await (db.select(
+      db.asistenciaTable,
     )..where((a) => a.id.equals(asistenciaId))).getSingle();
 
-    await jJP.post(
-      '/asistencia',
+    await dio.post(
+      '/api/asistencia',
       data: {
         'usuarioId': asistencia.usuarioId,
         'fechaHora': asistencia.fechaHora.toIso8601String(),
@@ -68,18 +62,18 @@ class QDP06pvJjGc {
       },
     );
 
-    await (f3.update(f3.asistenciaTable)
+    await (db.update(db.asistenciaTable)
           ..where((a) => a.id.equals(asistenciaId)))
         .write(const AsistenciaTableCompanion(sincronizado: Value(true)));
   }
 
   /// GLPI
-  Future<void> qo76KwulDFyK9L(Map<String, dynamic> payload) async {
-    await jJP.post('/glpi/tickets', data: payload);
+  Future<void> syncGlpiTicket(Map<String, dynamic> payload) async {
+    await dio.post('/glpi/tickets', data: payload);
   }
 
   /// COMBUSTIBLE
-  Future<Response<dynamic>?> lG81qUjek0bPsniw7WpwY0P(
+  Future<Response<dynamic>?> syncCombustibleRegistro(
     Map<String, dynamic> payload,
   ) async {
     final id = payload['id']?.toString();
@@ -91,9 +85,9 @@ class QDP06pvJjGc {
     Response<dynamic>? lastResponse;
 
     if (modo == 'usar_vehiculo') {
-      lastResponse = await _fBnkNgwXLrsgN2QcfO9yx(payload);
+      lastResponse = await _postUsoVehiculoUpload(payload);
     } else if (modo == 'cargar_combustible') {
-      lastResponse = await _lwTxAvRPRJ8B7cQD9RSfqh9Gvw(payload);
+      lastResponse = await _postCargaCombustibleUpload(payload);
     } else {
       throw StateError('Modo de combustible no soportado: $modo');
     }
@@ -101,12 +95,12 @@ class QDP06pvJjGc {
     return lastResponse;
   }
 
-  Future<Response<dynamic>> _fBnkNgwXLrsgN2QcfO9yx(
+  Future<Response<dynamic>> _postUsoVehiculoUpload(
     Map<String, dynamic> payload,
   ) async {
     final metadata = payload['metadata'];
 
-    String? u9YiAfMnzUBL(String key) {
+    String? firstPathFor(String key) {
       if (metadata is! Map) return null;
       final raw = metadata[key];
       if (raw is List && raw.isNotEmpty) {
@@ -116,14 +110,14 @@ class QDP06pvJjGc {
       return null;
     }
 
-    String? jSjNmDnqzt(String key) {
+    String? readString(String key) {
       final v = payload[key];
       if (v == null) return null;
       final s = v.toString().trim();
       return s.isEmpty ? null : s;
     }
 
-    String? kp5RVqOx8BJhg(String? raw) {
+    String? normalizeTime(String? raw) {
       if (raw == null) return null;
       final trimmed = raw.trim();
       if (trimmed.isEmpty) return null;
@@ -149,7 +143,7 @@ class QDP06pvJjGc {
       return '$hh:$mm';
     }
 
-    String? jYQzheoONkaP() {
+    String? readVehiculo() {
       final direct = payload['vehiculo'] ?? payload['vehiculoId'];
       if (direct != null) {
         final s = direct.toString().trim();
@@ -165,16 +159,16 @@ class QDP06pvJjGc {
       return null;
     }
 
-    final vehiculo = jYQzheoONkaP();
+    final vehiculo = readVehiculo();
     if (vehiculo == null) {
       throw StateError('Vehículo requerido para uso de vehículo.');
     }
 
-    final horaIni = kp5RVqOx8BJhg(jSjNmDnqzt('horaInicio'));
-    final horaFin = kp5RVqOx8BJhg(jSjNmDnqzt('horaFinal'));
+    final horaIni = normalizeTime(readString('horaInicio'));
+    final horaFin = normalizeTime(readString('horaFinal'));
 
-    final fotoIni = u9YiAfMnzUBL('fotosRegistroInicial');
-    final fotoFin = u9YiAfMnzUBL('fotosRegistroFinal');
+    final fotoIni = firstPathFor('fotosRegistroInicial');
+    final fotoFin = firstPathFor('fotosRegistroFinal');
     if (fotoIni == null || fotoFin == null) {
       throw StateError('Se requieren fotos inicial y final.');
     }
@@ -184,13 +178,13 @@ class QDP06pvJjGc {
 
     final form = FormData();
     form.fields.addAll([
-      if (jSjNmDnqzt('nombre') != null)
-        MapEntry('conductor', jSjNmDnqzt('nombre')!),
-      if (jSjNmDnqzt('destino') != null)
-        MapEntry('destino', jSjNmDnqzt('destino')!),
+      if (readString('nombre') != null)
+        MapEntry('conductor', readString('nombre')!),
+      if (readString('destino') != null)
+        MapEntry('destino', readString('destino')!),
       if (horaIni != null) MapEntry('hora_inicio', horaIni),
-      if (jSjNmDnqzt('combustibleInicial') != null)
-        MapEntry('nivel_combustible', jSjNmDnqzt('combustibleInicial')!),
+      if (readString('combustibleInicial') != null)
+        MapEntry('nivel_combustible', readString('combustibleInicial')!),
       if (payload['kilometrajeInicial'] != null)
         MapEntry(
           'kilometraje_inicial',
@@ -210,19 +204,19 @@ class QDP06pvJjGc {
     ]);
 
     try {
-      return await jJP.post('/uso-car-tics/upload', data: form);
+      return await dio.post('/uso-car-tics/upload', data: form);
     } on DioException catch (e) {
       if (e.response?.statusCode != 404) rethrow;
-      return await _jmgdmpD2R1RCT1aYUVXPQUflV(payload);
+      return await _postUsoVehiculoJsonBase64(payload);
     }
   }
 
-  Future<Response<dynamic>> _lwTxAvRPRJ8B7cQD9RSfqh9Gvw(
+  Future<Response<dynamic>> _postCargaCombustibleUpload(
     Map<String, dynamic> payload,
   ) async {
     final metadata = payload['metadata'];
 
-    String? y6bBfGpNCJI1(String key) {
+    String? firstPathFor(String key) {
       if (metadata is! Map) return null;
       final raw = metadata[key];
       if (raw is List && raw.isNotEmpty) {
@@ -232,14 +226,14 @@ class QDP06pvJjGc {
       return null;
     }
 
-    String? ts2u4Oykdk(String key) {
+    String? readString(String key) {
       final v = payload[key];
       if (v == null) return null;
       final s = v.toString().trim();
       return s.isEmpty ? null : s;
     }
 
-    String? tffHpMjZtLOI() {
+    String? readVehiculo() {
       final direct = payload['vehiculo'] ?? payload['vehiculoId'];
       if (direct != null) {
         final s = direct.toString().trim();
@@ -255,14 +249,14 @@ class QDP06pvJjGc {
       return null;
     }
 
-    final vehiculo = tffHpMjZtLOI();
+    final vehiculo = readVehiculo();
     if (vehiculo == null) {
       throw StateError('Vehículo requerido para cargar combustible.');
     }
 
-    final fotoKmAntes = y6bBfGpNCJI1('fotosKmAntes');
-    final fotoKmDespues = y6bBfGpNCJI1('fotosKmDespues');
-    final fotoTicket = y6bBfGpNCJI1('fotosTicket');
+    final fotoKmAntes = firstPathFor('fotosKmAntes');
+    final fotoKmDespues = firstPathFor('fotosKmDespues');
+    final fotoTicket = firstPathFor('fotosTicket');
     if (fotoKmAntes == null || fotoKmDespues == null || fotoTicket == null) {
       throw StateError('Se requieren fotos antes, después y ticket.');
     }
@@ -274,8 +268,8 @@ class QDP06pvJjGc {
 
     final form = FormData();
     form.fields.addAll([
-      if (ts2u4Oykdk('operador') != null)
-        MapEntry('operador', ts2u4Oykdk('operador')!),
+      if (readString('operador') != null)
+        MapEntry('operador', readString('operador')!),
       if (payload['kmAntes'] != null)
         MapEntry('km_bf_carga', payload['kmAntes'].toString()),
       if (payload['kmDespues'] != null)
@@ -292,19 +286,19 @@ class QDP06pvJjGc {
     ]);
 
     try {
-      return await jJP.post('/carga-car-tics/upload', data: form);
+      return await dio.post('/carga-car-tics/upload', data: form);
     } on DioException catch (e) {
       if (e.response?.statusCode != 404) rethrow;
-      return await _sMxPTGAhd5HaooTSUyCRxAlo0h3GQg(payload);
+      return await _postCargaCombustibleJsonBase64(payload);
     }
   }
 
-  Future<Response<dynamic>> _jmgdmpD2R1RCT1aYUVXPQUflV(
+  Future<Response<dynamic>> _postUsoVehiculoJsonBase64(
     Map<String, dynamic> payload,
   ) async {
     final metadata = payload['metadata'];
 
-    String? omX0TumuMQGz(String key) {
+    String? firstPathFor(String key) {
       if (metadata is! Map) return null;
       final raw = metadata[key];
       if (raw is List && raw.isNotEmpty) {
@@ -314,14 +308,14 @@ class QDP06pvJjGc {
       return null;
     }
 
-    String? dKpQ2eeyfe(String key) {
+    String? readString(String key) {
       final v = payload[key];
       if (v == null) return null;
       final s = v.toString().trim();
       return s.isEmpty ? null : s;
     }
 
-    String? mKwYLiyE0wRkQ(String? raw) {
+    String? normalizeTime(String? raw) {
       if (raw == null) return null;
       final trimmed = raw.trim();
       if (trimmed.isEmpty) return null;
@@ -347,7 +341,7 @@ class QDP06pvJjGc {
       return '$hh:$mm';
     }
 
-    String? nmQI3A2piBJg() {
+    String? readVehiculo() {
       final direct = payload['vehiculo'] ?? payload['vehiculoId'];
       if (direct != null) {
         final s = direct.toString().trim();
@@ -363,40 +357,40 @@ class QDP06pvJjGc {
       return null;
     }
 
-    final vehiculo = nmQI3A2piBJg();
+    final vehiculo = readVehiculo();
     if (vehiculo == null) {
       throw StateError('Vehículo requerido para uso de vehículo.');
     }
 
     final data = <String, dynamic>{
       'vehiculo': vehiculo,
-      'conductor': dKpQ2eeyfe('nombre'),
-      'destino': dKpQ2eeyfe('destino'),
-      'hora_inicio': mKwYLiyE0wRkQ(dKpQ2eeyfe('horaInicio')),
-      'nivel_combustible': dKpQ2eeyfe('combustibleInicial'),
+      'conductor': readString('nombre'),
+      'destino': readString('destino'),
+      'hora_inicio': normalizeTime(readString('horaInicio')),
+      'nivel_combustible': readString('combustibleInicial'),
       'kilometraje_inicial': payload['kilometrajeInicial']?.toString(),
-      'foto_km_inicial': await _nlKJE7JpVRZMwB(
-        omX0TumuMQGz('fotosRegistroInicial'),
+      'foto_km_inicial': await _base64ForImage(
+        firstPathFor('fotosRegistroInicial'),
         'uso_ini',
       ),
-      'hora_final': mKwYLiyE0wRkQ(dKpQ2eeyfe('horaFinal')),
+      'hora_final': normalizeTime(readString('horaFinal')),
       'kilometraje_final': payload['kilometrajeFinal']?.toString(),
-      'foto_km_final': await _nlKJE7JpVRZMwB(
-        omX0TumuMQGz('fotosRegistroFinal'),
+      'foto_km_final': await _base64ForImage(
+        firstPathFor('fotosRegistroFinal'),
         'uso_fin',
       ),
       if (payload['gerenciaId'] != null) 'gerenciaId': payload['gerenciaId'],
     }..removeWhere((_, v) => v == null || v.toString().trim().isEmpty);
 
-    return await jJP.post('/uso-car-tics', data: data);
+    return await dio.post('/uso-car-tics', data: data);
   }
 
-  Future<Response<dynamic>> _sMxPTGAhd5HaooTSUyCRxAlo0h3GQg(
+  Future<Response<dynamic>> _postCargaCombustibleJsonBase64(
     Map<String, dynamic> payload,
   ) async {
     final metadata = payload['metadata'];
 
-    String? nHYgBQJp9ird(String key) {
+    String? firstPathFor(String key) {
       if (metadata is! Map) return null;
       final raw = metadata[key];
       if (raw is List && raw.isNotEmpty) {
@@ -406,14 +400,14 @@ class QDP06pvJjGc {
       return null;
     }
 
-    String? ouHFHSVVRo(String key) {
+    String? readString(String key) {
       final v = payload[key];
       if (v == null) return null;
       final s = v.toString().trim();
       return s.isEmpty ? null : s;
     }
 
-    String? axtPv5hmsRA0() {
+    String? readVehiculo() {
       final direct = payload['vehiculo'] ?? payload['vehiculoId'];
       if (direct != null) {
         final s = direct.toString().trim();
@@ -429,35 +423,35 @@ class QDP06pvJjGc {
       return null;
     }
 
-    final vehiculo = axtPv5hmsRA0();
+    final vehiculo = readVehiculo();
     if (vehiculo == null) {
       throw StateError('Vehículo requerido para cargar combustible.');
     }
 
     final data = <String, dynamic>{
-      'operador': ouHFHSVVRo('operador'),
+      'operador': readString('operador'),
       'km_bf_carga': payload['kmAntes']?.toString(),
-      'foto_km_bf': await _nlKJE7JpVRZMwB(
-        nHYgBQJp9ird('fotosKmAntes'),
+      'foto_km_bf': await _base64ForImage(
+        firstPathFor('fotosKmAntes'),
         'carga_bf',
       ),
       'km_af_carga': payload['kmDespues']?.toString(),
-      'foto_km_af': await _nlKJE7JpVRZMwB(
-        nHYgBQJp9ird('fotosKmDespues'),
+      'foto_km_af': await _base64ForImage(
+        firstPathFor('fotosKmDespues'),
         'carga_af',
       ),
       'vehiculo': vehiculo,
-      'foto_ticket': await _nlKJE7JpVRZMwB(
-        nHYgBQJp9ird('fotosTicket'),
+      'foto_ticket': await _base64ForImage(
+        firstPathFor('fotosTicket'),
         'carga_ticket',
       ),
       if (payload['gerenciaId'] != null) 'gerenciaId': payload['gerenciaId'],
     }..removeWhere((_, v) => v == null || v.toString().trim().isEmpty);
 
-    return await jJP.post('/carga-car-tics', data: data);
+    return await dio.post('/carga-car-tics', data: data);
   }
 
-  Future<String?> _nlKJE7JpVRZMwB(String? path, String prefix) async {
+  Future<String?> _base64ForImage(String? path, String prefix) async {
     if (path == null) return null;
     final file = File(path);
     if (!await file.exists()) return null;
@@ -476,7 +470,7 @@ class QDP06pvJjGc {
         '${prefix}_${DateTime.now().millisecondsSinceEpoch}$ext',
       );
 
-      Future<Uint8List?> fjXSBNGD1P(int quality, int size) async {
+      Future<Uint8List?> compressAt(int quality, int size) async {
         return FlutterImageCompress.compressWithFile(
           path,
           quality: quality,
@@ -495,7 +489,7 @@ class QDP06pvJjGc {
 
       Uint8List? best;
       for (final (q, s) in attempts) {
-        final bytes = await fjXSBNGD1P(q, s);
+        final bytes = await compressAt(q, s);
         if (bytes == null || bytes.isEmpty) continue;
         best = bytes;
         if (bytes.lengthInBytes <= maxBytes) break;
@@ -512,7 +506,7 @@ class QDP06pvJjGc {
   }
 
   /// REPORTE
-  Future<void> ptNXLFqxsUl(Map<String, dynamic> payload) async {
+  Future<void> syncReporte(Map<String, dynamic> payload) async {
     final creadorId =
         (payload['creadorId'] ?? payload['creadoPor'] ?? payload['usuarioId'])
             as String?;
@@ -530,11 +524,11 @@ class QDP06pvJjGc {
       'usuarioId': usuarioId,
     }..removeWhere((_, v) => v == null);
 
-    await jJP.post('/reportes', data: data);
+    await dio.post('/reportes', data: data);
   }
 
   /// COMENTARIO DE REPORTE
-  Future<void> dVKGFEmJTtoD4I7suGy8n(Map<String, dynamic> payload) async {
+  Future<void> syncReporteComentario(Map<String, dynamic> payload) async {
     final data = <String, dynamic>{
       'id': payload['id'],
       'reporteId': payload['reporteId'],
@@ -542,11 +536,11 @@ class QDP06pvJjGc {
       'mensaje': payload['mensaje'],
     }..removeWhere((_, v) => v == null);
 
-    await jJP.post('/reportes/comentarios', data: data);
+    await dio.post('/reportes/comentarios', data: data);
   }
 
   /// COMENTARIO DE TAREA
-  Future<void> d7Pzjj0Rp74UGXxDNEr(Map<String, dynamic> payload) async {
+  Future<void> syncTareaComentario(Map<String, dynamic> payload) async {
     final data = <String, dynamic>{
       'id': payload['id'],
       'tareaId': payload['tareaId'],
@@ -554,11 +548,11 @@ class QDP06pvJjGc {
       'mensaje': payload['mensaje'],
     }..removeWhere((_, v) => v == null);
 
-    await _xXtF0ovJ2ruRnzTIQHktmQulepu('/tareas/comentarios', data: data);
+    await _postWithOptionalApiFallback('/tareas/comentarios', data: data);
   }
 
   /// ADJUNTO DE TAREA
-  Future<void> gDNtocqDuonYqPHe(Map<String, dynamic> payload) async {
+  Future<void> syncTareaAdjunto(Map<String, dynamic> payload) async {
     final filePath = payload['localPath'] as String;
 
     final formData = FormData.fromMap({
@@ -569,7 +563,7 @@ class QDP06pvJjGc {
       'file': await MultipartFile.fromFile(filePath),
     });
 
-    final resp = await _xXtF0ovJ2ruRnzTIQHktmQulepu(
+    final resp = await _postWithOptionalApiFallback(
       '/tareas/adjuntos',
       data: formData,
     );
@@ -578,7 +572,7 @@ class QDP06pvJjGc {
     if (data is Map) {
       final url = (data['url'] ?? data['remoteUrl'])?.toString();
       if (url != null && url.isNotEmpty) {
-        await (f3.update(f3.tareaAdjuntosTable)
+        await (db.update(db.tareaAdjuntosTable)
               ..where((a) => a.id.equals(payload['id'] as String)))
             .write(TareaAdjuntosTableCompanion(remoteUrl: Value(url)));
       }
@@ -586,28 +580,18 @@ class QDP06pvJjGc {
   }
 
   /// CAMBIO DE ESTADO DE TAREA
-  Future<void> kyyFARPSE1WnMMB(Map<String, dynamic> payload) async {
+  Future<void> syncTareaEstado(Map<String, dynamic> payload) async {
     final id = payload['id']?.toString();
     final estado = payload['estado']?.toString();
     if (id == null || id.isEmpty || estado == null || estado.isEmpty) {
       throw StateError('Payload de estado incompleto: $payload');
     }
 
-    // Endpoint requerido: POST /api/tareas/estado
-    final baseUrl = jJP.options.baseUrl;
-    final endpoint = '/tareas/estado';
-    if (baseUrl.endsWith('/api')) {
-      final baseWithoutApi = baseUrl.substring(0, baseUrl.length - 4);
-      final uri = Uri.parse('$baseWithoutApi$endpoint');
-      await jJP.postUri(uri, data: {'id': id, 'estado': estado});
-      return;
-    }
-
-    await jJP.post(endpoint, data: {'id': id, 'estado': estado});
+    await dio.post('/tareas/estado', data: {'id': id, 'estado': estado});
   }
 
   /// EVIDENCIA (UPLOAD DE ARCHIVO)
-  Future<void> aCg3viF3f2Bwm4w0qcYz(Map<String, dynamic> payload) async {
+  Future<void> syncReporteEvidencia(Map<String, dynamic> payload) async {
     final filePath = payload['localPath'] as String;
 
     final formData = FormData.fromMap({
@@ -618,21 +602,82 @@ class QDP06pvJjGc {
       'file': await MultipartFile.fromFile(filePath),
     });
 
-    await jJP.post('/reportes/evidencias', data: formData);
+    await dio.post('/reportes/evidencias', data: formData);
+  }
+
+  /// GLPI TASK
+  Future<void> syncGlpiTask(
+    String tareaId,
+    Map<String, dynamic> payload,
+  ) async {
+    final data = <String, dynamic>{
+      'descripcion': payload['descripcion'],
+      if (payload['fechaLimite'] != null) 'fechaLimite': payload['fechaLimite'],
+      'estatus': payload['estatus'],
+    }..removeWhere((_, v) => v == null);
+    await dio.post('/tareas/$tareaId/task', data: data);
+  }
+
+  /// GLPI SOLUTION
+  Future<void> syncGlpiSolution(
+    String tareaId,
+    Map<String, dynamic> payload,
+  ) async {
+    final data = <String, dynamic>{
+      'contenido': payload['contenido'],
+      'estatus': payload['estatus'],
+    }..removeWhere((_, v) => v == null);
+    await dio.post('/tareas/$tareaId/solution', data: data);
+  }
+
+  /// GLPI SOLUTION APPROVE
+  Future<void> syncGlpiSolutionApprove(
+    String tareaId,
+    Map<String, dynamic> payload,
+  ) async {
+    final data = <String, dynamic>{
+      'accion': payload['accion'],
+      if (payload['contenido'] != null) 'contenido': payload['contenido'],
+    }..removeWhere((_, v) => v == null);
+    await dio.patch('/tareas/$tareaId/solution/approve', data: data);
+  }
+
+  /// GLPI DOCUMENT
+  Future<void> syncGlpiDocument(
+    String tareaId,
+    Map<String, dynamic> payload,
+  ) async {
+    final formData = FormData.fromMap({
+      'encabezado': payload['encabezado'],
+      'file': await MultipartFile.fromFile(payload['localPath'] as String),
+    });
+    await dio.post('/tareas/$tareaId/document', data: formData);
+  }
+
+  /// GLPI VALIDATION
+  Future<void> syncGlpiValidation(
+    String tareaId,
+    Map<String, dynamic> payload,
+  ) async {
+    final data = <String, dynamic>{
+      'responsableId': payload['responsableId'],
+      'comentario': payload['comentario'],
+    }..removeWhere((_, v) => v == null);
+    await dio.post('/tareas/$tareaId/validation', data: data);
   }
 
   /// TAREA
-  Future<Map<String, dynamic>?> eF2GZvl2a(Map<String, dynamic> payload) async {
-    bool f6Ia0XzGMiFF(int? code) => code == 409;
+  Future<Map<String, dynamic>?> syncTarea(Map<String, dynamic> payload) async {
+    bool isConflictOk(int? code) => code == 409;
 
-    Future<Response<dynamic>> yi8hPdaFuL7gHGhb1XAiQWdsGif(
+    Future<Response<dynamic>> postWithOptionalApiFallback(
       String endpoint, {
       required Map<String, dynamic> data,
     }) async {
-      return _xXtF0ovJ2ruRnzTIQHktmQulepu(endpoint, data: data);
+      return _postWithOptionalApiFallback(endpoint, data: data);
     }
 
-    String iClKIHMdErPtjSi(String raw) {
+    String normalizeEstado(String raw) {
       // Compat entre app (enProceso) y backends (en_proceso/en_progreso).
       return switch (raw) {
         'enProceso' => 'en_proceso',
@@ -650,7 +695,7 @@ class QDP06pvJjGc {
       throw StateError('Payload de tarea incompleto (titulo): $payload');
     }
 
-    final estado = iClKIHMdErPtjSi(estadoRaw ?? 'pendiente');
+    final estado = normalizeEstado(estadoRaw ?? 'pendiente');
     final descripcion = descripcionRaw.trim().isEmpty
         ? titulo.trim()
         : descripcionRaw.trim();
@@ -682,7 +727,7 @@ class QDP06pvJjGc {
       try {
         // ignore: avoid_print
         print('[SYNC] POST $ep (legacy tarea) data=$legacyData');
-        final response = await yi8hPdaFuL7gHGhb1XAiQWdsGif(
+        final response = await postWithOptionalApiFallback(
           ep,
           data: legacyData,
         );
@@ -695,7 +740,7 @@ class QDP06pvJjGc {
         print(
           '[SYNC] POST $ep (legacy tarea) -> ${e.response?.statusCode} ${e.message} body=${e.response?.data}',
         );
-        if (f6Ia0XzGMiFF(e.response?.statusCode)) return null;
+        if (isConflictOk(e.response?.statusCode)) return null;
         last = e;
       }
     }

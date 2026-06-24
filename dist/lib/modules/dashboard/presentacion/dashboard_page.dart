@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'dashboard_providers.dart';
 
-class FHwWWNhl4p5UW extends ConsumerWidget {
-  const FHwWWNhl4p5UW({super.key});
+class DashboardPage extends ConsumerWidget {
+  const DashboardPage({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -17,17 +17,17 @@ class FHwWWNhl4p5UW extends ConsumerWidget {
         error: (e, _) => Text('Error: $e'),
         data: (m) => Column(
           children: [
-            _vbGv('Reportes abiertos', m.reportesAbiertos),
-            _vbGv('Reportes cerrados', m.reportesCerrados),
-            _vbGv('Tareas pendientes', m.tareasPendientes),
-            _vbGv('Evidencias hoy', m.evidenciasHoy),
+            _tile('Reportes abiertos', m.reportesAbiertos),
+            _tile('Reportes cerrados', m.reportesCerrados),
+            _tile('Tareas pendientes', m.tareasPendientes),
+            _tile('Evidencias hoy', m.evidenciasHoy),
           ],
         ),
       ),
     );
   }
 
-  Widget _vbGv(String label, int value) {
+  Widget _tile(String label, int value) {
     return Card(
       child: ListTile(
         title: Text(label),

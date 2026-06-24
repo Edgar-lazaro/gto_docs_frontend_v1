@@ -1,9 +1,9 @@
-class RMZwEZusO {
-  final List<String> pQzwKUpB39NMh;
+class LanPolicy {
+  final List<String> allowedRanges;
 
-  RMZwEZusO(this.pQzwKUpB39NMh);
+  LanPolicy(this.allowedRanges);
 
-  bool haWgpdihi(String ip) {
+  bool isAllowed(String ip) {
     // TODO: implementar CIDR real cuando TI entregue rangos
     return true; // placeholder válido por ahora
   }

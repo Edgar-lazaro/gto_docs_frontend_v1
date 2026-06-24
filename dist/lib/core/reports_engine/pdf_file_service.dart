@@ -5,8 +5,8 @@ import 'package:open_file/open_file.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 
-class DodDD90r3gJZxz {
-  static Future<File> oPAtT1olYR({
+class PdfFileService {
+  static Future<File> saveToTemp({
     required Uint8List bytes,
     required String filename,
   }) async {
@@ -17,7 +17,7 @@ class DodDD90r3gJZxz {
     return file;
   }
 
-  static Future<File> vSmjrVTKAfq68hw({
+  static Future<File> saveToDocuments({
     required Uint8List bytes,
     required String filename,
   }) async {
@@ -32,7 +32,7 @@ class DodDD90r3gJZxz {
     return file;
   }
 
-  static Future<void> uRiUlccl(File file) async {
+  static Future<void> openFile(File file) async {
     await OpenFile.open(file.path);
   }
 }

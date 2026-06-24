@@ -10,31 +10,31 @@ import 'session_manager.dart';
 import 'auth_models.dart';
 
 /// Session manager
-final sessionManagerProvider = Provider<PDrvVgaQueI15K>((ref) {
-  return PDrvVgaQueI15K();
+final sessionManagerProvider = Provider<SessionManager>((ref) {
+  return SessionManager();
 });
 
 /// Auth repository
-final authRepositoryProvider = Provider<SQrj3Cecjbvq0H>((ref) {
+final authRepositoryProvider = Provider<AuthRepository>((ref) {
   final config = ref.read(appConfigProvider);
-  return HXmufg8PhipZgTVXm(
-    x5O: ref.read(dioProvider),
-    wfDsPRvQIBID: config.authEndpoint,
+  return ApiAuthRepository(
+    dio: ref.read(dioProvider),
+    authEndpoint: config.authEndpoint,
   );
 });
 
 /// Auth service
-final authServiceProvider = Provider<DqtZo2wiDAf>((ref) {
-  return DqtZo2wiDAf(ref.read(authRepositoryProvider));
+final authServiceProvider = Provider<AuthService>((ref) {
+  return AuthService(ref.read(authRepositoryProvider));
 });
 
 /// Auth controller
-final authControllerProvider = StateNotifierProvider<Q1AxIGqmhlVvio, VgJlYXlcR>(
+final authControllerProvider = StateNotifierProvider<AuthController, AuthState>(
   (ref) {
-    return Q1AxIGqmhlVvio(
-      jal3: ref.read(authRepositoryProvider),
-      yLINSHk: ref.read(sessionManagerProvider),
-      kdj: ref,
+    return AuthController(
+      repo: ref.read(authRepositoryProvider),
+      session: ref.read(sessionManagerProvider),
+      ref: ref,
     );
   },
 );

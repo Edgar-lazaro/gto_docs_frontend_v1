@@ -1,15 +1,15 @@
 import 'package:drift/drift.dart';
 
-class BHXr3H0gu6FNldMHfq extends Table {
-  TextColumn get yE => text()();
-  TextColumn get sDKp7v => text()();
-  TextColumn get b54gA0B => text()();
-  TextColumn get wrKy =>
+class NotificationsTable extends Table {
+  TextColumn get id => text()();
+  TextColumn get titulo => text()();
+  TextColumn get mensaje => text()();
+  TextColumn get tipo =>
       text().withDefault(const Constant('info'))(); // info | alerta | critica
-  BoolColumn get puyxl =>
+  BoolColumn get leida =>
       boolean().withDefault(const Constant(false))();
-  TextColumn get imrA2q =>
+  TextColumn get origen =>
       text().nullable()(); // asistencia, glpi, inventarios
-  DateTimeColumn get rLq1z =>
+  DateTimeColumn get fecha =>
       dateTime().withDefault(currentDateAndTime)();
 }

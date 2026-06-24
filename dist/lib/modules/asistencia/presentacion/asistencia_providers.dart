@@ -13,8 +13,8 @@ final asistenciaRepositoryProvider =
 });
 
 final asistenciaControllerProvider = StateNotifierProvider<
-    WFCAuC3v1ianMKpJAKtS, AsistenciaState>((ref) {
-  return WFCAuC3v1ianMKpJAKtS(
+    AsistenciaController, AsistenciaState>((ref) {
+  return AsistenciaController(
     ref.read(asistenciaRepositoryProvider),
     ref,
   );

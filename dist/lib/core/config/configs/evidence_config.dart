@@ -1,9 +1,9 @@
-class UXZhZuqvfXKMJT {
-  final int eaGMkWkhxTntl;
-  final List<String> o93iz7h9nTdbRo7s;
+class EvidenceConfig {
+  final int maxFileSizeMb;
+  final List<String> allowedFileTypes;
 
-  const UXZhZuqvfXKMJT({
-    required this.eaGMkWkhxTntl,
-    required this.o93iz7h9nTdbRo7s,
+  const EvidenceConfig({
+    required this.maxFileSizeMb,
+    required this.allowedFileTypes,
   });
 }

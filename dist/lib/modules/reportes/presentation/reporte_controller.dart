@@ -6,27 +6,27 @@ import '../../notificacions/domain/notificacion.dart';
 import '../domain/reporte.dart';
 import '../domain/reporte_repository.dart';
 
-class Xura32lRWpuixuMRU extends StateNotifier<AsyncValue<List<Reporte>>> {
-  final ReporteRepository mbnkVqAhgB;
-  final NotificacionRepository exvOz4ephsyeyqD0;
+class ReporteController extends StateNotifier<AsyncValue<List<Reporte>>> {
+  final ReporteRepository repository;
+  final NotificacionRepository notificacionRepo;
 
-  Xura32lRWpuixuMRU(this.mbnkVqAhgB, this.exvOz4ephsyeyqD0)
+  ReporteController(this.repository, this.notificacionRepo)
       : super(const AsyncValue.loading()) {
-    _okWw();
+    _load();
   }
 
-  Future<void> _okWw() async {
+  Future<void> _load() async {
     try {
-      final data = await mbnkVqAhgB.obtenerReportes();
+      final data = await repository.obtenerReportes();
       state = AsyncValue.data(data);
     } catch (e, st) {
       state = AsyncValue.error(e, st);
     }
   }
 
-  Future<void> uJxtR8M() => _okWw();
+  Future<void> refresh() => _load();
 
-  Future<void> f6fRU({
+  Future<void> crear({
     required String titulo,
     required String descripcion,
     required String categoria,
@@ -43,16 +43,16 @@ class Xura32lRWpuixuMRU extends StateNotifier<AsyncValue<List<Reporte>>> {
       creadoEn: DateTime.now(),
     );
 
-    await mbnkVqAhgB.crearReporte(reporte);
+    await repository.crearReporte(reporte);
 
-    await exvOz4ephsyeyqD0.crear(
+    await notificacionRepo.crear(
       tipo: NotificacionTipo.reporte.name,
       titulo: 'Reporte enviado',
       mensaje: reporte.titulo,
       referenciaId: reporte.id,
     );
 
-    await _okWw();
+    await _load();
   }
 }
 

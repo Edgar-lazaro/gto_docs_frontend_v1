@@ -12,17 +12,17 @@ import 'crear_tarea_page.dart';
 import 'tarea_grupo_detalle_page.dart';
 import 'tareas_providers.dart';
 
-class BxcwXKwTw1RSLl7 extends ConsumerStatefulWidget {
-  final GerenciaTheme st9rH;
+class AdminTareasPage extends ConsumerStatefulWidget {
+  final GerenciaTheme theme;
 
-  const BxcwXKwTw1RSLl7({super.key, required this.st9rH});
+  const AdminTareasPage({super.key, required this.theme});
 
   @override
-  ConsumerState<BxcwXKwTw1RSLl7> createState() => _EiyxBruSApfQtromNFXC();
+  ConsumerState<AdminTareasPage> createState() => _AdminTareasPageState();
 }
 
-class _EiyxBruSApfQtromNFXC extends ConsumerState<BxcwXKwTw1RSLl7> {
-  int _va7nIz5uxPJ5F = 0; // 0=Mis(creadas), 1=Asignadas(a mí), 2=Todas
+class _AdminTareasPageState extends ConsumerState<AdminTareasPage> {
+  int _selectedScope = 0; // 0=Mis(creadas), 1=Asignadas(a mí), 2=Todas
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +43,7 @@ class _EiyxBruSApfQtromNFXC extends ConsumerState<BxcwXKwTw1RSLl7> {
 
     final userId = auth.user!.id;
     final gerenciaId = auth.user!.resolvedGerenciaId;
-    final tareasAsync = switch (_va7nIz5uxPJ5F) {
+    final tareasAsync = switch (_selectedScope) {
       0 => ref.watch(tareasPorCreadorProvider(userId)),
       1 => ref.watch(tareasPorAsignadoProvider(userId)),
       _ => ref.watch(todasLasTareasProvider),
@@ -53,19 +53,19 @@ class _EiyxBruSApfQtromNFXC extends ConsumerState<BxcwXKwTw1RSLl7> {
 
     return Scaffold(
       appBar: GerenciaAppBar(
-        theme: widget.st9rH,
+        theme: widget.theme,
         title: 'Tareas',
         actions: [
           IconButton(
             icon: const Icon(Icons.refresh),
             onPressed: () {
-              if (_va7nIz5uxPJ5F == 0) {
+              if (_selectedScope == 0) {
                 ref.invalidate(tareasPorCreadorProvider(userId));
               }
-              if (_va7nIz5uxPJ5F == 1) {
+              if (_selectedScope == 1) {
                 ref.invalidate(tareasPorAsignadoProvider(userId));
               }
-              if (_va7nIz5uxPJ5F == 2) {
+              if (_selectedScope == 2) {
                 ref.invalidate(todasLasTareasProvider);
               }
             },
@@ -78,7 +78,7 @@ class _EiyxBruSApfQtromNFXC extends ConsumerState<BxcwXKwTw1RSLl7> {
             context,
             MaterialPageRoute(
               builder: (_) =>
-                  K8NwCbJv8ZuhjZ(yiiNG: widget.st9rH, yIzgxjLvS: auth.user!.id),
+                  CrearTareaPage(theme: widget.theme, creadoPor: auth.user!.id),
             ),
           );
 
@@ -128,9 +128,9 @@ class _EiyxBruSApfQtromNFXC extends ConsumerState<BxcwXKwTw1RSLl7> {
                           ButtonSegment(value: 1, label: Text('Asignadas')),
                           ButtonSegment(value: 2, label: Text('Todas')),
                         ],
-                        selected: <int>{_va7nIz5uxPJ5F},
+                        selected: <int>{_selectedScope},
                         onSelectionChanged: (s) {
-                          setState(() => _va7nIz5uxPJ5F = s.first);
+                          setState(() => _selectedScope = s.first);
                         },
                       ),
                     ),
@@ -153,27 +153,27 @@ class _EiyxBruSApfQtromNFXC extends ConsumerState<BxcwXKwTw1RSLl7> {
                         itemBuilder: (_, i) {
                           final entry = groups[i];
                           return usersAsync.when(
-                            loading: () => _FNgdYAzHn0CCOT(
-                              vfl8Nhk: entry.key,
-                              leasl3: entry.value,
-                              dm8ys: widget.st9rH,
-                              ynbuTyc7EnfT8: (id) => id,
+                            loading: () => _TareaGroupTile(
+                              groupId: entry.key,
+                              tareas: entry.value,
+                              theme: widget.theme,
+                              nameForUserId: (id) => id,
                             ),
-                            error: (error, stackTrace) => _FNgdYAzHn0CCOT(
-                              vfl8Nhk: entry.key,
-                              leasl3: entry.value,
-                              dm8ys: widget.st9rH,
-                              ynbuTyc7EnfT8: (id) => id,
+                            error: (error, stackTrace) => _TareaGroupTile(
+                              groupId: entry.key,
+                              tareas: entry.value,
+                              theme: widget.theme,
+                              nameForUserId: (id) => id,
                             ),
                             data: (users) {
                               final byId = <String, String>{
                                 for (final u in users) u.id: u.name,
                               };
-                              return _FNgdYAzHn0CCOT(
-                                vfl8Nhk: entry.key,
-                                leasl3: entry.value,
-                                dm8ys: widget.st9rH,
-                                ynbuTyc7EnfT8: (id) => byId[id] ?? id,
+                              return _TareaGroupTile(
+                                groupId: entry.key,
+                                tareas: entry.value,
+                                theme: widget.theme,
+                                nameForUserId: (id) => byId[id] ?? id,
                               );
                             },
                           );
@@ -188,24 +188,24 @@ class _EiyxBruSApfQtromNFXC extends ConsumerState<BxcwXKwTw1RSLl7> {
   }
 }
 
-class _FNgdYAzHn0CCOT extends StatelessWidget {
-  final String vfl8Nhk;
-  final List<Tarea> leasl3;
-  final GerenciaTheme dm8ys;
-  final String Function(String userId) ynbuTyc7EnfT8;
+class _TareaGroupTile extends StatelessWidget {
+  final String groupId;
+  final List<Tarea> tareas;
+  final GerenciaTheme theme;
+  final String Function(String userId) nameForUserId;
 
-  const _FNgdYAzHn0CCOT({
-    required this.vfl8Nhk,
-    required this.leasl3,
-    required this.dm8ys,
-    required this.ynbuTyc7EnfT8,
+  const _TareaGroupTile({
+    required this.groupId,
+    required this.tareas,
+    required this.theme,
+    required this.nameForUserId,
   });
 
-  TareaEstado _nWzFIwL40Lipgps() {
-    if (leasl3.any((t) => t.estado == TareaEstado.pendiente)) {
+  TareaEstado _aggregateEstado() {
+    if (tareas.any((t) => t.estado == TareaEstado.pendiente)) {
       return TareaEstado.pendiente;
     }
-    if (leasl3.any((t) => t.estado == TareaEstado.enProceso)) {
+    if (tareas.any((t) => t.estado == TareaEstado.enProceso)) {
       return TareaEstado.enProceso;
     }
     return TareaEstado.completada;
@@ -214,19 +214,19 @@ class _FNgdYAzHn0CCOT extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isTablet = MediaQuery.of(context).size.width >= 600;
-    final head = leasl3.isNotEmpty ? leasl3.first : null;
-    final estado = _nWzFIwL40Lipgps();
+    final head = tareas.isNotEmpty ? tareas.first : null;
+    final estado = _aggregateEstado();
 
-    String kaHDhqzvgKh() => switch (estado) {
+    String estadoLabel() => switch (estado) {
       TareaEstado.pendiente => 'Pendiente',
       TareaEstado.enProceso => 'En proceso',
       TareaEstado.completada => 'Completada',
     };
 
-    final assignees = leasl3.map((t) => ynbuTyc7EnfT8(t.asignadoA)).toList();
+    final assignees = tareas.map((t) => nameForUserId(t.asignadoA)).toList();
     assignees.sort((a, b) => a.toLowerCase().compareTo(b.toLowerCase()));
 
-    String u1CW7Irod6oQLVN7() {
+    String assigneesSummary() {
       if (assignees.isEmpty) return 'Sin asignados';
       if (assignees.length <= 2) return assignees.join(', ');
       return '${assignees.take(2).join(', ')} +${assignees.length - 2}';
@@ -252,10 +252,10 @@ class _FNgdYAzHn0CCOT extends StatelessWidget {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (_) => UxxIZKOxhp0dVMt9SSl7a(
-                  meoZv: dm8ys,
-                  nRze6RO: vfl8Nhk,
-                  bg6QWa2E: head,
+                builder: (_) => TareaGrupoDetallePage(
+                  theme: theme,
+                  groupId: groupId,
+                  fallback: head,
                 ),
               ),
             );
@@ -295,7 +295,7 @@ class _FNgdYAzHn0CCOT extends StatelessWidget {
                       ),
                       const SizedBox(height: 4),
                       Text(
-                        'Asignados: ${leasl3.length} • ${u1CW7Irod6oQLVN7()}',
+                        'Asignados: ${tareas.length} • ${assigneesSummary()}',
                         style: TextStyle(
                           fontSize: isTablet ? 14 : 12,
                           color: Colors.grey[700],
@@ -306,7 +306,7 @@ class _FNgdYAzHn0CCOT extends StatelessWidget {
                       ),
                       const SizedBox(height: 2),
                       Text(
-                        'Estado: ${kaHDhqzvgKh()}',
+                        'Estado: ${estadoLabel()}',
                         style: TextStyle(
                           fontSize: isTablet ? 13 : 12,
                           color: Colors.grey[600],

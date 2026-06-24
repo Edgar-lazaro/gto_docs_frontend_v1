@@ -16,8 +16,8 @@ final reporteRepositoryProvider = Provider<ReporteRepository>((ref) {
 });
 
 final reporteControllerProvider =
-    StateNotifierProvider<Xura32lRWpuixuMRU, AsyncValue<List<Reporte>>>(
-      (ref) => Xura32lRWpuixuMRU(
+    StateNotifierProvider<ReporteController, AsyncValue<List<Reporte>>>(
+      (ref) => ReporteController(
         ref.read(reporteRepositoryProvider),
         ref.read(notificacionRepositoryProvider),
       ),

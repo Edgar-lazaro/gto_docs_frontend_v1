@@ -1,11 +1,11 @@
 import 'asistencia.dart';
 
-abstract class IkWShC7JxRyhe8BTq0gp {
-  Future<void> bxznKa77p({
+abstract class AsistenciaRepository {
+  Future<void> registrar({
     required String usuarioId,
-    required J7OYk8rIWDVpkP tipo,
+    required TipoAsistencia tipo,
     required String metodo,
   });
 
-  Future<List<GXcG6a0OPJ>> sjCzX0uJlZCyqcCR(String usuarioId);
+  Future<List<Asistencia>> obtenerHistorial(String usuarioId);
 }

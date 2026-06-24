@@ -2,11 +2,11 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 
-class VSMjebYuPdJ {
-  final Map<String, int> _sRIJD2mxnk7mKFyfthRf0 = <String, int>{};
-  final Map<String, DateTime> _r17SteXVrXEDhXI9lsNp7F = <String, DateTime>{};
+class ServerProbe {
+  final Map<String, int> _lastLoggedStatusByUrl = <String, int>{};
+  final Map<String, DateTime> _lastLoggedErrorAtByUrl = <String, DateTime>{};
 
-  Future<bool> y9zu(String url) async {
+  Future<bool> ping(String url) async {
     final client = HttpClient();
     client.connectionTimeout = const Duration(seconds: 5);
 
@@ -17,9 +17,9 @@ class VSMjebYuPdJ {
       );
 
       if (kDebugMode) {
-        final last = _sRIJD2mxnk7mKFyfthRf0[url];
+        final last = _lastLoggedStatusByUrl[url];
         if (last == null || last != response.statusCode) {
-          _sRIJD2mxnk7mKFyfthRf0[url] = response.statusCode;
+          _lastLoggedStatusByUrl[url] = response.statusCode;
           debugPrint('ServerProbe.ping $url -> ${response.statusCode}');
         }
       }
@@ -29,11 +29,11 @@ class VSMjebYuPdJ {
     } catch (e) {
       if (kDebugMode) {
         final now = DateTime.now();
-        final lastAt = _r17SteXVrXEDhXI9lsNp7F[url];
+        final lastAt = _lastLoggedErrorAtByUrl[url];
         // Throttle error logs per-URL (e.g., server down) to avoid console spam.
         if (lastAt == null ||
             now.difference(lastAt) >= const Duration(seconds: 30)) {
-          _r17SteXVrXEDhXI9lsNp7F[url] = now;
+          _lastLoggedErrorAtByUrl[url] = now;
           debugPrint('ServerProbe.ping $url failed: $e');
         }
       }

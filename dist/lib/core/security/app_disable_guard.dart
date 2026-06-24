@@ -9,8 +9,8 @@ import 'storage/local_flags.dart';
 
 import '../../shared/ui/theme/app_theme.dart';
 
-class MFp0EcfZIFDKSVV {
-  static Future<Widget> lVX80(
+class AppDisableGuard {
+  static Future<Widget> guard(
     Widget app, {
     required KillSwitchService killSwitch,
     required bool hasLan,
@@ -26,31 +26,31 @@ class MFp0EcfZIFDKSVV {
     final integrityOk = await IntegrityGuard.verify();
     if (!integrityOk) {
       await LocalFlags.blockApp(reason: AppBlockReason.securityRisk);
-      return const _HaFCxRFXAfb();
+      return const _DisabledApp();
     }
 
     // Anti-debug
     final debugDetected = DebugDetector.isDebugging();
     if (debugDetected) {
       await LocalFlags.blockApp(reason: AppBlockReason.securityRisk);
-      return const _HaFCxRFXAfb();
+      return const _DisabledApp();
     }
 
     // Kill switch (local + dev + remoto)
     final status = await killSwitch.check(hasLan: hasLan);
 
     if (status.blocked) {
-      return _HaFCxRFXAfb(sV9iKn: status.reason);
+      return _DisabledApp(reason: status.reason);
     }
 
     return app;
   }
 }
 
-class _HaFCxRFXAfb extends StatelessWidget {
-  final AppBlockReason? sV9iKn;
+class _DisabledApp extends StatelessWidget {
+  final AppBlockReason? reason;
 
-  const _HaFCxRFXAfb({this.sV9iKn});
+  const _DisabledApp({this.reason});
 
   @override
   Widget build(BuildContext context) {
@@ -60,13 +60,13 @@ class _HaFCxRFXAfb extends StatelessWidget {
       darkTheme: AppTheme.dark(),
       themeMode: ThemeMode.system,
       home: Scaffold(
-        body: Center(child: Text(_cRbUfly(), textAlign: TextAlign.center)),
+        body: Center(child: Text(_message(), textAlign: TextAlign.center)),
       ),
     );
   }
 
-  String _cRbUfly() {
-    switch (sV9iKn) {
+  String _message() {
+    switch (reason) {
       case AppBlockReason.contractViolation:
         return 'Aplicación deshabilitada por incumplimiento de acuerdos';
       case AppBlockReason.securityRisk:

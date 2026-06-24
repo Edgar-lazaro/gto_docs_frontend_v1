@@ -34,8 +34,8 @@ part 'app_database.g.dart';
     ReporteParticipantesTable,
   ],
 )
-class CiQEfOmbPmN extends _Dd6MZrmiYCBX {
-  CiQEfOmbPmN() : super(_openConnection());
+class AppDatabase extends _$AppDatabase {
+  AppDatabase() : super(_openConnection());
 
   /// Versión 1: esquema inicial
   @override
@@ -48,37 +48,37 @@ class CiQEfOmbPmN extends _Dd6MZrmiYCBX {
     },
     onUpgrade: (Migrator m, int from, int to) async {
       if (from < 2) {
-        await m.addColumn(khGDx8OWIxU, khGDx8OWIxU.creadoPor);
+        await m.addColumn(tareasTable, tareasTable.creadoPor);
       }
       if (from < 3) {
-        await m.addColumn(khGDx8OWIxU, khGDx8OWIxU.descripcion);
+        await m.addColumn(tareasTable, tareasTable.descripcion);
       }
       if (from < 4) {
-        await m.addColumn(khGDx8OWIxU, khGDx8OWIxU.remoteId);
+        await m.addColumn(tareasTable, tareasTable.remoteId);
       }
       if (from < 5) {
-        await m.addColumn(khGDx8OWIxU, khGDx8OWIxU.groupId);
+        await m.addColumn(tareasTable, tareasTable.groupId);
       }
       if (from < 6) {
-        await m.createTable(jU5VEJTz8C7WwoYYJfIlQ);
-        await m.createTable(qaBIf6ei74qAD99wRU);
+        await m.createTable(tareaComentariosTable);
+        await m.createTable(tareaAdjuntosTable);
       }
 
       if (from < 7) {
-        await m.createTable(oUFGqb3kTTei6pB1c72oFuUjt);
+        await m.createTable(combustibleRegistrosTable);
       }
 
       if (from < 8) {
         await m.addColumn(
-          oUFGqb3kTTei6pB1c72oFuUjt,
-          oUFGqb3kTTei6pB1c72oFuUjt.syncError,
+          combustibleRegistrosTable,
+          combustibleRegistrosTable.syncError,
         );
       }
 
       if (from < 9) {
         await m.addColumn(
-          oUFGqb3kTTei6pB1c72oFuUjt,
-          oUFGqb3kTTei6pB1c72oFuUjt.syncInfo,
+          combustibleRegistrosTable,
+          combustibleRegistrosTable.syncInfo,
         );
       }
     },

@@ -9,22 +9,22 @@ import '../domain/jefatura.dart';
 import 'check_list_providers.dart';
 import 'list_cl_page.dart';
 
-class T6Sp2bVXCuIMs2pcv extends ConsumerStatefulWidget {
-  final GerenciaTheme bhiFm;
+class JefaturasListPage extends ConsumerStatefulWidget {
+  final GerenciaTheme theme;
 
-  const T6Sp2bVXCuIMs2pcv({super.key, required this.bhiFm});
+  const JefaturasListPage({super.key, required this.theme});
 
   @override
-  ConsumerState<T6Sp2bVXCuIMs2pcv> createState() => _MItF3csKEIXQhkNreFWULl();
+  ConsumerState<JefaturasListPage> createState() => _JefaturasListPageState();
 }
 
-class _MItF3csKEIXQhkNreFWULl extends ConsumerState<T6Sp2bVXCuIMs2pcv> {
-  final _q1k4q0dsrA8aIcKL = TextEditingController();
-  String _b5Cy7CujRUl = '';
+class _JefaturasListPageState extends ConsumerState<JefaturasListPage> {
+  final _searchController = TextEditingController();
+  String _searchQuery = '';
 
   @override
   void dispose() {
-    _q1k4q0dsrA8aIcKL.dispose();
+    _searchController.dispose();
     super.dispose();
   }
 
@@ -48,17 +48,17 @@ class _MItF3csKEIXQhkNreFWULl extends ConsumerState<T6Sp2bVXCuIMs2pcv> {
     final jefaturasAsync = ref.watch(jefaturasProvider);
 
     return Scaffold(
-      appBar: GerenciaAppBar(theme: widget.bhiFm, title: 'Checklist'),
+      appBar: GerenciaAppBar(theme: widget.theme, title: 'Checklist'),
       body: jefaturasAsync.when(
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (e, _) => Center(
           child: Padding(
             padding: EdgeInsets.all(isTablet ? 32 : 24),
-            child: Text('Error al cargar jefaturas: ${_hvx9HL2V(e)}'),
+            child: Text('Error al cargar jefaturas: ${_errorMsg(e)}'),
           ),
         ),
         data: (items) {
-          final filtered = _i1yUpr1E2bd(items);
+          final filtered = _applySearch(items);
 
           return RefreshIndicator(
             onRefresh: () async {
@@ -72,8 +72,8 @@ class _MItF3csKEIXQhkNreFWULl extends ConsumerState<T6Sp2bVXCuIMs2pcv> {
               ),
               children: [
                 TextField(
-                  controller: _q1k4q0dsrA8aIcKL,
-                  onChanged: (v) => setState(() => _b5Cy7CujRUl = v),
+                  controller: _searchController,
+                  onChanged: (v) => setState(() => _searchQuery = v),
                   decoration: InputDecoration(
                     hintText: 'Buscar jefatura…',
                     prefixIcon: const Icon(Icons.search),
@@ -83,16 +83,16 @@ class _MItF3csKEIXQhkNreFWULl extends ConsumerState<T6Sp2bVXCuIMs2pcv> {
                 if (items.isEmpty)
                   const Center(child: Text('No hay jefaturas disponibles')),
                 ...filtered.map(
-                  (j) => _KdJQSc2NhdOd(
-                    eqqtm5DH: j,
-                    mo2Ad: () {
+                  (j) => _JefaturaCard(
+                    jefatura: j,
+                    onTap: () {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (_) => HXsf7zlICe(
-                            mjUxc: widget.bhiFm,
-                            voozy1rqGl: j.id,
-                            zXBtPDtDfzb3jI: j.nombre,
+                          builder: (_) => ListClPage(
+                            theme: widget.theme,
+                            jefaturaId: j.id,
+                            jefaturaNombre: j.nombre,
                           ),
                         ),
                       );
@@ -107,23 +107,23 @@ class _MItF3csKEIXQhkNreFWULl extends ConsumerState<T6Sp2bVXCuIMs2pcv> {
     );
   }
 
-  List<Jefatura> _i1yUpr1E2bd(List<Jefatura> items) {
-    final q = _b5Cy7CujRUl.trim().toLowerCase();
+  List<Jefatura> _applySearch(List<Jefatura> items) {
+    final q = _searchQuery.trim().toLowerCase();
     if (q.isEmpty) return items;
     return items.where((j) => j.nombre.toLowerCase().contains(q)).toList();
   }
 
-  String _hvx9HL2V(Object e) {
+  String _errorMsg(Object e) {
     if (e is StateError) return e.message;
     return e.toString();
   }
 }
 
-class _KdJQSc2NhdOd extends StatelessWidget {
-  final Jefatura eqqtm5DH;
-  final VoidCallback mo2Ad;
+class _JefaturaCard extends StatelessWidget {
+  final Jefatura jefatura;
+  final VoidCallback onTap;
 
-  const _KdJQSc2NhdOd({required this.eqqtm5DH, required this.mo2Ad});
+  const _JefaturaCard({required this.jefatura, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -136,20 +136,20 @@ class _KdJQSc2NhdOd extends StatelessWidget {
       child: Material(
         color: Colors.transparent,
         child: InkWell(
-          onTap: mo2Ad,
+          onTap: onTap,
           borderRadius: BorderRadius.circular(isTablet ? 20 : 16),
           child: Padding(
             padding: EdgeInsets.all(isTablet ? 20 : 16),
             child: Row(
               children: [
-                _PFTKHH3M5u9ed9(cfS: eqqtm5DH.img),
+                _JefaturaAvatar(img: jefatura.img),
                 SizedBox(width: isTablet ? 20 : 16),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        eqqtm5DH.nombre,
+                        jefatura.nombre,
                         style: TextStyle(
                           fontSize: isTablet ? 20 : 16,
                           fontWeight: FontWeight.bold,
@@ -184,18 +184,18 @@ class _KdJQSc2NhdOd extends StatelessWidget {
   }
 }
 
-class _PFTKHH3M5u9ed9 extends StatelessWidget {
-  final String? cfS;
+class _JefaturaAvatar extends StatelessWidget {
+  final String? img;
 
-  const _PFTKHH3M5u9ed9({required this.cfS});
+  const _JefaturaAvatar({required this.img});
 
   @override
   Widget build(BuildContext context) {
     final isTablet = MediaQuery.of(context).size.width >= 600;
 
-    final name = cfS?.trim();
+    final name = img?.trim();
     if (name == null || name.isEmpty) {
-      return _lTN0fuF2(isTablet);
+      return _fallback(isTablet);
     }
 
     return ClipRRect(
@@ -205,12 +205,12 @@ class _PFTKHH3M5u9ed9 extends StatelessWidget {
         width: isTablet ? 80 : 64,
         height: isTablet ? 80 : 64,
         fit: BoxFit.cover,
-        errorBuilder: (context, error, stackTrace) => _lTN0fuF2(isTablet),
+        errorBuilder: (context, error, stackTrace) => _fallback(isTablet),
       ),
     );
   }
 
-  Widget _lTN0fuF2(bool isTablet) {
+  Widget _fallback(bool isTablet) {
     return Container(
       width: isTablet ? 80 : 64,
       height: isTablet ? 80 : 64,

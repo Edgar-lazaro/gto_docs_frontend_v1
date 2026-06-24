@@ -5,12 +5,12 @@ import 'package:gto_docs_v2_ad/modules/asistencia/presentacion/asistencia_contro
 import '../domain/asistencia.dart';
 import 'asistencia_providers.dart';
 
-class GeLgELufCG5DMw extends ConsumerWidget {
-  final String zoeT54id2;
+class AsistenciaPage extends ConsumerWidget {
+  final String usuarioId;
 
-  const GeLgELufCG5DMw({
+  const AsistenciaPage({
     super.key,
-    required this.zoeT54id2,
+    required this.usuarioId,
   });
 
   @override
@@ -40,33 +40,33 @@ class GeLgELufCG5DMw extends ConsumerWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            if (state.bAPqE08)
+            if (state.loading)
               const CircularProgressIndicator(),
 
-            if (!state.bAPqE08) ...[
-              _VLq9YHQrFxbrwJ7v(
-                eJevc: 'Registrar Entrada',
-                lZvx: Icons.login,
-                xFbhq: Colors.green,
-                suF5u8aqv: () {
+            if (!state.loading) ...[
+              _AsistenciaButton(
+                label: 'Registrar Entrada',
+                icon: Icons.login,
+                color: Colors.green,
+                onPressed: () {
                   ref
                       .read(asistenciaControllerProvider.notifier)
-                      .uJdPtHtTtxc2AOJBQlk(
-                        usuarioId: zoeT54id2,
+                      .registrarAsistencia(
+                        usuarioId: usuarioId,
                         tipo: TipoAsistencia.entrada,
                       );
                 },
               ),
               const SizedBox(height: 16),
-              _VLq9YHQrFxbrwJ7v(
-                eJevc: 'Registrar Salida',
-                lZvx: Icons.logout,
-                xFbhq: Colors.red,
-                suF5u8aqv: () {
+              _AsistenciaButton(
+                label: 'Registrar Salida',
+                icon: Icons.logout,
+                color: Colors.red,
+                onPressed: () {
                   ref
                       .read(asistenciaControllerProvider.notifier)
-                      .uJdPtHtTtxc2AOJBQlk(
-                        usuarioId: zoeT54id2,
+                      .registrarAsistencia(
+                        usuarioId: usuarioId,
                         tipo: TipoAsistencia.salida,
                       );
                 },
@@ -79,17 +79,17 @@ class GeLgELufCG5DMw extends ConsumerWidget {
   }
 }
 
-class _VLq9YHQrFxbrwJ7v extends StatelessWidget {
-  final String eJevc;
-  final IconData lZvx;
-  final Color xFbhq;
-  final VoidCallback suF5u8aqv;
+class _AsistenciaButton extends StatelessWidget {
+  final String label;
+  final IconData icon;
+  final Color color;
+  final VoidCallback onPressed;
 
-  const _VLq9YHQrFxbrwJ7v({
-    required this.eJevc,
-    required this.lZvx,
-    required this.xFbhq,
-    required this.suF5u8aqv,
+  const _AsistenciaButton({
+    required this.label,
+    required this.icon,
+    required this.color,
+    required this.onPressed,
   });
 
   @override
@@ -98,13 +98,13 @@ class _VLq9YHQrFxbrwJ7v extends StatelessWidget {
       width: double.infinity,
       height: 56,
       child: ElevatedButton.icon(
-        icon: Icon(lZvx),
-        label: Text(eJevc),
+        icon: Icon(icon),
+        label: Text(label),
         style: ElevatedButton.styleFrom(
-          backgroundColor: xFbhq,
+          backgroundColor: color,
           textStyle: const TextStyle(fontSize: 16),
         ),
-        onPressed: suF5u8aqv,
+        onPressed: onPressed,
       ),
     );
   }

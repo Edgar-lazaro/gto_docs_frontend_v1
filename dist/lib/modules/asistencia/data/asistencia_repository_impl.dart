@@ -4,10 +4,10 @@ import '../../../core/database/app_database.dart';
 import '../domain/asistencia.dart';
 import '../domain/asistencia_repository.dart';
 
-class K0WQpasZb3yUjqQaJp48moMa implements AsistenciaRepository {
-  final AppDatabase by;
+class AsistenciaRepositoryImpl implements AsistenciaRepository {
+  final AppDatabase db;
 
-  K0WQpasZb3yUjqQaJp48moMa(this.by);
+  AsistenciaRepositoryImpl(this.db);
 
   @override
   Future<void> registrar({
@@ -16,7 +16,7 @@ class K0WQpasZb3yUjqQaJp48moMa implements AsistenciaRepository {
     required String metodo,
   }) async {
     // Insertar asistencia local
-    final id = await by.into(by.asistenciaTable).insert(
+    final id = await db.into(db.asistenciaTable).insert(
           AsistenciaTableCompanion.insert(
             usuarioId: usuarioId,
             fechaHora: DateTime.now(),
@@ -27,7 +27,7 @@ class K0WQpasZb3yUjqQaJp48moMa implements AsistenciaRepository {
         );
 
     // Encolar para sincronización
-    await by.into(by.syncQueueTable).insert(
+    await db.into(db.syncQueueTable).insert(
           SyncQueueTableCompanion.insert(
             entidad: 'asistencia',
             entidadId: id.toString(),
@@ -39,7 +39,7 @@ class K0WQpasZb3yUjqQaJp48moMa implements AsistenciaRepository {
 
   @override
   Future<List<Asistencia>> obtenerHistorial(String usuarioId) async {
-    final rows = await (by.select(by.asistenciaTable)
+    final rows = await (db.select(db.asistenciaTable)
           ..where((a) => a.usuarioId.equals(usuarioId))
           ..orderBy([(a) => OrderingTerm.desc(a.fechaHora)]))
         .get();

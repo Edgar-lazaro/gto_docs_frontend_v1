@@ -16,21 +16,21 @@ import 'cards/menu_card.dart';
 import 'layout/responsive.grid.dart';
 import 'theme/gerencia_config.dart';
 
-class AexhzoRpGqe1izNlq extends ConsumerStatefulWidget {
-  final AuthUser pylK;
+class UnifiedHomeScreen extends ConsumerStatefulWidget {
+  final AuthUser user;
 
-  const AexhzoRpGqe1izNlq({super.key, required this.pylK});
+  const UnifiedHomeScreen({super.key, required this.user});
 
   @override
-  ConsumerState<AexhzoRpGqe1izNlq> createState() => _CfLxsIUYlyf8Tuwbl9Re9M();
+  ConsumerState<UnifiedHomeScreen> createState() => _UnifiedHomeScreenState();
 }
 
-class _CfLxsIUYlyf8Tuwbl9Re9M extends ConsumerState<AexhzoRpGqe1izNlq> {
-  int _k64JV77czq5RB = 0;
+class _UnifiedHomeScreenState extends ConsumerState<UnifiedHomeScreen> {
+  int _selectedIndex = 0;
 
   @override
   Widget build(BuildContext context) {
-    final theme = GerenciaConfig.getConfig(widget.pylK.gerencia);
+    final theme = GerenciaConfig.getConfig(widget.user.gerencia);
 
     final gradient = LinearGradient(
       colors: [theme.colorPrimario, theme.colorSecundario],
@@ -40,11 +40,11 @@ class _CfLxsIUYlyf8Tuwbl9Re9M extends ConsumerState<AexhzoRpGqe1izNlq> {
 
     return Scaffold(
       body: IndexedStack(
-        index: _k64JV77czq5RB,
+        index: _selectedIndex,
         children: [
-          _GuJEyvU(qmhtC: theme, l4Tz: widget.pylK),
+          _HomeTab(theme: theme, user: widget.user),
           CombustiblePage(theme: theme),
-          _Bf2NGTOAj2(zYg5: widget.pylK, n3rMv: theme),
+          _ProfileTab(user: widget.user, theme: theme),
         ],
       ),
       bottomNavigationBar: Container(
@@ -59,8 +59,8 @@ class _CfLxsIUYlyf8Tuwbl9Re9M extends ConsumerState<AexhzoRpGqe1izNlq> {
           ],
         ),
         child: BottomNavigationBar(
-          currentIndex: _k64JV77czq5RB,
-          onTap: (index) => setState(() => _k64JV77czq5RB = index),
+          currentIndex: _selectedIndex,
+          onTap: (index) => setState(() => _selectedIndex = index),
           selectedItemColor: Colors.white,
           unselectedItemColor: Colors.white70,
           backgroundColor: Colors.transparent,
@@ -79,11 +79,11 @@ class _CfLxsIUYlyf8Tuwbl9Re9M extends ConsumerState<AexhzoRpGqe1izNlq> {
   }
 }
 
-class _GuJEyvU extends StatelessWidget {
-  final GerenciaTheme qmhtC;
-  final AuthUser l4Tz;
+class _HomeTab extends StatelessWidget {
+  final GerenciaTheme theme;
+  final AuthUser user;
 
-  const _GuJEyvU({required this.qmhtC, required this.l4Tz});
+  const _HomeTab({required this.theme, required this.user});
 
   @override
   Widget build(BuildContext context) {
@@ -93,7 +93,7 @@ class _GuJEyvU extends StatelessWidget {
       child: CustomScrollView(
         slivers: [
           SliverToBoxAdapter(
-            child: _VRFOD5(gSZyP: qmhtC, jtPP: l4Tz),
+            child: _Header(theme: theme, user: user),
           ),
           SliverPadding(
             padding: EdgeInsets.symmetric(
@@ -117,12 +117,12 @@ class _GuJEyvU extends StatelessWidget {
                     MenuCard(
                       title: 'Inventario',
                       icon: Icons.inventory,
-                      color: qmhtC.colorSecundario,
+                      color: theme.colorSecundario,
                       onTap: () {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (_) => InventarioPage(theme: qmhtC),
+                            builder: (_) => InventarioPage(theme: theme),
                           ),
                         );
                       },
@@ -130,12 +130,12 @@ class _GuJEyvU extends StatelessWidget {
                     MenuCard(
                       title: 'Checklist',
                       icon: Icons.checklist,
-                      color: qmhtC.colorPrimario,
+                      color: theme.colorPrimario,
                       onTap: () {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (_) => JefaturasListPage(theme: qmhtC),
+                            builder: (_) => JefaturasListPage(theme: theme),
                           ),
                         );
                       },
@@ -143,12 +143,12 @@ class _GuJEyvU extends StatelessWidget {
                     MenuCard(
                       title: 'Reportes',
                       icon: Icons.assessment,
-                      color: qmhtC.colorSecundario,
+                      color: theme.colorSecundario,
                       onTap: () {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (_) => ReportesPage(theme: qmhtC),
+                            builder: (_) => ReportesPage(theme: theme),
                           ),
                         );
                       },
@@ -156,12 +156,12 @@ class _GuJEyvU extends StatelessWidget {
                     MenuCard(
                       title: 'Tareas',
                       icon: Icons.task_alt,
-                      color: qmhtC.colorPrimario,
+                      color: theme.colorPrimario,
                       onTap: () {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (_) => TareasPage(theme: qmhtC),
+                            builder: (_) => TareasPage(theme: theme),
                           ),
                         );
                       },
@@ -177,11 +177,11 @@ class _GuJEyvU extends StatelessWidget {
   }
 }
 
-class _VRFOD5 extends StatelessWidget {
-  final GerenciaTheme gSZyP;
-  final AuthUser jtPP;
+class _Header extends StatelessWidget {
+  final GerenciaTheme theme;
+  final AuthUser user;
 
-  const _VRFOD5({required this.gSZyP, required this.jtPP});
+  const _Header({required this.theme, required this.user});
 
   @override
   Widget build(BuildContext context) {
@@ -198,7 +198,7 @@ class _VRFOD5 extends StatelessWidget {
         gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: [gSZyP.colorPrimario, gSZyP.colorSecundario],
+          colors: [theme.colorPrimario, theme.colorSecundario],
         ),
         borderRadius: BorderRadius.only(
           bottomLeft: Radius.circular(isTablet ? 40 : 32),
@@ -206,7 +206,7 @@ class _VRFOD5 extends StatelessWidget {
         ),
         boxShadow: [
           BoxShadow(
-            color: gSZyP.colorPrimario.withValues(alpha: 0.3),
+            color: theme.colorPrimario.withValues(alpha: 0.3),
             blurRadius: 20,
             offset: const Offset(0, 10),
           ),
@@ -231,7 +231,7 @@ class _VRFOD5 extends StatelessWidget {
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      jtPP.nombre,
+                      user.nombre,
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: isTablet ? 32 : 24,
@@ -250,7 +250,7 @@ class _VRFOD5 extends StatelessWidget {
                   borderRadius: BorderRadius.circular(isTablet ? 16 : 12),
                 ),
                 child: Icon(
-                  gSZyP.iconoPrincipal,
+                  theme.iconoPrincipal,
                   color: Colors.white,
                   size: isTablet ? 36 : 28,
                 ),
@@ -281,7 +281,7 @@ class _VRFOD5 extends StatelessWidget {
                 SizedBox(width: isTablet ? 16 : 12),
                 Flexible(
                   child: Text(
-                    gSZyP.nombre,
+                    theme.nombre,
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: isTablet ? 16 : 14,
@@ -300,11 +300,11 @@ class _VRFOD5 extends StatelessWidget {
   }
 }
 
-class _Bf2NGTOAj2 extends ConsumerWidget {
-  final AuthUser zYg5;
-  final GerenciaTheme n3rMv;
+class _ProfileTab extends ConsumerWidget {
+  final AuthUser user;
+  final GerenciaTheme theme;
 
-  const _Bf2NGTOAj2({required this.zYg5, required this.n3rMv});
+  const _ProfileTab({required this.user, required this.theme});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -341,7 +341,7 @@ class _Bf2NGTOAj2 extends ConsumerWidget {
                       shape: BoxShape.circle,
                       boxShadow: [
                         BoxShadow(
-                          color: n3rMv.colorPrimario.withValues(alpha: 0.2),
+                          color: theme.colorPrimario.withValues(alpha: 0.2),
                           blurRadius: isTablet ? 30 : 20,
                           offset: const Offset(0, 10),
                         ),
@@ -350,12 +350,12 @@ class _Bf2NGTOAj2 extends ConsumerWidget {
                     child: Icon(
                       Icons.person,
                       size: isTablet ? 80 : 64,
-                      color: n3rMv.colorPrimario,
+                      color: theme.colorPrimario,
                     ),
                   ),
                   SizedBox(height: isTablet ? 32 : 24),
                   Text(
-                    zYg5.nombre,
+                    user.nombre,
                     style: TextStyle(
                       fontSize: isTablet ? 32 : 24,
                       fontWeight: FontWeight.bold,
@@ -379,11 +379,11 @@ class _Bf2NGTOAj2 extends ConsumerWidget {
                     ),
                     child: Column(
                       children: [
-                        _mcW6Wrm(
+                        _infoRow(
                           context: context,
                           icon: Icons.business,
                           label: 'Gerencia',
-                          value: n3rMv.nombre,
+                          value: theme.nombre,
                         ),
                         Padding(
                           padding: EdgeInsets.symmetric(
@@ -391,13 +391,13 @@ class _Bf2NGTOAj2 extends ConsumerWidget {
                           ),
                           child: Divider(height: 1, color: Colors.grey[200]),
                         ),
-                        _mcW6Wrm(
+                        _infoRow(
                           context: context,
                           icon: Icons.verified_user,
                           label: 'Cargo',
-                          value: zYg5.roles.isEmpty
+                          value: user.roles.isEmpty
                               ? 'Sin asignar'
-                              : zYg5.roles.join(', '),
+                              : user.roles.join(', '),
                         ),
                       ],
                     ),
@@ -411,13 +411,13 @@ class _Bf2NGTOAj2 extends ConsumerWidget {
                         final session = ref.read(sessionManagerProvider);
                         final token = (await session.getToken())?.trim() ?? '';
 
-                        String t3eYUq(String value) {
+                        String redact(String value) {
                           if (value.isEmpty) return '(vacío)';
                           if (value.length <= 14) return value;
                           return '${value.substring(0, 8)}…${value.substring(value.length - 6)}';
                         }
 
-                        String mY7nZ1FWXV(dynamic data) {
+                        String prettyData(dynamic data) {
                           if (data == null) return '(sin body)';
                           final s = data is String ? data : data.toString();
                           return s.length > 2000
@@ -455,7 +455,7 @@ class _Bf2NGTOAj2 extends ConsumerWidget {
                               builder: (context, setState) {
                                 final tokenLine = revealToken
                                     ? token
-                                    : t3eYUq(token);
+                                    : redact(token);
 
                                 return AlertDialog(
                                   title: const Text('Diagnóstico de token'),
@@ -469,7 +469,7 @@ class _Bf2NGTOAj2 extends ConsumerWidget {
                                         'GET /auth/me status: ${status ?? '-'}',
                                         if (error != null) 'Error: $error',
                                         if (body != null)
-                                          'Body: ${mY7nZ1FWXV(body)}',
+                                          'Body: ${prettyData(body)}',
                                       ].join('\n'),
                                     ),
                                   ),
@@ -593,7 +593,7 @@ class _Bf2NGTOAj2 extends ConsumerWidget {
     );
   }
 
-  Widget _mcW6Wrm({
+  Widget _infoRow({
     required BuildContext context,
     required IconData icon,
     required String label,
@@ -609,7 +609,7 @@ class _Bf2NGTOAj2 extends ConsumerWidget {
             gradient: LinearGradient(
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
-              colors: [n3rMv.colorPrimario, n3rMv.colorSecundario],
+              colors: [theme.colorPrimario, theme.colorSecundario],
             ),
             borderRadius: BorderRadius.circular(12),
           ),

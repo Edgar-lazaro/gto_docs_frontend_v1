@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 
-class Lp9cGlFl extends StatelessWidget {
-  final String coS9K;
-  final IconData rPdL;
-  final Color eadD9;
-  final VoidCallback rzBTF;
+class MenuCard extends StatelessWidget {
+  final String title;
+  final IconData icon;
+  final Color color;
+  final VoidCallback onTap;
 
-  const Lp9cGlFl({
+  const MenuCard({
     super.key,
-    required this.coS9K,
-    required this.rPdL,
-    required this.eadD9,
-    required this.rzBTF,
+    required this.title,
+    required this.icon,
+    required this.color,
+    required this.onTap,
   });
 
   @override
@@ -21,19 +21,19 @@ class Lp9cGlFl extends StatelessWidget {
     return Material(
       color: Colors.transparent,
       child: InkWell(
-        onTap: rzBTF,
+        onTap: onTap,
         borderRadius: BorderRadius.circular(isTablet ? 20 : 16),
         child: Container(
           decoration: BoxDecoration(
             gradient: LinearGradient(
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
-              colors: [eadD9, eadD9.withValues(alpha: 0.8)],
+              colors: [color, color.withValues(alpha: 0.8)],
             ),
             borderRadius: BorderRadius.circular(isTablet ? 20 : 16),
             boxShadow: [
               BoxShadow(
-                color: eadD9.withValues(alpha: 0.4),
+                color: color.withValues(alpha: 0.4),
                 blurRadius: isTablet ? 12 : 10,
                 offset: Offset(0, isTablet ? 6 : 4),
               ),
@@ -49,7 +49,7 @@ class Lp9cGlFl extends StatelessWidget {
                   shape: BoxShape.circle,
                 ),
                 child: Icon(
-                  rPdL,
+                  icon,
                   size: isTablet ? 40 : 32,
                   color: Colors.white,
                 ),
@@ -58,7 +58,7 @@ class Lp9cGlFl extends StatelessWidget {
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: isTablet ? 12 : 8),
                 child: Text(
-                  coS9K,
+                  title,
                   style: TextStyle(
                     fontSize: isTablet ? 16 : 14,
                     fontWeight: FontWeight.bold,

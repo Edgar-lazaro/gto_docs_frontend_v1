@@ -1,14 +1,14 @@
-class Gw4i6lXKULhS5 {
-  final String uexbsa9;
-  final int x26a;
-  final bool zJgsj7BM;
+class BackendConfig {
+  final String baseUrl;
+  final int port;
+  final bool useHttps;
 
-  const Gw4i6lXKULhS5({
-    required this.uexbsa9,
-    required this.x26a,
-    required this.zJgsj7BM,
+  const BackendConfig({
+    required this.baseUrl,
+    required this.port,
+    required this.useHttps,
   });
 
-  String get wgMsGcr =>
-      '${zJgsj7BM ? 'https' : 'http'}://$uexbsa9:$x26a';
+  String get fullUrl =>
+      '${useHttps ? 'https' : 'http'}://$baseUrl:$port';
 }

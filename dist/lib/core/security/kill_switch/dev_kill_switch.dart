@@ -5,23 +5,23 @@ import 'package:pointycastle/asn1.dart';
 
 import '../crypto/key_material.dart';
 
-class XgcJScP6W7zsz {
-  static const _laypLpQcmtKERX = ['action', 'timestamp'];
+class DevKillSwitch {
+  static const _requiredFields = ['action', 'timestamp'];
 
-  static bool pELZeY({
+  static bool verify({
     required Map<String, dynamic> payload,
     required String signatureBase64,
   }) {
     try {
       // Validación semántica
-      if (!_w0LDbuhfQHxTCy(payload)) return false;
+      if (!_isValidPayload(payload)) return false;
 
       // Anti-replay (5 minutos)
-      if (!_iv2jUns(payload['timestamp'])) return false;
+      if (!_isFresh(payload['timestamp'])) return false;
 
 
       final sigBytes = base64Decode(signatureBase64);
-      final ecSignature = _r2hG16wgPZGYOaZ3em(sigBytes);
+      final ecSignature = _decodeDERSignature(sigBytes);
       if (sigBytes.length < 8) return false;
 
       // Preparar verificador
@@ -41,14 +41,14 @@ class XgcJScP6W7zsz {
     }
   }
 
-  static bool _w0LDbuhfQHxTCy(Map<String, dynamic> payload) {
-    for (final k in _laypLpQcmtKERX) {
+  static bool _isValidPayload(Map<String, dynamic> payload) {
+    for (final k in _requiredFields) {
       if (!payload.containsKey(k)) return false;
     }
     return payload['action'] == 'BLOCK_APP';
   }
 
-  static bool _iv2jUns(dynamic timestamp) {
+  static bool _isFresh(dynamic timestamp) {
   if (timestamp is! int) return false;
 
   final now = DateTime.now().millisecondsSinceEpoch;
@@ -56,7 +56,7 @@ class XgcJScP6W7zsz {
   return (now - timestamp).abs() <= maxSkew;
 }
 
-static ECSignature _r2hG16wgPZGYOaZ3em(Uint8List bytes) {
+static ECSignature _decodeDERSignature(Uint8List bytes) {
   final parser = ASN1Parser(bytes);
   final seq = parser.nextObject() as ASN1Sequence;
 
@@ -65,13 +65,13 @@ static ECSignature _r2hG16wgPZGYOaZ3em(Uint8List bytes) {
   final sBytes =
       (seq.elements![1] as ASN1Integer).valueBytes!;
 
-  final r = _xxCM6tD6J0v5I(rBytes);
-  final s = _xxCM6tD6J0v5I(sBytes);
+  final r = _bytesToBigInt(rBytes);
+  final s = _bytesToBigInt(sBytes);
 
   return ECSignature(r, s);
 }
 
-static BigInt _xxCM6tD6J0v5I(Uint8List bytes) {
+static BigInt _bytesToBigInt(Uint8List bytes) {
   BigInt result = BigInt.zero;
   for (final b in bytes) {
     result = (result << 8) | BigInt.from(b);

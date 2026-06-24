@@ -7,16 +7,16 @@ import '../domain/checklist_existente.dart';
 import 'check_list_providers.dart';
 import 'checklist_runner_page.dart';
 
-class HXsf7zlICe extends ConsumerWidget {
-  final GerenciaTheme mjUxc;
-  final int voozy1rqGl;
-  final String zXBtPDtDfzb3jI;
+class ListClPage extends ConsumerWidget {
+  final GerenciaTheme theme;
+  final int jefaturaId;
+  final String jefaturaNombre;
 
-  const HXsf7zlICe({
+  const ListClPage({
     super.key,
-    required this.mjUxc,
-    required this.voozy1rqGl,
-    required this.zXBtPDtDfzb3jI,
+    required this.theme,
+    required this.jefaturaId,
+    required this.jefaturaNombre,
   });
 
   @override
@@ -31,10 +31,10 @@ class HXsf7zlICe extends ConsumerWidget {
         ? 60.0
         : 24.0;
 
-    final clAsync = ref.watch(clExistentesPorJefaturaProvider(voozy1rqGl));
+    final clAsync = ref.watch(clExistentesPorJefaturaProvider(jefaturaId));
 
     return Scaffold(
-      appBar: GerenciaAppBar(theme: mjUxc, title: 'CL de $zXBtPDtDfzb3jI'),
+      appBar: GerenciaAppBar(theme: theme, title: 'CL de $jefaturaNombre'),
       body: clAsync.when(
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (e, _) => Center(
@@ -52,9 +52,9 @@ class HXsf7zlICe extends ConsumerWidget {
 
           return RefreshIndicator(
             onRefresh: () async {
-              ref.invalidate(clExistentesPorJefaturaProvider(voozy1rqGl));
+              ref.invalidate(clExistentesPorJefaturaProvider(jefaturaId));
               await ref.read(
-                clExistentesPorJefaturaProvider(voozy1rqGl).future,
+                clExistentesPorJefaturaProvider(jefaturaId).future,
               );
             },
             child: ListView.separated(
@@ -67,17 +67,17 @@ class HXsf7zlICe extends ConsumerWidget {
                   SizedBox(height: isTablet ? 20 : 16),
               itemBuilder: (context, index) {
                 final cl = items[index];
-                return _LapnDI70tP0ZK(
-                  cj: cl,
-                  nWM1C: () {
+                return _ChecklistCard(
+                  cl: cl,
+                  onTap: () {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (_) => UlKJ4tygr7WfnyTNeVB(
-                          dMGUn: mjUxc,
-                          g6e7CskfGn: voozy1rqGl,
-                          gf58FST9dJ9aPv: zXBtPDtDfzb3jI,
-                          qsQyRlEYj: cl,
+                        builder: (_) => ChecklistRunnerPage(
+                          theme: theme,
+                          jefaturaId: jefaturaId,
+                          jefaturaNombre: jefaturaNombre,
+                          checklist: cl,
                         ),
                       ),
                     );
@@ -92,11 +92,11 @@ class HXsf7zlICe extends ConsumerWidget {
   }
 }
 
-class _LapnDI70tP0ZK extends StatelessWidget {
-  final ChecklistExistente cj;
-  final VoidCallback nWM1C;
+class _ChecklistCard extends StatelessWidget {
+  final ChecklistExistente cl;
+  final VoidCallback onTap;
 
-  const _LapnDI70tP0ZK({required this.cj, required this.nWM1C});
+  const _ChecklistCard({required this.cl, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -104,7 +104,7 @@ class _LapnDI70tP0ZK extends StatelessWidget {
     final cs = Theme.of(context).colorScheme;
 
     IconData icon;
-    final name = cj.nombre.toLowerCase();
+    final name = cl.nombre.toLowerCase();
     if (name.contains('red') || name.contains('wifi')) {
       icon = Icons.wifi;
     } else if (name.contains('impres')) {
@@ -119,7 +119,7 @@ class _LapnDI70tP0ZK extends StatelessWidget {
       child: Material(
         color: Colors.transparent,
         child: InkWell(
-          onTap: nWM1C,
+          onTap: onTap,
           borderRadius: BorderRadius.circular(isTablet ? 20 : 16),
           child: Padding(
             padding: EdgeInsets.all(isTablet ? 20 : 16),
@@ -144,7 +144,7 @@ class _LapnDI70tP0ZK extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        cj.nombre,
+                        cl.nombre,
                         style: TextStyle(
                           fontSize: isTablet ? 18 : 16,
                           fontWeight: FontWeight.bold,

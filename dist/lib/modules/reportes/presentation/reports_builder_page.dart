@@ -18,10 +18,10 @@ import '../../../shared/ui/widgets/gerencia_app_bar.dart';
 import '../../tareas/domain/tarea.dart';
 import '../../tareas/presentation/tareas_providers.dart';
 
-class KTUDj7AS1yEfeWPdov extends StatelessWidget {
-  final GerenciaTheme xPamA;
+class ReportsBuilderPage extends StatelessWidget {
+  final GerenciaTheme theme;
 
-  const KTUDj7AS1yEfeWPdov({super.key, required this.xPamA});
+  const ReportsBuilderPage({super.key, required this.theme});
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +36,7 @@ class KTUDj7AS1yEfeWPdov extends StatelessWidget {
         : 24.0;
 
     return Scaffold(
-      appBar: GerenciaAppBar(theme: xPamA, title: 'Generador de reportes'),
+      appBar: GerenciaAppBar(theme: theme, title: 'Generador de reportes'),
       body: ListView(
         padding: EdgeInsets.symmetric(
           horizontal: horizontalPadding,
@@ -51,23 +51,23 @@ class KTUDj7AS1yEfeWPdov extends StatelessWidget {
             ),
           ),
           SizedBox(height: isTablet ? 20 : 16),
-          _CuErs1eNjOM7(
-            n2C5H: xPamA,
-            oaUX7: 'Mantenimiento - Site',
-            dOEO2oYG: 'Formato rep_mantto_sites',
-            bHmr: _HMx9jKozd201.rZldct2i9t,
+          _TemplateTile(
+            theme: theme,
+            title: 'Mantenimiento - Site',
+            subtitle: 'Formato rep_mantto_sites',
+            kind: _TemplateKind.manttoSite,
           ),
-          _CuErs1eNjOM7(
-            n2C5H: xPamA,
-            oaUX7: 'Mantenimiento - Mostrador',
-            dOEO2oYG: 'Formato rep_mantto_mostra',
-            bHmr: _HMx9jKozd201.l3FPqCXDlWTUyZl,
+          _TemplateTile(
+            theme: theme,
+            title: 'Mantenimiento - Mostrador',
+            subtitle: 'Formato rep_mantto_mostra',
+            kind: _TemplateKind.manttoMostrador,
           ),
-          _CuErs1eNjOM7(
-            n2C5H: xPamA,
-            oaUX7: 'Checklist ETP',
-            dOEO2oYG: 'Formato cl_etp',
-            bHmr: _HMx9jKozd201.ifA,
+          _TemplateTile(
+            theme: theme,
+            title: 'Checklist ETP',
+            subtitle: 'Formato cl_etp',
+            kind: _TemplateKind.etp,
           ),
         ],
       ),
@@ -75,19 +75,19 @@ class KTUDj7AS1yEfeWPdov extends StatelessWidget {
   }
 }
 
-enum _HMx9jKozd201 { rZldct2i9t, l3FPqCXDlWTUyZl, ifA }
+enum _TemplateKind { manttoSite, manttoMostrador, etp }
 
-class _CuErs1eNjOM7 extends ConsumerWidget {
-  final GerenciaTheme n2C5H;
-  final String oaUX7;
-  final String dOEO2oYG;
-  final _HMx9jKozd201 bHmr;
+class _TemplateTile extends ConsumerWidget {
+  final GerenciaTheme theme;
+  final String title;
+  final String subtitle;
+  final _TemplateKind kind;
 
-  const _CuErs1eNjOM7({
-    required this.n2C5H,
-    required this.oaUX7,
-    required this.dOEO2oYG,
-    required this.bHmr,
+  const _TemplateTile({
+    required this.theme,
+    required this.title,
+    required this.subtitle,
+    required this.kind,
   });
 
   @override
@@ -95,13 +95,13 @@ class _CuErs1eNjOM7 extends ConsumerWidget {
     final isTablet = MediaQuery.of(context).size.width >= 600;
     final cs = Theme.of(context).colorScheme;
 
-    final (icon, accent) = switch (bHmr) {
-      _HMx9jKozd201.rZldct2i9t => (Icons.factory_outlined, cs.primaryContainer),
-      _HMx9jKozd201.l3FPqCXDlWTUyZl => (
+    final (icon, accent) = switch (kind) {
+      _TemplateKind.manttoSite => (Icons.factory_outlined, cs.primaryContainer),
+      _TemplateKind.manttoMostrador => (
         Icons.storefront_outlined,
         cs.secondaryContainer,
       ),
-      _HMx9jKozd201.ifA => (Icons.checklist_outlined, cs.tertiaryContainer),
+      _TemplateKind.etp => (Icons.checklist_outlined, cs.tertiaryContainer),
     };
 
     return Card(
@@ -114,27 +114,27 @@ class _CuErs1eNjOM7 extends ConsumerWidget {
             Navigator.of(context).push(
               MaterialPageRoute(
                 builder: (_) {
-                  switch (bHmr) {
-                    case _HMx9jKozd201.rZldct2i9t:
-                      return RnCxkgoHNv1RjLU7JwbJH3oTbkay5q(
-                        rhf0q: n2C5H,
-                        z00CsXKuVn: ReportsCatalog.mantenimientoSites,
-                        iGOnsX4P: user?.nombre ?? '',
-                        y2zWoPIB: user?.area ?? '',
+                  switch (kind) {
+                    case _TemplateKind.manttoSite:
+                      return MaintenanceChecklistRunnerPage(
+                        theme: theme,
+                        definition: ReportsCatalog.mantenimientoSites,
+                        userName: user?.nombre ?? '',
+                        userArea: user?.area ?? '',
                       );
-                    case _HMx9jKozd201.l3FPqCXDlWTUyZl:
-                      return RnCxkgoHNv1RjLU7JwbJH3oTbkay5q(
-                        rhf0q: n2C5H,
-                        z00CsXKuVn: ReportsCatalog.mantenimientoMostrador,
-                        iGOnsX4P: user?.nombre ?? '',
-                        y2zWoPIB: user?.area ?? '',
+                    case _TemplateKind.manttoMostrador:
+                      return MaintenanceChecklistRunnerPage(
+                        theme: theme,
+                        definition: ReportsCatalog.mantenimientoMostrador,
+                        userName: user?.nombre ?? '',
+                        userArea: user?.area ?? '',
                       );
-                    case _HMx9jKozd201.ifA:
-                      return EhxhpNzmE1p0vjyJcCc56y(
-                        fnm2Y: n2C5H,
-                        yMbKtsQDOk: ReportsCatalog.checklistEtp,
-                        npydikRi: user?.nombre ?? '',
-                        oUvNQD8S0PVzV: user?.area ?? '',
+                    case _TemplateKind.etp:
+                      return EtpChecklistRunnerPage(
+                        theme: theme,
+                        definition: ReportsCatalog.checklistEtp,
+                        userName: user?.nombre ?? '',
+                        checklistName: user?.area ?? '',
                       );
                   }
                 },
@@ -165,7 +165,7 @@ class _CuErs1eNjOM7 extends ConsumerWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        oaUX7,
+                        title,
                         style: TextStyle(
                           fontSize: isTablet ? 18 : 16,
                           fontWeight: FontWeight.w800,
@@ -177,7 +177,7 @@ class _CuErs1eNjOM7 extends ConsumerWidget {
                       ),
                       const SizedBox(height: 6),
                       Text(
-                        dOEO2oYG,
+                        subtitle,
                         style: TextStyle(color: cs.onSurfaceVariant),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
@@ -208,43 +208,43 @@ class _CuErs1eNjOM7 extends ConsumerWidget {
   }
 }
 
-class RnCxkgoHNv1RjLU7JwbJH3oTbkay5q extends ConsumerStatefulWidget {
-  final GerenciaTheme rhf0q;
-  final ChecklistReportDefinition z00CsXKuVn;
-  final String iGOnsX4P;
-  final String y2zWoPIB;
+class MaintenanceChecklistRunnerPage extends ConsumerStatefulWidget {
+  final GerenciaTheme theme;
+  final ChecklistReportDefinition definition;
+  final String userName;
+  final String userArea;
 
-  const RnCxkgoHNv1RjLU7JwbJH3oTbkay5q({
+  const MaintenanceChecklistRunnerPage({
     super.key,
-    required this.rhf0q,
-    required this.z00CsXKuVn,
-    required this.iGOnsX4P,
-    required this.y2zWoPIB,
+    required this.theme,
+    required this.definition,
+    required this.userName,
+    required this.userArea,
   });
 
   @override
-  ConsumerState<RnCxkgoHNv1RjLU7JwbJH3oTbkay5q> createState() =>
-      _Fo12bWHlGwn5aJNEuqDX3OrK1ttUGf93usx();
+  ConsumerState<MaintenanceChecklistRunnerPage> createState() =>
+      _MaintenanceChecklistRunnerPageState();
 }
 
-class _Fo12bWHlGwn5aJNEuqDX3OrK1ttUGf93usx
-    extends ConsumerState<RnCxkgoHNv1RjLU7JwbJH3oTbkay5q> {
-  var _yvsf8fWSKK = false;
+class _MaintenanceChecklistRunnerPageState
+    extends ConsumerState<MaintenanceChecklistRunnerPage> {
+  var _generating = false;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: GerenciaAppBar(
-        theme: widget.rhf0q,
-        title: widget.z00CsXKuVn.title,
+        theme: widget.theme,
+        title: widget.definition.title,
       ),
       body: Stack(
         children: [
           ChecklistReportForm(
-            definition: widget.z00CsXKuVn,
-            onSubmit: _mz8drC44,
+            definition: widget.definition,
+            onSubmit: _onSubmit,
           ),
-          if (_yvsf8fWSKK)
+          if (_generating)
             const Positioned.fill(
               child: ColoredBox(
                 color: Color(0x88000000),
@@ -256,13 +256,13 @@ class _Fo12bWHlGwn5aJNEuqDX3OrK1ttUGf93usx
     );
   }
 
-  Future<void> _mz8drC44(ChecklistReportDraft draft) async {
-    if (_yvsf8fWSKK) return;
-    setState(() => _yvsf8fWSKK = true);
+  Future<void> _onSubmit(ChecklistReportDraft draft) async {
+    if (_generating) return;
+    setState(() => _generating = true);
 
     try {
       final bytes = await MaintenancePreventivoPdf.build(
-        definition: widget.z00CsXKuVn,
+        definition: widget.definition,
         draft: draft,
       );
 
@@ -303,50 +303,50 @@ class _Fo12bWHlGwn5aJNEuqDX3OrK1ttUGf93usx
         context,
       ).showSnackBar(SnackBar(content: Text('No se pudo generar PDF: $e')));
     } finally {
-      if (mounted) setState(() => _yvsf8fWSKK = false);
+      if (mounted) setState(() => _generating = false);
     }
   }
 }
 
-class EhxhpNzmE1p0vjyJcCc56y extends ConsumerStatefulWidget {
-  final GerenciaTheme fnm2Y;
-  final EtpChecklistDefinition yMbKtsQDOk;
-  final String npydikRi;
-  final String oUvNQD8S0PVzV;
+class EtpChecklistRunnerPage extends ConsumerStatefulWidget {
+  final GerenciaTheme theme;
+  final EtpChecklistDefinition definition;
+  final String userName;
+  final String checklistName;
 
-  const EhxhpNzmE1p0vjyJcCc56y({
+  const EtpChecklistRunnerPage({
     super.key,
-    required this.fnm2Y,
-    required this.yMbKtsQDOk,
-    required this.npydikRi,
-    required this.oUvNQD8S0PVzV,
+    required this.theme,
+    required this.definition,
+    required this.userName,
+    required this.checklistName,
   });
 
   @override
-  ConsumerState<EhxhpNzmE1p0vjyJcCc56y> createState() =>
-      _WMCQI09meSePHYFgxKI8bvraYMU();
+  ConsumerState<EtpChecklistRunnerPage> createState() =>
+      _EtpChecklistRunnerPageState();
 }
 
-class _WMCQI09meSePHYFgxKI8bvraYMU
-    extends ConsumerState<EhxhpNzmE1p0vjyJcCc56y> {
-  var _vz8RZexcvU = false;
+class _EtpChecklistRunnerPageState
+    extends ConsumerState<EtpChecklistRunnerPage> {
+  var _generating = false;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: GerenciaAppBar(
-        theme: widget.fnm2Y,
-        title: widget.yMbKtsQDOk.title,
+        theme: widget.theme,
+        title: widget.definition.title,
       ),
       body: Stack(
         children: [
           EtpChecklistForm(
-            definition: widget.yMbKtsQDOk,
-            userName: widget.npydikRi,
-            checklistName: widget.oUvNQD8S0PVzV,
-            onSubmit: _m7pqDUaf,
+            definition: widget.definition,
+            userName: widget.userName,
+            checklistName: widget.checklistName,
+            onSubmit: _onSubmit,
           ),
-          if (_vz8RZexcvU)
+          if (_generating)
             const Positioned.fill(
               child: ColoredBox(
                 color: Color(0x88000000),
@@ -358,13 +358,13 @@ class _WMCQI09meSePHYFgxKI8bvraYMU
     );
   }
 
-  Future<void> _m7pqDUaf(EtpChecklistDraft draft) async {
-    if (_vz8RZexcvU) return;
-    setState(() => _vz8RZexcvU = true);
+  Future<void> _onSubmit(EtpChecklistDraft draft) async {
+    if (_generating) return;
+    setState(() => _generating = true);
 
     try {
       final bytes = await EtpChecklistPdf.build(
-        definition: widget.yMbKtsQDOk,
+        definition: widget.definition,
         draft: draft,
       );
 
@@ -419,7 +419,7 @@ class _WMCQI09meSePHYFgxKI8bvraYMU
         context,
       ).showSnackBar(SnackBar(content: Text('No se pudo generar PDF: $e')));
     } finally {
-      if (mounted) setState(() => _vz8RZexcvU = false);
+      if (mounted) setState(() => _generating = false);
     }
   }
 }

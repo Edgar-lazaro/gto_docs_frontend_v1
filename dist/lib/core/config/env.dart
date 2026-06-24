@@ -1,5 +1,5 @@
-enum PRIays {
-  gBy,
-  lC,
-  oQi6,
+enum AppEnv {
+  dev,
+  qa,
+  prod,
 }

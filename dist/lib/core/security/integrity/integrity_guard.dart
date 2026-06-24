@@ -4,25 +4,25 @@ import 'package:gto_docs_v2_ad/core/security/anti_tamper/anti_tamper_guard.dart'
 
 /// Verifica la integridad básica de la app.
 /// Si falla, la app NO debe continuar.
-class HWjJ9fwI2ihQtU {
-  static Future<bool> z6yfpc() async {
+class IntegrityGuard {
+  static Future<bool> verify() async {
     final antiTamperOk = await AntiTamperGuard.verify();
     if (!antiTamperOk) return false;
 
     // En debug, esta verificación no debe bloquear por sí sola.
     // El guard decide cuándo aplicar hardening (release).
-    if (_soMkifR()) return true;
+    if (_isDebug()) return true;
 
     // Bloquear emuladores básicos
-    if (await _rcgQyCsNle()) return false;
+    if (await _isEmulator()) return false;
 
     // Bloquear hooking simple
-    if (_sbiuJImUkgnQFqbSjmu9T7()) return false;
+    if (_hasSuspiciousLibraries()) return false;
 
     return true;
   }
 
-  static bool _soMkifR() {
+  static bool _isDebug() {
     bool debug = false;
     assert(() {
       debug = true;
@@ -31,7 +31,7 @@ class HWjJ9fwI2ihQtU {
     return debug;
   }
 
-  static Future<bool> _rcgQyCsNle() async {
+  static Future<bool> _isEmulator() async {
     if (!Platform.isAndroid) return false;
 
     final androidProps = [
@@ -50,7 +50,7 @@ class HWjJ9fwI2ihQtU {
     );
   }
 
-  static bool _sbiuJImUkgnQFqbSjmu9T7() {
+  static bool _hasSuspiciousLibraries() {
     final suspicious = [
       'frida',
       'substrate',

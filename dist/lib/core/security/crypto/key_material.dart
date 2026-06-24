@@ -1,13 +1,13 @@
 import 'package:pointycastle/export.dart';
 
-class KtmMSNUbXPg93e {
+class DevKeyMaterial {
 
-  static final ECDomainParameters _tqnEh1 =
+  static final ECDomainParameters _domain =
       ECDomainParameters('secp256r1');
 
   /// Clave pública del desarrollador
-  static final ECPublicKey xTVAbg9J8 = ECPublicKey(
-    _tqnEh1.curve.createPoint(
+  static final ECPublicKey publicKey = ECPublicKey(
+    _domain.curve.createPoint(
       BigInt.parse(
         '11223344556677889900AABBCCDDEEFF11223344556677889900AABBCCDDEEFF',
         radix: 16,
@@ -17,6 +17,6 @@ class KtmMSNUbXPg93e {
         radix: 16,
       ),
     ),
-    _tqnEh1,
+    _domain,
   );
 }

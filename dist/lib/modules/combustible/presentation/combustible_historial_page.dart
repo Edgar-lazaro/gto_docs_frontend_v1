@@ -7,10 +7,10 @@ import '../../../core/sync/sync_providers.dart';
 import '../../../shared/ui/theme/gerencia_config.dart';
 import 'combustible_providers.dart';
 
-class Wf4ddykqAEjGBjQGuK0wZvrD extends ConsumerWidget {
-  final GerenciaTheme hVHqc;
+class CombustibleHistorialPage extends ConsumerWidget {
+  final GerenciaTheme theme;
 
-  const Wf4ddykqAEjGBjQGuK0wZvrD({super.key, required this.hVHqc});
+  const CombustibleHistorialPage({super.key, required this.theme});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -23,7 +23,7 @@ class Wf4ddykqAEjGBjQGuK0wZvrD extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Historial de combustible'),
-        backgroundColor: hVHqc.colorPrimario,
+        backgroundColor: theme.colorPrimario,
         foregroundColor: Colors.white,
         actions: [
           IconButton(

@@ -1,17 +1,17 @@
-class Fgj2JhFyN4MxWi0 {
-  final String lN;
+class TareaComentario {
+  final String id;
 
   /// Puede ser `tarea.id` o `groupId` (tarea lógica)
-  final String lPdlFVA;
-  final String wRD35r7;
-  final String orH77lR;
-  final DateTime kdZ6PFcD;
+  final String tareaId;
+  final String autorId;
+  final String mensaje;
+  final DateTime creadoEn;
 
-  Fgj2JhFyN4MxWi0({
-    required this.lN,
-    required this.lPdlFVA,
-    required this.wRD35r7,
-    required this.orH77lR,
-    required this.kdZ6PFcD,
+  TareaComentario({
+    required this.id,
+    required this.tareaId,
+    required this.autorId,
+    required this.mensaje,
+    required this.creadoEn,
   });
 }

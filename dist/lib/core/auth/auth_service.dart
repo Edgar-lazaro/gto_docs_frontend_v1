@@ -1,26 +1,26 @@
 import 'auth_repository.dart';
 import 'session_manager.dart';
 
-class DqtZo2wiDAf {
-  final SQrj3Cecjbvq0H tFRr;
+class AuthService {
+  final AuthRepository repo;
 
-  DqtZo2wiDAf(this.tFRr);
+  AuthService(this.repo);
 
-  Future<ZUV35mlB33k> dbJIw({
+  Future<SessionData> login({
     required String username,
     required String password,
   }) {
-    return tFRr.inKrK(
+    return repo.login(
       username: username,
       password: password,
     );
   }
 
-  Future<void> ywgJha() async {
-    await tFRr.bGwfss();
+  Future<void> logout() async {
+    await repo.logout();
   }
 
-  Future<ZUV35mlB33k?> s019QwCxV8() {
-    return tFRr.ygDJQag3yA();
+  Future<SessionData?> getSession() {
+    return repo.getSession();
   }
 }

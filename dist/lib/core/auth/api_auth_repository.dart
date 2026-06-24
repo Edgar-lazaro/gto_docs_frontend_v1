@@ -4,24 +4,24 @@ import 'auth_repository.dart';
 import 'auth_models.dart';
 import 'session_manager.dart';
 
-class HXmufg8PhipZgTVXm implements SQrj3Cecjbvq0H {
-  final Dio x5O;
-  final String wfDsPRvQIBID;
-  final String pm7DIMBOLf;
+class ApiAuthRepository implements AuthRepository {
+  final Dio dio;
+  final String authEndpoint;
+  final String meEndpoint;
 
-  HXmufg8PhipZgTVXm({
-    required this.x5O,
-    this.wfDsPRvQIBID = '/auth/login',
-    this.pm7DIMBOLf = '/auth/me',
+  ApiAuthRepository({
+    required this.dio,
+    this.authEndpoint = '/auth/login',
+    this.meEndpoint = '/auth/me',
   });
 
   @override
-  Future<ZUV35mlB33k> inKrK({
+  Future<SessionData> login({
     required String username,
     required String password,
   }) async {
-    Future<Response<dynamic>> eVwmBw0(Map<String, dynamic> data) async {
-      return await x5O.post(wfDsPRvQIBID, data: data);
+    Future<Response<dynamic>> attempt(Map<String, dynamic> data) async {
+      return await dio.post(authEndpoint, data: data);
     }
 
     final userKeys = <String>['username', 'usuario', 'user', 'email'];
@@ -33,7 +33,7 @@ class HXmufg8PhipZgTVXm implements SQrj3Cecjbvq0H {
     for (final uKey in userKeys) {
       for (final pKey in passKeys) {
         try {
-          res = await eVwmBw0({uKey: username, pKey: password});
+          res = await attempt({uKey: username, pKey: password});
           break;
         } on DioException catch (e) {
           lastDio = e;
@@ -52,11 +52,11 @@ class HXmufg8PhipZgTVXm implements SQrj3Cecjbvq0H {
       throw StateError('Login: no se pudo enviar credenciales.');
     }
 
-    final token = _eTJ3FpYI8IuT(res.data);
+    final token = _extractToken(res.data);
 
     // Obtener usuario autenticado desde /auth/me
-    final meRes = await x5O.get(
-      pm7DIMBOLf,
+    final meRes = await dio.get(
+      meEndpoint,
       options: Options(headers: {'Authorization': 'Bearer $token'}),
     );
 
@@ -75,22 +75,28 @@ class HXmufg8PhipZgTVXm implements SQrj3Cecjbvq0H {
             .toString();
     final rolesRaw = me['roles'];
 
-    return ZUV35mlB33k(
-      zkR30: token,
-      goQt: KqBOLs41(
-        gw: userId,
-        u3aymK: nombre,
-        sFiI: area,
-        ucAcyxha: gerencia,
-        fH7uu: rolesRaw is List
+    final glpiUserIdRaw = me['glpiUserId'] ?? me['glpi_user_id'];
+    final glpiUserId = glpiUserIdRaw is int
+        ? glpiUserIdRaw
+        : (glpiUserIdRaw != null ? int.tryParse(glpiUserIdRaw.toString()) : int.tryParse(userId));
+
+    return SessionData(
+      token: token,
+      user: AuthUser(
+        id: userId,
+        nombre: nombre,
+        area: area,
+        gerencia: gerencia,
+        roles: rolesRaw is List
             ? rolesRaw.map((e) => e.toString()).toList()
             : const <String>[],
+        glpiUserId: glpiUserId,
       ),
     );
   }
 
-  String _eTJ3FpYI8IuT(dynamic data) {
-    String? fVybDzqyiqWXAQ1pyElPCT(Map map) {
+  String _extractToken(dynamic data) {
+    String? readDirectTokenFromMap(Map map) {
       final token =
           map['access_token'] ??
           map['accessToken'] ??
@@ -110,7 +116,7 @@ class HXmufg8PhipZgTVXm implements SQrj3Cecjbvq0H {
       final root = data;
 
       // Direct keys
-      final direct = fVybDzqyiqWXAQ1pyElPCT(root);
+      final direct = readDirectTokenFromMap(root);
       if (direct != null) return direct;
 
       // Common nesting levels
@@ -119,7 +125,7 @@ class HXmufg8PhipZgTVXm implements SQrj3Cecjbvq0H {
         final nested = root[k];
         if (nested is String && nested.trim().isNotEmpty) return nested.trim();
         if (nested is Map) {
-          final nestedToken = fVybDzqyiqWXAQ1pyElPCT(nested);
+          final nestedToken = readDirectTokenFromMap(nested);
           if (nestedToken != null) return nestedToken;
 
           // One more level deep: e.g. data: { data: { token: ... } }
@@ -129,7 +135,7 @@ class HXmufg8PhipZgTVXm implements SQrj3Cecjbvq0H {
               return nested2.trim();
             }
             if (nested2 is Map) {
-              final t = fVybDzqyiqWXAQ1pyElPCT(nested2);
+              final t = readDirectTokenFromMap(nested2);
               if (t != null) return t;
             }
           }
@@ -145,13 +151,13 @@ class HXmufg8PhipZgTVXm implements SQrj3Cecjbvq0H {
   }
 
   @override
-  Future<ZUV35mlB33k?> ygDJQag3yA() async {
+  Future<SessionData?> getSession() async {
     // La sesión persistida la maneja SessionManager
     return null;
   }
 
   @override
-  Future<void> bGwfss() async {
+  Future<void> logout() async {
     // Opcional: notificar backend
   }
 }

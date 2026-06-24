@@ -2,51 +2,51 @@ import 'lan_status.dart';
 import 'network_checker.dart';
 import 'server_probe.dart';
 
-class CA4pt8U5 {
-  final DzFehef3VL4MoV aKhxd5xHS8RGYc;
-  final VSMjebYuPdJ thbjNLmqO6g;
-  final String fNFxH7Ml7;
-  final bool dx4Y3NHECPz2G1;
+class LanGuard {
+  final NetworkChecker networkChecker;
+  final ServerProbe serverProbe;
+  final String healthUrl;
+  final bool enforceLanOnly;
 
-  CA4pt8U5({
-    required this.aKhxd5xHS8RGYc,
-    required this.thbjNLmqO6g,
-    required this.fNFxH7Ml7,
-    required this.dx4Y3NHECPz2G1,
+  LanGuard({
+    required this.networkChecker,
+    required this.serverProbe,
+    required this.healthUrl,
+    required this.enforceLanOnly,
   });
 
-  Future<TmFstXFl2> f9pEA() async {
+  Future<LanStatus> check() async {
     // ¿Hay red?
-    final hasNetwork = await aKhxd5xHS8RGYc.mRTEmVNZMH();
+    final hasNetwork = await networkChecker.hasNetwork();
     if (!hasNetwork) {
-      return TmFstXFl2.s8cS9fN8yAl9;
+      return LanStatus.disconnected;
     }
 
     // Si se requiere LAN, validar que sea WiFi/Ethernet.
-    if (dx4Y3NHECPz2G1) {
-      final onLan = await aKhxd5xHS8RGYc.sIZ2MBeZqUlP1r4();
+    if (enforceLanOnly) {
+      final onLan = await networkChecker.isLanConnection();
       if (!onLan) {
-        return TmFstXFl2.s8cS9fN8yAl9;
+        return LanStatus.disconnected;
       }
     }
 
     // ¿Servidor interno responde?
-    var serverOk = await thbjNLmqO6g.y9zu(fNFxH7Ml7);
+    var serverOk = await serverProbe.ping(healthUrl);
     if (!serverOk) {
       // Compatibilidad: algunos backends exponen /health fuera de /api.
-      if (fNFxH7Ml7.endsWith('/api/health')) {
-        final fallback = fNFxH7Ml7.replaceFirst('/api/health', '/health');
-        serverOk = await thbjNLmqO6g.y9zu(fallback);
-      } else if (fNFxH7Ml7.endsWith('/health')) {
-        final fallback = fNFxH7Ml7.replaceFirst('/health', '/api/health');
-        serverOk = await thbjNLmqO6g.y9zu(fallback);
+      if (healthUrl.endsWith('/api/health')) {
+        final fallback = healthUrl.replaceFirst('/api/health', '/health');
+        serverOk = await serverProbe.ping(fallback);
+      } else if (healthUrl.endsWith('/health')) {
+        final fallback = healthUrl.replaceFirst('/health', '/api/health');
+        serverOk = await serverProbe.ping(fallback);
       }
     }
     if (!serverOk) {
-      return TmFstXFl2.uvp7RkNl7n;
+      return LanStatus.serverDown;
     }
 
     // OK
-    return TmFstXFl2.sUXQy7BNP;
+    return LanStatus.connected;
   }
 }

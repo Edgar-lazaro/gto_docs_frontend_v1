@@ -1,11 +1,11 @@
-class HjanytJONp {
-  final String yeTLbxJ;
-  final String bel6w1y3;
-  final int qCZPzQ9z;
+class GlpiConfig {
+  final String baseUrl;
+  final String apiToken;
+  final int entityId;
 
-  const HjanytJONp({
-    required this.yeTLbxJ,
-    required this.bel6w1y3,
-    required this.qCZPzQ9z,
+  const GlpiConfig({
+    required this.baseUrl,
+    required this.apiToken,
+    required this.entityId,
   });
 }

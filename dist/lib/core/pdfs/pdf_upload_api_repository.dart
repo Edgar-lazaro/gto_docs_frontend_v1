@@ -3,17 +3,17 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:http_parser/http_parser.dart';
 
-class NTH9i9aPwrRRm8OPAhRpr2 {
-  final Dio bFo;
+class PdfUploadApiRepository {
+  final Dio dio;
 
-  NTH9i9aPwrRRm8OPAhRpr2({required this.bFo});
+  PdfUploadApiRepository({required this.dio});
 
-  Future<FormData> _g3eCiOdHRRQo5({
+  Future<FormData> _buildFormData({
     required File file,
     required String filename,
     required Map<String, dynamic> metadata,
   }) async {
-    final normalized = _u7vaVRuAaryMVhmeKmquIe4vwk(
+    final normalized = _normalizeMetadataForUpload(
       file: file,
       filename: filename,
       metadata: metadata,
@@ -29,7 +29,7 @@ class NTH9i9aPwrRRm8OPAhRpr2 {
     });
   }
 
-  Future<String> xBl0mt4FH({
+  Future<String> uploadPdf({
     required File file,
     required String filename,
     required Map<String, dynamic> metadata,
@@ -61,12 +61,12 @@ class NTH9i9aPwrRRm8OPAhRpr2 {
       try {
         // IMPORTANT: FormData is single-use (finalized after sending).
         // Rebuild it for every attempt.
-        final formData = await _g3eCiOdHRRQo5(
+        final formData = await _buildFormData(
           file: file,
           filename: filename,
           metadata: metadata,
         );
-        final res = await bFo.post(path, data: formData);
+        final res = await dio.post(path, data: formData);
         final data = res.data;
         if (data is Map) {
           final m = data.cast<String, dynamic>();
@@ -88,7 +88,7 @@ class NTH9i9aPwrRRm8OPAhRpr2 {
     throw StateError('No se encontró un endpoint para subir PDF');
   }
 
-  Map<String, dynamic> _u7vaVRuAaryMVhmeKmquIe4vwk({
+  Map<String, dynamic> _normalizeMetadataForUpload({
     required File file,
     required String filename,
     required Map<String, dynamic> metadata,
@@ -100,7 +100,7 @@ class NTH9i9aPwrRRm8OPAhRpr2 {
       _ => 'reporte',
     };
 
-    int? yT4Py(dynamic v) {
+    int? asInt(dynamic v) {
       if (v == null) return null;
       if (v is int) return v;
       return int.tryParse(v.toString());
@@ -110,8 +110,8 @@ class NTH9i9aPwrRRm8OPAhRpr2 {
         metadata['usuarioNombre'] ??
         metadata['usuario_nombre'] ??
         metadata['usuario'];
-    final gerenciaId = yT4Py(metadata['gerenciaId'] ?? metadata['gerencia_id']);
-    final jefaturaId = yT4Py(metadata['jefaturaId'] ?? metadata['jefatura_id']);
+    final gerenciaId = asInt(metadata['gerenciaId'] ?? metadata['gerencia_id']);
+    final jefaturaId = asInt(metadata['jefaturaId'] ?? metadata['jefatura_id']);
     final checklistNombre =
         metadata['checklistNombre'] ?? metadata['checklist_nombre'];
 

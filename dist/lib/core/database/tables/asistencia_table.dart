@@ -1,25 +1,25 @@
 import 'package:drift/drift.dart';
 
-class UM32rkedXM4fJJA extends Table {
+class AsistenciaTable extends Table {
   // ID local autoincremental
-  IntColumn get e8 => integer().autoIncrement()();
+  IntColumn get id => integer().autoIncrement()();
 
   // Usuario (AD / employeeId)
-  TextColumn get uVjZenoVR => text()();
+  TextColumn get usuarioId => text()();
 
   // Fecha y hora exacta del registro
-  DateTimeColumn get drqpLktq0 => dateTime()();
+  DateTimeColumn get fechaHora => dateTime()();
 
   // entrada | salida
-  TextColumn get cnNH =>
+  TextColumn get tipo =>
       text().check(CustomExpression<bool>("tipo IN ('entrada', 'salida')"))();
 
   // manual | biometrico (futuro)
-  TextColumn get a0DGLK => text().withDefault(const Constant('manual'))();
+  TextColumn get metodo => text().withDefault(const Constant('manual'))();
 
   // ¿ya se envió al backend?
-  BoolColumn get on24yoYmhoDH => boolean().withDefault(const Constant(false))();
+  BoolColumn get sincronizado => boolean().withDefault(const Constant(false))();
 
   // Auditoría
-  DateTimeColumn get pxyTrSdf => dateTime().withDefault(currentDateAndTime)();
+  DateTimeColumn get creadoEn => dateTime().withDefault(currentDateAndTime)();
 }

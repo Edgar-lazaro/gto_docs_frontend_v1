@@ -8,17 +8,17 @@ import 'package:pdf/widgets.dart' as pw;
 
 import 'checklist_models.dart';
 
-class Q34UmEFmZpJBug5absWen858 {
-  static Future<Uint8List> oryjC({
-    required A32xKOUKm8KMrJkQEMBm9puVx definition,
-    required IDXe8JudY4J27fMVDEST draft,
+class MaintenancePreventivoPdf {
+  static Future<Uint8List> build({
+    required ChecklistReportDefinition definition,
+    required ChecklistReportDraft draft,
     String leftLogoAsset = 'assets/img/login.png',
     String rightLogoAsset = 'assets/img/logo_ae.png',
     int rowsPerTable = 15,
   }) async {
     final pdf = pw.Document();
 
-    final now = draft.yS9AY8riA;
+    final now = draft.createdAt;
     final dia = DateFormat('dd').format(now);
     final mes = DateFormat('MM').format(now);
     final year = DateFormat('yyyy').format(now);
@@ -30,13 +30,13 @@ class Q34UmEFmZpJBug5absWen858 {
       rightLogoAsset,
     )).buffer.asUint8List();
 
-    final chunks = _iC0sH(draft.y6Dy1, rowsPerTable);
+    final chunks = _chunk(draft.items, rowsPerTable);
 
     final imagesByItemId = <String, List<Uint8List>>{};
-    for (final item in draft.y6Dy1) {
-      if (item.y35qpUs2ZT.isEmpty) continue;
+    for (final item in draft.items) {
+      if (item.imagePaths.isEmpty) continue;
       final bytesList = <Uint8List>[];
-      for (final path in item.y35qpUs2ZT) {
+      for (final path in item.imagePaths) {
         try {
           final bytes = await File(path).readAsBytes();
           bytesList.add(bytes);
@@ -45,7 +45,7 @@ class Q34UmEFmZpJBug5absWen858 {
         }
       }
       if (bytesList.isNotEmpty) {
-        imagesByItemId[item.oVxZdl] = bytesList;
+        imagesByItemId[item.itemId] = bytesList;
       }
     }
 
@@ -72,7 +72,7 @@ class Q34UmEFmZpJBug5absWen858 {
                   ),
                   pw.Expanded(
                     child: pw.Text(
-                      definition.bVUNaMkVhBAwRt,
+                      definition.pdfHeaderTitle,
                       style: pw.TextStyle(
                         fontSize: 15,
                         fontWeight: pw.FontWeight.bold,
@@ -102,17 +102,17 @@ class Q34UmEFmZpJBug5absWen858 {
                 pw.Row(
                   children: [
                     pw.Text(
-                      '${definition.xUX9iztXXpohN}: ',
+                      '${definition.locationLabel}: ',
                       style: pw.TextStyle(
                         fontSize: 10,
                         fontWeight: pw.FontWeight.bold,
                       ),
                     ),
                     pw.Text(
-                      draft.fQbZ.isEmpty ? '_______________' : draft.fQbZ,
+                      draft.site.isEmpty ? '_______________' : draft.site,
                       style: pw.TextStyle(
                         fontSize: 10,
-                        color: draft.fQbZ.isEmpty
+                        color: draft.site.isEmpty
                             ? PdfColors.grey600
                             : PdfColors.black,
                       ),
@@ -145,12 +145,12 @@ class Q34UmEFmZpJBug5absWen858 {
                       ),
                     ),
                     pw.Text(
-                      draft.cslvKXrhK6M.isEmpty
+                      draft.responsable.isEmpty
                           ? '_______________'
-                          : draft.cslvKXrhK6M,
+                          : draft.responsable,
                       style: pw.TextStyle(
                         fontSize: 10,
-                        color: draft.cslvKXrhK6M.isEmpty
+                        color: draft.responsable.isEmpty
                             ? PdfColors.grey600
                             : PdfColors.black,
                       ),
@@ -159,7 +159,7 @@ class Q34UmEFmZpJBug5absWen858 {
                 ),
                 pw.Expanded(
                   child: pw.Text(
-                    'Folio: ${draft.syA1h.isEmpty ? '_______________' : draft.syA1h}',
+                    'Folio: ${draft.folio.isEmpty ? '_______________' : draft.folio}',
                     textAlign: pw.TextAlign.end,
                   ),
                 ),
@@ -174,7 +174,7 @@ class Q34UmEFmZpJBug5absWen858 {
 
             widgets.add(
               pw.Text(
-                definition.xAWWV,
+                definition.title,
                 style: pw.TextStyle(
                   fontSize: 12,
                   fontWeight: pw.FontWeight.bold,
@@ -183,17 +183,17 @@ class Q34UmEFmZpJBug5absWen858 {
             );
             widgets.add(pw.SizedBox(height: 5));
 
-            widgets.add(_ocf6hoizP3(part));
+            widgets.add(_buildTable(part));
 
             widgets.add(pw.SizedBox(height: 20));
 
             final hasImages = part.any(
-              (i) => (imagesByItemId[i.oVxZdl] ?? const []).isNotEmpty,
+              (i) => (imagesByItemId[i.itemId] ?? const []).isNotEmpty,
             );
             if (hasImages) {
               widgets.add(
                 pw.Text(
-                  'Evidencias fotográficas - ${definition.xAWWV}',
+                  'Evidencias fotográficas - ${definition.title}',
                   style: pw.TextStyle(
                     fontSize: 14,
                     fontWeight: pw.FontWeight.bold,
@@ -205,12 +205,12 @@ class Q34UmEFmZpJBug5absWen858 {
               for (var i = 0; i < part.length; i++) {
                 final item = part[i];
                 final bytesList =
-                    imagesByItemId[item.oVxZdl] ?? const <Uint8List>[];
+                    imagesByItemId[item.itemId] ?? const <Uint8List>[];
                 if (bytesList.isEmpty) continue;
 
                 widgets.add(
                   pw.Text(
-                    '${_cwPu63t5OPp(draft.y6Dy1, item.oVxZdl) + 1}. ${item.eGm7S}',
+                    '${_globalIndex(draft.items, item.itemId) + 1}. ${item.label}',
                     style: pw.TextStyle(
                       fontSize: 11,
                       fontWeight: pw.FontWeight.bold,
@@ -258,7 +258,7 @@ class Q34UmEFmZpJBug5absWen858 {
     return pdf.save();
   }
 
-  static pw.Widget _ocf6hoizP3(List<FrKyfgAdXg4rDE7QpFC> items) {
+  static pw.Widget _buildTable(List<ChecklistItemAnswer> items) {
     return pw.Table(
       border: pw.TableBorder.all(width: 1, color: PdfColors.black),
       columnWidths: {
@@ -311,14 +311,14 @@ class Q34UmEFmZpJBug5absWen858 {
               pw.Padding(
                 padding: const pw.EdgeInsets.all(5),
                 child: pw.Text(
-                  product.eGm7S,
+                  product.label,
                   style: const pw.TextStyle(fontSize: 10),
                 ),
               ),
               pw.Padding(
                 padding: const pw.EdgeInsets.all(5),
                 child: pw.Text(
-                  product.xDksiE ? 'X' : '',
+                  product.cumple ? 'X' : '',
                   textAlign: pw.TextAlign.center,
                   style: const pw.TextStyle(fontSize: 10),
                 ),
@@ -326,7 +326,7 @@ class Q34UmEFmZpJBug5absWen858 {
               pw.Padding(
                 padding: const pw.EdgeInsets.all(5),
                 child: pw.Text(
-                  product.jjrHH614 ? 'X' : '',
+                  product.noCumple ? 'X' : '',
                   textAlign: pw.TextAlign.center,
                   style: const pw.TextStyle(fontSize: 10),
                 ),
@@ -334,7 +334,7 @@ class Q34UmEFmZpJBug5absWen858 {
               pw.Padding(
                 padding: const pw.EdgeInsets.all(5),
                 child: pw.Text(
-                  product.hlbyb6DeF9B,
+                  product.observacion,
                   style: const pw.TextStyle(fontSize: 10),
                 ),
               ),
@@ -345,7 +345,7 @@ class Q34UmEFmZpJBug5absWen858 {
     );
   }
 
-  static List<List<T>> _iC0sH<T>(List<T> list, int size) {
+  static List<List<T>> _chunk<T>(List<T> list, int size) {
     if (size <= 0) return [list];
     final out = <List<T>>[];
     for (var i = 0; i < list.length; i += size) {
@@ -354,7 +354,7 @@ class Q34UmEFmZpJBug5absWen858 {
     return out;
   }
 
-  static int _cwPu63t5OPp(List<FrKyfgAdXg4rDE7QpFC> all, String itemId) {
-    return all.indexWhere((e) => e.oVxZdl == itemId);
+  static int _globalIndex(List<ChecklistItemAnswer> all, String itemId) {
+    return all.indexWhere((e) => e.itemId == itemId);
   }
 }

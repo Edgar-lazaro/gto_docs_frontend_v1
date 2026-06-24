@@ -1,26 +1,26 @@
-enum YK3VClXnaFNxD {
-  vjjsJK,
-  fy5Gw7bRP,
-  tI8gH,
-  ndHC,
+enum EvidenciaTipo {
+  imagen,
+  documento,
+  video,
+  otro,
 }
 
-class HcVpDLKUzZ9nRLEP {
-  final String dg;
-  final String vgfZYou3H;
-  final YK3VClXnaFNxD pfXF;
-  final String fCBDEZ;
-  final String jrL8Kkz87;     // archivo local (offline)
-  final String? xdxMCUf4Y;    // URL backend cuando se sincroniza
-  final DateTime myZ21HUw;
+class ReporteEvidencia {
+  final String id;
+  final String reporteId;
+  final EvidenciaTipo tipo;
+  final String nombre;
+  final String localPath;     // archivo local (offline)
+  final String? remoteUrl;    // URL backend cuando se sincroniza
+  final DateTime creadoEn;
 
-  HcVpDLKUzZ9nRLEP({
-    required this.dg,
-    required this.vgfZYou3H,
-    required this.pfXF,
-    required this.fCBDEZ,
-    required this.jrL8Kkz87,
-    this.xdxMCUf4Y,
-    required this.myZ21HUw,
+  ReporteEvidencia({
+    required this.id,
+    required this.reporteId,
+    required this.tipo,
+    required this.nombre,
+    required this.localPath,
+    this.remoteUrl,
+    required this.creadoEn,
   });
 }

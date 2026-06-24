@@ -3,14 +3,14 @@ import 'package:drift/drift.dart';
 import 'package:gto_docs_v2_ad/core/database/app_database.dart';
 import 'package:gto_docs_v2_ad/modules/reportes/domain/reporte_comentario.dart';
 
-class IT74gf7ttgWdSEinAoqVCYTfmC9i {
-  final AppDatabase l4;
+class ReporteComentariosRepository {
+  final AppDatabase db;
 
-  IT74gf7ttgWdSEinAoqVCYTfmC9i(this.l4);
+  ReporteComentariosRepository(this.db);
 
-  Future<void> ddGByN2tSsBB68j6A(ReporteComentario c) async {
-    await l4
-        .into(l4.reporteComentariosTable)
+  Future<void> agregarComentario(ReporteComentario c) async {
+    await db
+        .into(db.reporteComentariosTable)
         .insert(
           ReporteComentariosTableCompanion.insert(
             id: c.id,
@@ -21,8 +21,8 @@ class IT74gf7ttgWdSEinAoqVCYTfmC9i {
           ),
         );
 
-    await l4
-        .into(l4.syncQueueTable)
+    await db
+        .into(db.syncQueueTable)
         .insert(
           SyncQueueTableCompanion.insert(
             entidad: 'reporte_comentario',

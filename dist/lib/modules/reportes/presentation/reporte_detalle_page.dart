@@ -9,16 +9,16 @@ import '../domain/reporte_evidencia.dart';
 import 'reporte_providers.dart';
 import 'reporte_evidencias_providers.dart';
 
-class OmPdpPamtI5ZmWcPvp extends ConsumerWidget {
-  final String fvxRg7LDA;
+class ReporteDetallePage extends ConsumerWidget {
+  final String reporteId;
 
-  const OmPdpPamtI5ZmWcPvp({super.key, required this.fvxRg7LDA});
+  const ReporteDetallePage({super.key, required this.reporteId});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final reporteAsync = ref.watch(reportePorIdProvider(fvxRg7LDA));
+    final reporteAsync = ref.watch(reportePorIdProvider(reporteId));
     final evidenciasAsync =
-        ref.watch(evidenciasPorReporteProvider(fvxRg7LDA));
+        ref.watch(evidenciasPorReporteProvider(reporteId));
 
     return reporteAsync.when(
       loading: () => const Scaffold(

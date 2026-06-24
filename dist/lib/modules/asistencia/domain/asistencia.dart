@@ -1,22 +1,22 @@
-enum J7OYk8rIWDVpkP {
-  eKYrnx3,
-  asG53i,
+enum TipoAsistencia {
+  entrada,
+  salida,
 }
 
-class GXcG6a0OPJ {
-  final int dd;
-  final String oZr53E57z;
-  final DateTime cfduGXXkZ;
-  final J7OYk8rIWDVpkP ehfA;
-  final String jYfRMJ; // manual / biometrico (futuro)
-  final bool u2aCQFocSFuc;
+class Asistencia {
+  final int id;
+  final String usuarioId;
+  final DateTime fechaHora;
+  final TipoAsistencia tipo;
+  final String metodo; // manual / biometrico (futuro)
+  final bool sincronizado;
 
-  GXcG6a0OPJ({
-    required this.dd,
-    required this.oZr53E57z,
-    required this.cfduGXXkZ,
-    required this.ehfA,
-    required this.jYfRMJ,
-    required this.u2aCQFocSFuc,
+  Asistencia({
+    required this.id,
+    required this.usuarioId,
+    required this.fechaHora,
+    required this.tipo,
+    required this.metodo,
+    required this.sincronizado,
   });
 }

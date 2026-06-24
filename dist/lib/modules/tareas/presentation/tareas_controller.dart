@@ -3,17 +3,17 @@ import '../../notificacions/domain/notificacion.dart';
 import '../domain/tarea.dart';
 import '../domain/tarea_repository.dart';
 
-class YFN4UOLKRErF0zB {
-  final TareaRepository mKIjpL4jh1;
-  final NotificacionRepository vzk3Dzfc2O8aCGgf;
+class TareaController {
+  final TareaRepository repository;
+  final NotificacionRepository notificacionRepo;
 
-  YFN4UOLKRErF0zB(this.mKIjpL4jh1, this.vzk3Dzfc2O8aCGgf);
+  TareaController(this.repository, this.notificacionRepo);
 
-  Future<void> xJaXqYSeLc(Tarea tarea) async {
-    await mKIjpL4jh1.crearTarea(tarea);
+  Future<void> crearTarea(Tarea tarea) async {
+    await repository.crearTarea(tarea);
 
     // NOTIFICACIÓN
-    await vzk3Dzfc2O8aCGgf.crear(
+    await notificacionRepo.crear(
       tipo: NotificacionTipo.tarea.name,
       titulo: 'Nueva tarea asignada',
       mensaje: tarea.titulo,

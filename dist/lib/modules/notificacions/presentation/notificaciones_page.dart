@@ -5,8 +5,8 @@ import '../../notificacions/domain/notificacion.dart';
 import '../../reportes/presentation/reporte_detalle_page.dart';
 import 'notificacion_providers.dart';
 
-class HOxkF0juqVNgaCkzfk extends ConsumerWidget {
-  const HOxkF0juqVNgaCkzfk({super.key});
+class NotificacionesPage extends ConsumerWidget {
+  const NotificacionesPage({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

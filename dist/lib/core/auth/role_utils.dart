@@ -1,7 +1,7 @@
 import 'auth_models.dart';
 
-extension TbRGTOChF9v47 on KqBOLs41 {
-  List<String> get rolesLower => fH7uu.map((e) => e.toLowerCase()).toList();
+extension AuthUserRoleX on AuthUser {
+  List<String> get rolesLower => roles.map((e) => e.toLowerCase()).toList();
 
   bool get isAdmin => rolesLower.any((r) => r.contains('admin'));
 
@@ -20,7 +20,7 @@ extension TbRGTOChF9v47 on KqBOLs41 {
   /// Intenta obtener un ID numérico estable de gerencia.
   /// Nota: `gerencia` viene a veces como nombre (ej. "TICS") y a veces como ID.
   int? get resolvedGerenciaId {
-    final raw = ucAcyxha.trim();
+    final raw = gerencia.trim();
     final parsed = int.tryParse(raw);
     if (parsed != null) return parsed;
 

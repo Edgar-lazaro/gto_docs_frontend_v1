@@ -4,12 +4,12 @@ import 'package:uuid/uuid.dart';
 import '../../../core/database/app_database.dart';
 import '../domain/tarea_comentario.dart';
 
-class WbpePJ3kboJ3Y0p7htts0KrLP1 {
-  final AppDatabase dw;
+class TareaComentariosRepository {
+  final AppDatabase db;
 
-  WbpePJ3kboJ3Y0p7htts0KrLP1(this.dw);
+  TareaComentariosRepository(this.db);
 
-  Future<void> snZH27bTrGSA7uSjV({
+  Future<void> agregarComentario({
     required String tareaId,
     required String autorId,
     required String mensaje,
@@ -22,8 +22,8 @@ class WbpePJ3kboJ3Y0p7htts0KrLP1 {
       creadoEn: DateTime.now(),
     );
 
-    await dw
-        .into(dw.tareaComentariosTable)
+    await db
+        .into(db.tareaComentariosTable)
         .insert(
           TareaComentariosTableCompanion.insert(
             id: c.id,
@@ -34,8 +34,8 @@ class WbpePJ3kboJ3Y0p7htts0KrLP1 {
           ),
         );
 
-    await dw
-        .into(dw.syncQueueTable)
+    await db
+        .into(db.syncQueueTable)
         .insert(
           SyncQueueTableCompanion.insert(
             entidad: 'tarea_comentario',
@@ -51,8 +51,8 @@ class WbpePJ3kboJ3Y0p7htts0KrLP1 {
         );
   }
 
-  Stream<List<TareaComentario>> kXjwA2jXQtC2xtX(String tareaId) {
-    return (dw.select(dw.tareaComentariosTable)
+  Stream<List<TareaComentario>> watchPorTareaId(String tareaId) {
+    return (db.select(db.tareaComentariosTable)
           ..where((c) => c.tareaId.equals(tareaId))
           ..orderBy([(c) => OrderingTerm.asc(c.creadoEn)]))
         .watch()

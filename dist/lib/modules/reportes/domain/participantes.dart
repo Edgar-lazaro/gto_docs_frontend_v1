@@ -1,14 +1,14 @@
-enum Rl13JzlRLG33iqP {
-  ltLLKYhinTg,
-  yneafBerP6,
+enum ParticipanteRol {
+  responsable,
+  observador,
 }
 
-class FMiwu4wtBwxE {
-  final String fZtJ3l;
-  final Rl13JzlRLG33iqP jyy;
+class Participante {
+  final String userId;
+  final ParticipanteRol rol;
 
-  FMiwu4wtBwxE({
-    required this.fZtJ3l,
-    required this.jyy,
+  Participante({
+    required this.userId,
+    required this.rol,
   });
 }

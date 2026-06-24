@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:gto_docs_v2_ad/shared/ui/theme/gerencia_config.dart';
 
-class A7ModBQ3DyUTcy extends StatelessWidget {
-  final GerenciaTheme nL20Y;
-  final String gOCUGqUZ;
+class GradientHeader extends StatelessWidget {
+  final GerenciaTheme theme;
+  final String userName;
 
-  const A7ModBQ3DyUTcy({
+  const GradientHeader({
     super.key,
-    required this.nL20Y,
-    required this.gOCUGqUZ,
+    required this.theme,
+    required this.userName,
   });
 
   @override
@@ -19,7 +19,7 @@ class A7ModBQ3DyUTcy extends StatelessWidget {
       padding: EdgeInsets.fromLTRB(24, isTablet ? 32 : 24, 24, 32),
       decoration: BoxDecoration(
         gradient: LinearGradient(
-          colors: [nL20Y.colorPrimario, nL20Y.colorSecundario],
+          colors: [theme.colorPrimario, theme.colorSecundario],
         ),
         borderRadius: BorderRadius.vertical(
           bottom: Radius.circular(isTablet ? 40 : 32),
@@ -34,7 +34,7 @@ class A7ModBQ3DyUTcy extends StatelessWidget {
                 fontSize: isTablet ? 20 : 16,
               )),
           Text(
-            gOCUGqUZ,
+            userName,
             style: TextStyle(
               color: Colors.white,
               fontSize: isTablet ? 32 : 24,

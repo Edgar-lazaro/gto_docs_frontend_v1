@@ -1,7 +1,7 @@
-class SpDYIdOpaSs7R {
-  final List<String> zrxfGdlDhvBfrql;
+class NetworkConfig {
+  final List<String> allowedIpRanges;
 
-  const SpDYIdOpaSs7R({
-    required this.zrxfGdlDhvBfrql,
+  const NetworkConfig({
+    required this.allowedIpRanges,
   });
 }

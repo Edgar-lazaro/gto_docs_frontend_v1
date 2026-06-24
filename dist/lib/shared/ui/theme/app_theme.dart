@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
-class M5ZVoUz4 {
-  static const double _qM3EXE = 16;
+class AppTheme {
+  static const double _radius = 16;
 
-  static ThemeData mNjrq() {
+  static ThemeData light() {
     final colorScheme = ColorScheme.fromSeed(
       seedColor: const Color(0xFF2563EB),
       brightness: Brightness.light,
@@ -45,7 +45,7 @@ class M5ZVoUz4 {
         elevation: 0,
         margin: EdgeInsets.zero,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(_qM3EXE),
+          borderRadius: BorderRadius.circular(_radius),
           side: BorderSide(color: colorScheme.outlineVariant.withAlpha(90)),
         ),
       ),
@@ -53,7 +53,7 @@ class M5ZVoUz4 {
         iconColor: colorScheme.onSurfaceVariant,
         textColor: colorScheme.onSurface,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(_qM3EXE),
+          borderRadius: BorderRadius.circular(_radius),
         ),
       ),
       inputDecorationTheme: InputDecorationTheme(
@@ -132,7 +132,7 @@ class M5ZVoUz4 {
     );
   }
 
-  static ThemeData beHc() {
+  static ThemeData dark() {
     final colorScheme = ColorScheme.fromSeed(
       seedColor: const Color(0xFF2563EB),
       brightness: Brightness.dark,
@@ -198,7 +198,7 @@ class M5ZVoUz4 {
         elevation: 0,
         margin: EdgeInsets.zero,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(_qM3EXE),
+          borderRadius: BorderRadius.circular(_radius),
           side: BorderSide(color: colorScheme.outlineVariant.withAlpha(80)),
         ),
       ),

@@ -17,7 +17,7 @@ void main() async {
       overrides: [
         sharedPreferencesProvider.overrideWithValue(prefs),
       ],
-      child: const NLu(),
+      child: const App(),
     ),
     killSwitch: const KillSwitchService(),
     hasLan: true,

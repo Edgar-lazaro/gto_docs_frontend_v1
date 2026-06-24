@@ -1,12 +1,12 @@
 import 'package:drift/drift.dart';
 
-class RNEVvWsv9UVqyU7LQ3ixET8 extends Table {
-  TextColumn get e1 => text()();
-  TextColumn get pMfnkJIJc => text()();
-  TextColumn get afKIwHG => text()();
-  TextColumn get w52Q8yJ => text()();
-  DateTimeColumn get q1y0mtak => dateTime()();
+class ReporteComentariosTable extends Table {
+  TextColumn get id => text()();
+  TextColumn get reporteId => text()();
+  TextColumn get autorId => text()();
+  TextColumn get mensaje => text()();
+  DateTimeColumn get creadoEn => dateTime()();
 
   @override
-  Set<Column> get primaryKey => {e1};
+  Set<Column> get primaryKey => {id};
 }

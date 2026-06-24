@@ -1,69 +1,69 @@
 import 'package:flutter/foundation.dart';
 
 @immutable
-class AuHnvgWVYlrtTLknyggazMJ {
-  final String n2;
-  final String u8JzM;
+class ChecklistItemDefinition {
+  final String id;
+  final String label;
 
-  const AuHnvgWVYlrtTLknyggazMJ({required this.n2, required this.u8JzM});
+  const ChecklistItemDefinition({required this.id, required this.label});
 }
 
 @immutable
-class A32xKOUKm8KMrJkQEMBm9puVx {
-  final String bY;
-  final String xAWWV;
-  final String bVUNaMkVhBAwRt;
-  final String xUX9iztXXpohN;
-  final List<AuHnvgWVYlrtTLknyggazMJ> twWXC;
+class ChecklistReportDefinition {
+  final String id;
+  final String title;
+  final String pdfHeaderTitle;
+  final String locationLabel;
+  final List<ChecklistItemDefinition> items;
 
-  const A32xKOUKm8KMrJkQEMBm9puVx({
-    required this.bY,
-    required this.xAWWV,
-    this.bVUNaMkVhBAwRt = 'REPORTE DE MANTENIMIENTO PREVENTIVO',
-    this.xUX9iztXXpohN = 'Site',
-    required this.twWXC,
+  const ChecklistReportDefinition({
+    required this.id,
+    required this.title,
+    this.pdfHeaderTitle = 'REPORTE DE MANTENIMIENTO PREVENTIVO',
+    this.locationLabel = 'Site',
+    required this.items,
   });
 }
 
 @immutable
-class FrKyfgAdXg4rDE7QpFC {
-  final String oVxZdl;
-  final String eGm7S;
-  final bool xDksiE;
-  final bool jjrHH614;
-  final String hlbyb6DeF9B;
+class ChecklistItemAnswer {
+  final String itemId;
+  final String label;
+  final bool cumple;
+  final bool noCumple;
+  final String observacion;
 
-  final List<String> y35qpUs2ZT;
+  final List<String> imagePaths;
 
-  const FrKyfgAdXg4rDE7QpFC({
-    required this.oVxZdl,
-    required this.eGm7S,
-    required this.xDksiE,
-    required this.jjrHH614,
-    required this.hlbyb6DeF9B,
-    required this.y35qpUs2ZT,
+  const ChecklistItemAnswer({
+    required this.itemId,
+    required this.label,
+    required this.cumple,
+    required this.noCumple,
+    required this.observacion,
+    required this.imagePaths,
   });
 }
 
 @immutable
-class IDXe8JudY4J27fMVDEST {
-  final String uQYHwcu6pGQl;
-  final String i61BPT32Jku;
+class ChecklistReportDraft {
+  final String reportTypeId;
+  final String reportTitle;
 
-  final String fQbZ;
-  final String cslvKXrhK6M;
-  final String syA1h;
+  final String site;
+  final String responsable;
+  final String folio;
 
-  final DateTime yS9AY8riA;
-  final List<FrKyfgAdXg4rDE7QpFC> y6Dy1;
+  final DateTime createdAt;
+  final List<ChecklistItemAnswer> items;
 
-  const IDXe8JudY4J27fMVDEST({
-    required this.uQYHwcu6pGQl,
-    required this.i61BPT32Jku,
-    required this.fQbZ,
-    required this.cslvKXrhK6M,
-    required this.syA1h,
-    required this.yS9AY8riA,
-    required this.y6Dy1,
+  const ChecklistReportDraft({
+    required this.reportTypeId,
+    required this.reportTitle,
+    required this.site,
+    required this.responsable,
+    required this.folio,
+    required this.createdAt,
+    required this.items,
   });
 }

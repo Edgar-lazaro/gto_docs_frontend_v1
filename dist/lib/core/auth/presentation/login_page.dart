@@ -4,38 +4,38 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../auth_models.dart';
 import '../auth_providers.dart';
 
-class QmArr4NYD extends ConsumerStatefulWidget {
-  const QmArr4NYD({super.key});
+class LoginPage extends ConsumerStatefulWidget {
+  const LoginPage({super.key});
 
   @override
-  ConsumerState<QmArr4NYD> createState() => _CfwzNwgzOYdF4d();
+  ConsumerState<LoginPage> createState() => _LoginPageState();
 }
 
-class _CfwzNwgzOYdF4d extends ConsumerState<QmArr4NYD> {
-  final _huQJMNT = GlobalKey<FormState>();
-  final _tlbrQmmXeo4s = TextEditingController();
-  final _fNIjpd1bgTxy = TextEditingController();
+class _LoginPageState extends ConsumerState<LoginPage> {
+  final _formKey = GlobalKey<FormState>();
+  final _usernameCtrl = TextEditingController();
+  final _passwordCtrl = TextEditingController();
 
-  bool _jVCgByp = false;
-  bool _kLg0vMP6GmQrkAW = true;
-  ProviderSubscription<VgJlYXlcR>? _x5EcCkp;
+  bool _loading = false;
+  bool _obscurePassword = true;
+  ProviderSubscription<AuthState>? _authSub;
 
   @override
   void initState() {
     super.initState();
 
-    _x5EcCkp = ref.listenManual<VgJlYXlcR>(authControllerProvider, (
+    _authSub = ref.listenManual<AuthState>(authControllerProvider, (
       prev,
       next,
     ) {
-      if (prev?.axjCVg == Ja6KZpv6M7.d70OR6T &&
-          next.axjCVg != Ja6KZpv6M7.d70OR6T) {
+      if (prev?.status == AuthStatus.unknown &&
+          next.status != AuthStatus.unknown) {
         return;
       }
 
-      if (prev?.axjCVg != next.axjCVg && mounted) {
-        if (next.axjCVg == Ja6KZpv6M7.rWrnh809fWrwm00 && _jVCgByp) {
-          setState(() => _jVCgByp = false);
+      if (prev?.status != next.status && mounted) {
+        if (next.status == AuthStatus.unauthenticated && _loading) {
+          setState(() => _loading = false);
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
               content: Text('Login fallido. Revisa tus credenciales.'),
@@ -48,24 +48,24 @@ class _CfwzNwgzOYdF4d extends ConsumerState<QmArr4NYD> {
 
   @override
   void dispose() {
-    _x5EcCkp?.close();
-    _tlbrQmmXeo4s.dispose();
-    _fNIjpd1bgTxy.dispose();
+    _authSub?.close();
+    _usernameCtrl.dispose();
+    _passwordCtrl.dispose();
     super.dispose();
   }
 
-  Future<void> _kjZM96() async {
-    final ok = _huQJMNT.currentState?.validate() ?? false;
+  Future<void> _submit() async {
+    final ok = _formKey.currentState?.validate() ?? false;
     if (!ok) return;
 
-    final username = _tlbrQmmXeo4s.text.trim();
-    final password = _fNIjpd1bgTxy.text;
+    final username = _usernameCtrl.text.trim();
+    final password = _passwordCtrl.text;
 
-    setState(() => _jVCgByp = true);
-    await ref.read(authControllerProvider.notifier).pPCVW(username, password);
+    setState(() => _loading = true);
+    await ref.read(authControllerProvider.notifier).login(username, password);
 
     if (!mounted) return;
-    setState(() => _jVCgByp = false);
+    setState(() => _loading = false);
   }
 
   @override
@@ -143,7 +143,7 @@ class _CfwzNwgzOYdF4d extends ConsumerState<QmArr4NYD> {
                       child: Padding(
                         padding: EdgeInsets.all(isTablet ? 24 : 16),
                         child: Form(
-                          key: _huQJMNT,
+                          key: _formKey,
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.stretch,
                             children: [
@@ -159,7 +159,7 @@ class _CfwzNwgzOYdF4d extends ConsumerState<QmArr4NYD> {
                               ),
                               SizedBox(height: isTablet ? 22 : 16),
                               TextFormField(
-                                controller: _tlbrQmmXeo4s,
+                                controller: _usernameCtrl,
                                 decoration: const InputDecoration(
                                   labelText: 'Usuario AD o correo',
                                   prefixIcon: Icon(Icons.person),
@@ -174,25 +174,25 @@ class _CfwzNwgzOYdF4d extends ConsumerState<QmArr4NYD> {
                               ),
                               SizedBox(height: isTablet ? 18 : 12),
                               TextFormField(
-                                controller: _fNIjpd1bgTxy,
-                                obscureText: _kLg0vMP6GmQrkAW,
+                                controller: _passwordCtrl,
+                                obscureText: _obscurePassword,
                                 decoration: InputDecoration(
                                   labelText: 'Contraseña',
                                   prefixIcon: const Icon(Icons.lock),
                                   suffixIcon: IconButton(
                                     icon: Icon(
-                                      _kLg0vMP6GmQrkAW
+                                      _obscurePassword
                                           ? Icons.visibility
                                           : Icons.visibility_off,
                                     ),
                                     onPressed: () => setState(
                                       () =>
-                                          _kLg0vMP6GmQrkAW = !_kLg0vMP6GmQrkAW,
+                                          _obscurePassword = !_obscurePassword,
                                     ),
                                   ),
                                 ),
                                 textInputAction: TextInputAction.done,
-                                onFieldSubmitted: (_) => _kjZM96(),
+                                onFieldSubmitted: (_) => _submit(),
                                 validator: (value) =>
                                     (value == null || value.isEmpty)
                                     ? 'Campo requerido'
@@ -202,8 +202,8 @@ class _CfwzNwgzOYdF4d extends ConsumerState<QmArr4NYD> {
                               SizedBox(
                                 width: double.infinity,
                                 child: ElevatedButton(
-                                  onPressed: _jVCgByp ? null : _kjZM96,
-                                  child: _jVCgByp
+                                  onPressed: _loading ? null : _submit,
+                                  child: _loading
                                       ? const SizedBox(
                                           height: 22,
                                           width: 22,
@@ -221,7 +221,7 @@ class _CfwzNwgzOYdF4d extends ConsumerState<QmArr4NYD> {
                     ),
                     SizedBox(height: isTablet ? 18 : 14),
                     AnimatedOpacity(
-                      opacity: _jVCgByp ? 0.65 : 1,
+                      opacity: _loading ? 0.65 : 1,
                       duration: const Duration(milliseconds: 250),
                       child: Text(
                         '© 2025 GTO Docs',

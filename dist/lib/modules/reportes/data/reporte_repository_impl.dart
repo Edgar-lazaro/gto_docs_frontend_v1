@@ -6,17 +6,17 @@ import '../../../core/database/app_database.dart';
 import '../domain/reporte.dart';
 import '../domain/reporte_repository.dart';
 
-class L2RAjl5bhcxxtT2tSP9ap implements ReporteRepository {
-  final AppDatabase tt;
-  final Dio? pVn;
+class ReporteRepositoryImpl implements ReporteRepository {
+  final AppDatabase db;
+  final Dio? dio;
 
-  L2RAjl5bhcxxtT2tSP9ap({required this.tt, this.pVn});
+  ReporteRepositoryImpl({required this.db, this.dio});
 
   @override
   Future<void> crearReporte(Reporte reporte) async {
     //  Guardar local
-    await tt
-        .into(tt.reportesTable)
+    await db
+        .into(db.reportesTable)
         .insert(
           ReportesTableCompanion.insert(
             id: reporte.id,
@@ -37,8 +37,8 @@ class L2RAjl5bhcxxtT2tSP9ap implements ReporteRepository {
         );
 
     // Agregar a SyncQueue → backend creará ticket GLPI
-    await tt
-        .into(tt.syncQueueTable)
+    await db
+        .into(db.syncQueueTable)
         .insert(
           SyncQueueTableCompanion.insert(
             entidad: 'reporte',
@@ -60,15 +60,15 @@ class L2RAjl5bhcxxtT2tSP9ap implements ReporteRepository {
   @override
   Future<List<Reporte>> obtenerReportes() async {
     // Primero lo local (offline-first)
-    var local = await _bYc7uVAyr();
+    var local = await _readLocal();
 
     // Si hay backend configurado, intentamos traer y hacer upsert en local
-    if (pVn != null) {
+    if (dio != null) {
       try {
-        final remote = await _ivjPAGEYXA9bs1siBvd();
+        final remote = await _fetchRemoteReportes();
         if (remote.isNotEmpty) {
-          await _l0plWa9lADlIS4mQ9om45(remote);
-          local = await _bYc7uVAyr();
+          await _upsertRemoteIntoLocal(remote);
+          local = await _readLocal();
         }
       } catch (_) {
         // Si falla el backend, dejamos lo local.
@@ -78,8 +78,8 @@ class L2RAjl5bhcxxtT2tSP9ap implements ReporteRepository {
     return local;
   }
 
-  Future<List<Reporte>> _bYc7uVAyr() async {
-    final rows = await tt.select(tt.reportesTable).get();
+  Future<List<Reporte>> _readLocal() async {
+    final rows = await db.select(db.reportesTable).get();
 
     return rows.map((r) {
       return Reporte(
@@ -99,14 +99,14 @@ class L2RAjl5bhcxxtT2tSP9ap implements ReporteRepository {
     }).toList();
   }
 
-  Future<List<Map<String, dynamic>>> _ivjPAGEYXA9bs1siBvd() async {
+  Future<List<Map<String, dynamic>>> _fetchRemoteReportes() async {
     final candidates = <String>['/reportes', '/reporte'];
 
     Object? lastError;
     for (final path in candidates) {
       try {
-        final res = await pVn!.get(path);
-        final list = _iy2VIjcsoBz(res.data);
+        final res = await dio!.get(path);
+        final list = _extractList(res.data);
         return list;
       } catch (e) {
         lastError = e;
@@ -115,7 +115,7 @@ class L2RAjl5bhcxxtT2tSP9ap implements ReporteRepository {
     throw lastError ?? Exception('No se pudo obtener reportes');
   }
 
-  List<Map<String, dynamic>> _iy2VIjcsoBz(dynamic data) {
+  List<Map<String, dynamic>> _extractList(dynamic data) {
     dynamic root = data;
     if (root is Map<String, dynamic>) {
       root = root['data'] ?? root['items'] ?? root['result'] ?? root;
@@ -141,7 +141,7 @@ class L2RAjl5bhcxxtT2tSP9ap implements ReporteRepository {
     return const <Map<String, dynamic>>[];
   }
 
-  Future<void> _l0plWa9lADlIS4mQ9om45(List<Map<String, dynamic>> remote) async {
+  Future<void> _upsertRemoteIntoLocal(List<Map<String, dynamic>> remote) async {
     for (final r in remote) {
       final id = (r['id'] ?? '').toString();
       if (id.isEmpty) continue;
@@ -164,8 +164,8 @@ class L2RAjl5bhcxxtT2tSP9ap implements ReporteRepository {
       // El schema del backend no trae estos campos; usamos defaults razonables.
       final categoria = (r['categoria'] ?? 'General').toString();
 
-      await tt
-          .into(tt.reportesTable)
+      await db
+          .into(db.reportesTable)
           .insert(
             ReportesTableCompanion.insert(
               id: id,

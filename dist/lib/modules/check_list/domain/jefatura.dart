@@ -1,26 +1,26 @@
-class MvYhndxd {
-  final int om;
-  final String lg9qmj;
-  final int kAYYIsDV;
-  final String? rMO;
+class Jefatura {
+  final int id;
+  final String nombre;
+  final int gerencia;
+  final String? img;
 
-  const MvYhndxd({
-    required this.om,
-    required this.lg9qmj,
-    required this.kAYYIsDV,
-    this.rMO,
+  const Jefatura({
+    required this.id,
+    required this.nombre,
+    required this.gerencia,
+    this.img,
   });
 
-  factory MvYhndxd.fromJson(Map<String, dynamic> json) {
+  factory Jefatura.fromJson(Map<String, dynamic> json) {
     final id = json['id'] ?? json['jefatura_id'] ?? json['jefaturaId'];
     final gerencia =
         json['gerencia'] ?? json['gerencia_id'] ?? json['gerenciaId'];
 
-    return MvYhndxd(
-      om: int.tryParse(id?.toString() ?? '') ?? 0,
-      lg9qmj: (json['nombre_jefatura'] ?? json['nombre'] ?? '').toString(),
-      kAYYIsDV: int.tryParse(gerencia?.toString() ?? '') ?? 0,
-      rMO: (json['img'] ?? json['imagen'] ?? '').toString().trim().isEmpty
+    return Jefatura(
+      id: int.tryParse(id?.toString() ?? '') ?? 0,
+      nombre: (json['nombre_jefatura'] ?? json['nombre'] ?? '').toString(),
+      gerencia: int.tryParse(gerencia?.toString() ?? '') ?? 0,
+      img: (json['img'] ?? json['imagen'] ?? '').toString().trim().isEmpty
           ? null
           : (json['img'] ?? json['imagen']).toString(),
     );

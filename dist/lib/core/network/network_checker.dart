@@ -1,24 +1,24 @@
 import 'dart:io';
 import 'package:connectivity_plus/connectivity_plus.dart';
 
-class DzFehef3VL4MoV {
-  final Connectivity _hW054VAMzoNf = Connectivity();
+class NetworkChecker {
+  final Connectivity _connectivity = Connectivity();
 
   /// ¿Existe conectividad?
-  Future<bool> mRTEmVNZMH() async {
-    final results = await _hW054VAMzoNf.checkConnectivity();
+  Future<bool> hasNetwork() async {
+    final results = await _connectivity.checkConnectivity();
     return !results.contains(ConnectivityResult.none);
   }
 
   /// ¿Está conectado por WiFi o Ethernet?
-  Future<bool> sIZ2MBeZqUlP1r4() async {
-    final results = await _hW054VAMzoNf.checkConnectivity();
+  Future<bool> isLanConnection() async {
+    final results = await _connectivity.checkConnectivity();
     return results.contains(ConnectivityResult.wifi) ||
         results.contains(ConnectivityResult.ethernet);
   }
 
   /// Obtiene IP local
-  Future<String?> iHAFR9v1BV() async {
+  Future<String?> getLocalIp() async {
     try {
       final interfaces = await NetworkInterface.list(
         type: InternetAddressType.IPv4,
@@ -38,7 +38,7 @@ class DzFehef3VL4MoV {
   }
 
   /// Verifica si la IP pertenece a rangos permitidos 
-  bool jDG8gj6sEVs(String ip, List<String> allowedRanges) {
+  bool isIpAllowed(String ip, List<String> allowedRanges) {
     
     return allowedRanges.isNotEmpty;
   }

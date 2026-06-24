@@ -15,23 +15,23 @@ import '../../../core/reports_engine/pdf_file_service.dart';
 import '../../../shared/ui/theme/gerencia_config.dart';
 import '../../../shared/ui/widgets/gerencia_app_bar.dart';
 
-class K3GxSJcRB3IG extends ConsumerStatefulWidget {
-  final GerenciaTheme wEBAF;
+class ReportesPage extends ConsumerStatefulWidget {
+  final GerenciaTheme theme;
 
-  const K3GxSJcRB3IG({super.key, required this.wEBAF});
+  const ReportesPage({super.key, required this.theme});
 
   @override
-  ConsumerState<K3GxSJcRB3IG> createState() => _NK2mTeVM6SRR4qnO8();
+  ConsumerState<ReportesPage> createState() => _ReportesPageState();
 }
 
-class _NK2mTeVM6SRR4qnO8 extends ConsumerState<K3GxSJcRB3IG> {
-  final _cVya9aLq49Uk2RRz = TextEditingController();
-  String _epKFrJK56Y1 = '';
-  bool _cQaKHLyBp = false;
+class _ReportesPageState extends ConsumerState<ReportesPage> {
+  final _searchController = TextEditingController();
+  String _searchQuery = '';
+  bool _uploading = false;
 
   @override
   void dispose() {
-    _cVya9aLq49Uk2RRz.dispose();
+    _searchController.dispose();
     super.dispose();
   }
 
@@ -61,15 +61,15 @@ class _NK2mTeVM6SRR4qnO8 extends ConsumerState<K3GxSJcRB3IG> {
 
     return Scaffold(
       appBar: GerenciaAppBar(
-        theme: widget.wEBAF,
+        theme: widget.theme,
         title: 'Reportes',
         actions: [
           IconButton(
             tooltip: 'Subir pendientes',
             icon: const Icon(Icons.cloud_upload),
-            onPressed: _cQaKHLyBp || !lanConnected
+            onPressed: _uploading || !lanConnected
                 ? null
-                : () => _nBoha8JYXdp54OTK(user),
+                : () => _uploadPendientes(user),
           ),
         ],
       ),
@@ -83,7 +83,7 @@ class _NK2mTeVM6SRR4qnO8 extends ConsumerState<K3GxSJcRB3IG> {
         ),
         data: (all) {
           final visible = _filterByRole(user, all);
-          final filtered = _nTvFk5dElgr(visible);
+          final filtered = _applySearch(visible);
 
           return RefreshIndicator(
             onRefresh: () async {
@@ -97,8 +97,8 @@ class _NK2mTeVM6SRR4qnO8 extends ConsumerState<K3GxSJcRB3IG> {
               ),
               children: [
                 TextField(
-                  controller: _cVya9aLq49Uk2RRz,
-                  onChanged: (v) => setState(() => _epKFrJK56Y1 = v),
+                  controller: _searchController,
+                  onChanged: (v) => setState(() => _searchQuery = v),
                   decoration: const InputDecoration(
                     hintText: 'Buscar reporte…',
                     prefixIcon: Icon(Icons.search),
@@ -110,7 +110,7 @@ class _NK2mTeVM6SRR4qnO8 extends ConsumerState<K3GxSJcRB3IG> {
                 else if (filtered.isEmpty)
                   const Center(child: Text('Sin resultados para tu búsqueda')),
                 ...filtered.map(
-                  (p) => _JVFrg0z(hsl: p, g5vMo: () => _dmYo2jD(context, p)),
+                  (p) => _PdfCard(pdf: p, onTap: () => _openPdf(context, p)),
                 ),
               ],
             ),
@@ -120,8 +120,8 @@ class _NK2mTeVM6SRR4qnO8 extends ConsumerState<K3GxSJcRB3IG> {
     );
   }
 
-  List<GeneratedPdf> _nTvFk5dElgr(List<GeneratedPdf> items) {
-    final q = _epKFrJK56Y1.trim().toLowerCase();
+  List<GeneratedPdf> _applySearch(List<GeneratedPdf> items) {
+    final q = _searchQuery.trim().toLowerCase();
     if (q.isEmpty) return items;
     return items.where((p) {
       final filename = p.filename.toLowerCase();
@@ -137,7 +137,7 @@ class _NK2mTeVM6SRR4qnO8 extends ConsumerState<K3GxSJcRB3IG> {
     }).toList();
   }
 
-  Future<void> _dmYo2jD(BuildContext context, GeneratedPdf p) async {
+  Future<void> _openPdf(BuildContext context, GeneratedPdf p) async {
     final file = File(p.localPath);
     if (!await file.exists()) {
       if (context.mounted) {
@@ -150,7 +150,7 @@ class _NK2mTeVM6SRR4qnO8 extends ConsumerState<K3GxSJcRB3IG> {
     await PdfFileService.openFile(file);
   }
 
-  Future<void> _nBoha8JYXdp54OTK(AuthUser user) async {
+  Future<void> _uploadPendientes(AuthUser user) async {
     if (!await LanGate.isOnLan()) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
@@ -161,7 +161,7 @@ class _NK2mTeVM6SRR4qnO8 extends ConsumerState<K3GxSJcRB3IG> {
       return;
     }
 
-    setState(() => _cQaKHLyBp = true);
+    setState(() => _uploading = true);
     try {
       final repo = ref.read(generatedPdfRepositoryProvider);
       final uploader = ref.read(pdfUploadApiRepositoryProvider);
@@ -208,32 +208,32 @@ class _NK2mTeVM6SRR4qnO8 extends ConsumerState<K3GxSJcRB3IG> {
         context,
       ).showSnackBar(SnackBar(content: Text('No se pudo subir PDFs: $e')));
     } finally {
-      if (mounted) setState(() => _cQaKHLyBp = false);
+      if (mounted) setState(() => _uploading = false);
     }
   }
 }
 
-class _JVFrg0z extends StatelessWidget {
-  final GeneratedPdf hsl;
-  final VoidCallback g5vMo;
+class _PdfCard extends StatelessWidget {
+  final GeneratedPdf pdf;
+  final VoidCallback onTap;
 
-  const _JVFrg0z({required this.hsl, required this.g5vMo});
+  const _PdfCard({required this.pdf, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
     final isTablet = MediaQuery.of(context).size.width >= 600;
     final cs = Theme.of(context).colorScheme;
-    final label = hsl.createdByName.isEmpty
-        ? hsl.createdByUserId
-        : hsl.createdByName;
-    final subtitle = '$label • ${hsl.area}';
+    final label = pdf.createdByName.isEmpty
+        ? pdf.createdByUserId
+        : pdf.createdByName;
+    final subtitle = '$label • ${pdf.area}';
 
     return Card(
       margin: EdgeInsets.only(bottom: isTablet ? 20 : 16),
       child: Material(
         color: Colors.transparent,
         child: InkWell(
-          onTap: g5vMo,
+          onTap: onTap,
           borderRadius: BorderRadius.circular(isTablet ? 20 : 16),
           child: Padding(
             padding: EdgeInsets.all(isTablet ? 20 : 16),
@@ -247,7 +247,7 @@ class _JVFrg0z extends StatelessWidget {
                     borderRadius: BorderRadius.circular(isTablet ? 16 : 14),
                   ),
                   child: Icon(
-                    hsl.uploaded ? Icons.cloud_done : Icons.picture_as_pdf,
+                    pdf.uploaded ? Icons.cloud_done : Icons.picture_as_pdf,
                     color: cs.onPrimaryContainer,
                     size: isTablet ? 28 : 24,
                   ),
@@ -258,7 +258,7 @@ class _JVFrg0z extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        hsl.filename,
+                        pdf.filename,
                         style: TextStyle(
                           fontSize: isTablet ? 18 : 16,
                           fontWeight: FontWeight.w800,
@@ -280,17 +280,17 @@ class _JVFrg0z extends StatelessWidget {
                         spacing: 8,
                         runSpacing: 6,
                         children: [
-                          if (hsl.source.isNotEmpty)
+                          if (pdf.source.isNotEmpty)
                             Chip(
                               label: Text(
-                                hsl.source,
+                                pdf.source,
                                 style: const TextStyle(fontSize: 14),
                               ),
                               visualDensity: VisualDensity.compact,
                             ),
                           Chip(
                             label: Text(
-                              hsl.uploaded ? 'Online' : 'Local',
+                              pdf.uploaded ? 'Online' : 'Local',
                               style: const TextStyle(fontSize: 14),
                             ),
                             visualDensity: VisualDensity.compact,

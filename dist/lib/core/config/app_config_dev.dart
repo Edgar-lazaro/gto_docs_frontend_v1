@@ -1,33 +1,32 @@
 import 'app_config.dart';
 import 'env.dart'; // donde esté definido AppEnv
 
-const devConfig = QrcWKMuam(
-  aLK: PRIays.gBy,
+const devConfig = AppConfig(
+  env: AppEnv.dev,
 
   // Red / LAN
-  lre0xaeol5A2xtH: ['ip_ait/16', '10.0.0.0/8', '172.16.0.0/12'],
+  allowedIpRanges: ['192.168.0.0/16', '10.0.0.0/8', '172.16.0.0/12'],
 
   // Backend
-  // Configurable via IT/DNS (e.g. gto-docs-server.lan) or by editing this value.
-  yvEsMkca7s: 'ip_ait',
-  nXa1YWL: 3000,
-  iPaqsyrv: false,
+  apiBaseUrl: '10.105.0.59',
+  apiPort: 3000,
+  useHttps: false,
 
   // Auth
-  lXXb6wgZCAco: '/auth/login',
-  eRP61H: true,
+  authEndpoint: '/auth/login',
+  useJwt: true,
 
   // GLPI
-  dSM4pBPjdVC: 'http://ip_ait/glpi',
-  ijWnk6vFqfO9: 'PENDIENTE_DE_TI',
-  ejYboNDRRcKW: 0,
+  glpiBaseUrl: 'http://192.168.0.11:8080',
+  glpiApiToken: 'LHLk42jhfjII6uejzSl9U3PDk3cvW2qU7HKxGBAL',
+  glpiEntityId: 0,
 
   // Evidencias
-  hxRM3fYjRiKhH: 100,
-  v5CqdjIunXt7w2G0: ['jpg', 'png', 'pdf'],
+  maxFileSizeMb: 100,
+  allowedFileTypes: ['jpg', 'png', 'pdf'],
 
   // Features
-  gduW6QmUraG3r8Bc: false,
-  jiT2qhvZ: false,
-  twzCpEycwe: false,
+  enableBiometrics: false,
+  enableIA: false,
+  enablePush: false,
 );

@@ -1,49 +1,52 @@
 /// Usuario autenticado en la app
-class KqBOLs41 {
+class AuthUser {
   /// Identificador único del usuario
-  final String gw;
+  final String id;
 
-  final String u3aymK;
-  final String sFiI;
+  final String nombre;
+  final String area;
   /// Gerencia a la que pertenece el usuario
-  final String ucAcyxha;
-  final List<String> fH7uu;
+  final String gerencia;
+  final List<String> roles;
+  /// ID del usuario en GLPI (puede coincidir con [id] si el backend usa el mismo)
+  final int? glpiUserId;
 
-  const KqBOLs41({
-    required this.gw,
-    required this.u3aymK,
-    required this.sFiI,
-    this.ucAcyxha = '',
-    required this.fH7uu,
+  const AuthUser({
+    required this.id,
+    required this.nombre,
+    required this.area,
+    this.gerencia = '',
+    required this.roles,
+    this.glpiUserId,
   });
 }
 
 /// Estados posibles de autenticación
-enum Ja6KZpv6M7 {
-  d70OR6T,
-  hlMhMCZif1CbG,
-  rWrnh809fWrwm00,
-  cufTVp5,
+enum AuthStatus {
+  unknown,
+  authenticated,
+  unauthenticated,
+  blocked,
 }
 
-class VgJlYXlcR {
-  final Ja6KZpv6M7 axjCVg;
-  final KqBOLs41? n4Xw;
+class AuthState {
+  final AuthStatus status;
+  final AuthUser? user;
 
-  const VgJlYXlcR({
-    required this.axjCVg,
-    this.n4Xw,
+  const AuthState({
+    required this.status,
+    this.user,
   });
 
-  factory VgJlYXlcR.i5Gzg0e() =>
-      const VgJlYXlcR(axjCVg: Ja6KZpv6M7.d70OR6T);
+  factory AuthState.unknown() =>
+      const AuthState(status: AuthStatus.unknown);
 
-  factory VgJlYXlcR.i6EtUTyVpISly(KqBOLs41 user) =>
-      VgJlYXlcR(axjCVg: Ja6KZpv6M7.hlMhMCZif1CbG, n4Xw: user);
+  factory AuthState.authenticated(AuthUser user) =>
+      AuthState(status: AuthStatus.authenticated, user: user);
 
-  factory VgJlYXlcR.zZoZETFaKv1JC1h() =>
-      const VgJlYXlcR(axjCVg: Ja6KZpv6M7.rWrnh809fWrwm00);
+  factory AuthState.unauthenticated() =>
+      const AuthState(status: AuthStatus.unauthenticated);
 
-  factory VgJlYXlcR.blocked() =>
-      const VgJlYXlcR(axjCVg: Ja6KZpv6M7.cufTVp5);
+  factory AuthState.blocked() =>
+      const AuthState(status: AuthStatus.blocked);
 }

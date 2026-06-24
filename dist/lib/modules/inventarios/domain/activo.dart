@@ -1,25 +1,25 @@
-class L4x33R {
-  final String yY;
-  final String hks1zC;
-  final String giub;
-  final String zQaebqa7x;
-  final String wjZUt3;
-  final int dxE2uedc;
-  final String? yatN4LOWLEf;
-  final String? phR;
+class Activo {
+  final String id;
+  final String nombre;
+  final String tipo;
+  final String ubicacion;
+  final String estado;
+  final int cantidad;
+  final String? descripcion;
+  final String? img;
 
-  L4x33R({
-    required this.yY,
-    required this.hks1zC,
-    required this.giub,
-    required this.zQaebqa7x,
-    required this.wjZUt3,
-    this.dxE2uedc = 0,
-    this.yatN4LOWLEf,
-    this.phR,
+  Activo({
+    required this.id,
+    required this.nombre,
+    required this.tipo,
+    required this.ubicacion,
+    required this.estado,
+    this.cantidad = 0,
+    this.descripcion,
+    this.img,
   });
 
-  factory L4x33R.fromJson(Map<String, dynamic> json) {
+  factory Activo.fromJson(Map<String, dynamic> json) {
     final id = (json['id'] ?? json['activo_id'] ?? json['activoId'] ?? '')
         .toString();
     final nombre = (json['nombre'] ?? json['name'] ?? '').toString();
@@ -35,34 +35,34 @@ class L4x33R {
     final descripcion = (json['descripcion'] ?? '').toString().trim();
     final img = (json['img'] ?? json['imagen'] ?? '').toString().trim();
 
-    return L4x33R(
-      yY: id,
-      hks1zC: nombre,
-      giub: tipo,
-      zQaebqa7x: ubicacion,
-      wjZUt3: estado,
-      dxE2uedc: cantidad,
-      yatN4LOWLEf: descripcion.isEmpty ? null : descripcion,
-      phR: img.isEmpty ? null : img,
+    return Activo(
+      id: id,
+      nombre: nombre,
+      tipo: tipo,
+      ubicacion: ubicacion,
+      estado: estado,
+      cantidad: cantidad,
+      descripcion: descripcion.isEmpty ? null : descripcion,
+      img: img.isEmpty ? null : img,
     );
   }
 
-  Map<String, dynamic> a4Fv74() {
+  Map<String, dynamic> toJson() {
     return {
-      'id': yY,
-      'nombre': hks1zC,
-      'tipo': giub,
-      'categoria': giub,
-      'ubicacion': zQaebqa7x,
-      'estado': wjZUt3,
-      'cantidad': dxE2uedc,
-      'descripcion': yatN4LOWLEf,
-      'img': phR,
-      'imagen': phR,
+      'id': id,
+      'nombre': nombre,
+      'tipo': tipo,
+      'categoria': tipo,
+      'ubicacion': ubicacion,
+      'estado': estado,
+      'cantidad': cantidad,
+      'descripcion': descripcion,
+      'img': img,
+      'imagen': img,
     }..removeWhere((_, v) => v == null);
   }
 
-  L4x33R tcnhoXd2({
+  Activo copyWith({
     String? id,
     String? nombre,
     String? tipo,
@@ -72,15 +72,15 @@ class L4x33R {
     String? descripcion,
     String? img,
   }) {
-    return L4x33R(
-      yY: id ?? this.yY,
-      hks1zC: nombre ?? this.hks1zC,
-      giub: tipo ?? this.giub,
-      zQaebqa7x: ubicacion ?? this.zQaebqa7x,
-      wjZUt3: estado ?? this.wjZUt3,
-      dxE2uedc: cantidad ?? this.dxE2uedc,
-      yatN4LOWLEf: descripcion ?? this.yatN4LOWLEf,
-      phR: img ?? this.phR,
+    return Activo(
+      id: id ?? this.id,
+      nombre: nombre ?? this.nombre,
+      tipo: tipo ?? this.tipo,
+      ubicacion: ubicacion ?? this.ubicacion,
+      estado: estado ?? this.estado,
+      cantidad: cantidad ?? this.cantidad,
+      descripcion: descripcion ?? this.descripcion,
+      img: img ?? this.img,
     );
   }
 }

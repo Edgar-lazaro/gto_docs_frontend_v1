@@ -7,22 +7,22 @@ import '../sync/sync_service.dart';
 import '../../modules/notificacions/data/notificacion_repository_impl.dart';
 import '../../modules/notificacions/domain/notificacion.dart';
 
-class LKUO7gQ6CD {
-  final AppDatabase tz;
-  final SyncService iSLajur;
-  final NotificacionRepository vqn2Ij6l7vO3Tqq1;
+class SyncWorker {
+  final AppDatabase db;
+  final SyncService service;
+  final NotificacionRepository notificacionRepo;
 
-  LKUO7gQ6CD({
-    required this.tz,
-    required this.iSLajur,
-    required this.vqn2Ij6l7vO3Tqq1,
+  SyncWorker({
+    required this.db,
+    required this.service,
+    required this.notificacionRepo,
   });
 
-  Future<void> bNa(LanStatus lanStatus) async {
+  Future<void> run(LanStatus lanStatus) async {
     if (lanStatus != LanStatus.connected) return;
 
     final pendientes =
-        await (tz.select(tz.syncQueueTable)
+        await (db.select(db.syncQueueTable)
               ..where((q) => q.procesado.equals(false))
               ..orderBy([(q) => OrderingTerm.asc(q.createdAt)]))
             .get();
@@ -35,46 +35,46 @@ class LKUO7gQ6CD {
         );
         // ASISTENCIA
         if (item.entidad == 'asistencia' && item.accion == 'create') {
-          await iSLajur.syncAsistencia(int.parse(item.entidadId));
+          await service.syncAsistencia(int.parse(item.entidadId));
         }
 
         // GLPI TICKET
         if (item.entidad == 'glpi_ticket' &&
             item.accion == 'create' &&
             item.payload != null) {
-          await iSLajur.syncGlpiTicket(item.payload!);
+          await service.syncGlpiTicket(item.payload!);
         }
 
         // REPORTE
         if (item.entidad == 'reporte' &&
             item.accion == 'create' &&
             item.payload != null) {
-          await iSLajur.syncReporte(item.payload!);
+          await service.syncReporte(item.payload!);
         }
 
         // COMENTARIO DE REPORTE
         if (item.entidad == 'reporte_comentario' &&
             item.accion == 'create' &&
             item.payload != null) {
-          await iSLajur.syncReporteComentario(item.payload!);
+          await service.syncReporteComentario(item.payload!);
         }
 
         // EVIDENCIA
         if (item.entidad == 'reporte_evidencia' &&
             item.accion == 'upload' &&
             item.payload != null) {
-          await iSLajur.syncReporteEvidencia(item.payload!);
+          await service.syncReporteEvidencia(item.payload!);
         }
 
         // TAREA
         if (item.entidad == 'tarea' &&
             item.accion == 'create' &&
             item.payload != null) {
-          final remote = await iSLajur.syncTarea(item.payload!);
+          final remote = await service.syncTarea(item.payload!);
           final remoteId = remote?['id']?.toString();
           if (remoteId != null && remoteId.isNotEmpty) {
             final updated =
-                await (tz.update(tz.tareasTable)
+                await (db.update(db.tareasTable)
                       ..where((t) => t.id.equals(item.entidadId)))
                     .write(TareasTableCompanion(remoteId: Value(remoteId)));
 
@@ -91,35 +91,159 @@ class LKUO7gQ6CD {
         if (item.entidad == 'tarea' &&
             item.accion == 'update_estado' &&
             item.payload != null) {
-          await iSLajur.syncTareaEstado(item.payload!);
+          final payload = Map<String, dynamic>.from(item.payload!);
+          final localId = payload['id']?.toString();
+          if (localId != null) {
+            final tareas = await (db.select(db.tareasTable)
+                  ..where((t) => t.id.equals(localId)))
+                .get();
+            if (tareas.isNotEmpty) {
+              final remoteId = tareas.first.remoteId;
+              if (remoteId != null && remoteId.isNotEmpty) {
+                payload['id'] = remoteId;
+              }
+            }
+          }
+          await service.syncTareaEstado(payload);
         }
 
         // COMENTARIO DE TAREA
         if (item.entidad == 'tarea_comentario' &&
             item.accion == 'create' &&
             item.payload != null) {
-          await iSLajur.syncTareaComentario(item.payload!);
+          final payload = Map<String, dynamic>.from(item.payload!);
+          final localTareaId = payload['tareaId'] as String?;
+          if (localTareaId != null) {
+            final tareas = await (db.select(db.tareasTable)
+                  ..where((t) => t.id.equals(localTareaId)))
+                .get();
+            if (tareas.isNotEmpty) {
+              final remoteId = tareas.first.remoteId;
+              if (remoteId != null && remoteId.isNotEmpty) {
+                payload['tareaId'] = remoteId;
+              }
+            }
+          }
+          await service.syncTareaComentario(payload);
+          // Borrar comentario local para evitar duplicados con API avances
+          await (db.delete(db.tareaComentariosTable)
+                ..where((c) => c.id.equals(item.entidadId)))
+              .go();
         }
 
         // ADJUNTO DE TAREA
         if (item.entidad == 'tarea_adjunto' &&
             item.accion == 'upload' &&
             item.payload != null) {
-          await iSLajur.syncTareaAdjunto(item.payload!);
+          await service.syncTareaAdjunto(item.payload!);
+        }
+
+        // GLPI TASK
+        if (item.entidad == 'glpi_task' &&
+            item.accion == 'create' &&
+            item.payload != null) {
+          final payload = Map<String, dynamic>.from(item.payload!);
+          final localTareaId = payload['tareaId'] as String?;
+          String? remoteId;
+          if (localTareaId != null) {
+            final tareas = await (db.select(db.tareasTable)
+                  ..where((t) => t.id.equals(localTareaId)))
+                .get();
+            if (tareas.isNotEmpty) {
+              remoteId = tareas.first.remoteId;
+            }
+          }
+          final tid = remoteId ?? localTareaId ?? '';
+          await service.syncGlpiTask(tid, payload);
+        }
+
+        // GLPI SOLUTION
+        if (item.entidad == 'glpi_solution' &&
+            item.accion == 'create' &&
+            item.payload != null) {
+          final payload = Map<String, dynamic>.from(item.payload!);
+          final localTareaId = payload['tareaId'] as String?;
+          String? remoteId;
+          if (localTareaId != null) {
+            final tareas = await (db.select(db.tareasTable)
+                  ..where((t) => t.id.equals(localTareaId)))
+                .get();
+            if (tareas.isNotEmpty) {
+              remoteId = tareas.first.remoteId;
+            }
+          }
+          final tid = remoteId ?? localTareaId ?? '';
+          await service.syncGlpiSolution(tid, payload);
+        }
+
+        // GLPI SOLUTION APPROVE
+        if (item.entidad == 'glpi_solution_approve' &&
+            item.payload != null) {
+          final payload = Map<String, dynamic>.from(item.payload!);
+          final localTareaId = payload['tareaId'] as String?;
+          String? remoteId;
+          if (localTareaId != null) {
+            final tareas = await (db.select(db.tareasTable)
+                  ..where((t) => t.id.equals(localTareaId)))
+                .get();
+            if (tareas.isNotEmpty) {
+              remoteId = tareas.first.remoteId;
+            }
+          }
+          final tid = remoteId ?? localTareaId ?? '';
+          await service.syncGlpiSolutionApprove(tid, payload);
+        }
+
+        // GLPI DOCUMENT
+        if (item.entidad == 'glpi_document' &&
+            item.accion == 'upload' &&
+            item.payload != null) {
+          final payload = Map<String, dynamic>.from(item.payload!);
+          final localTareaId = payload['tareaId'] as String?;
+          String? remoteId;
+          if (localTareaId != null) {
+            final tareas = await (db.select(db.tareasTable)
+                  ..where((t) => t.id.equals(localTareaId)))
+                .get();
+            if (tareas.isNotEmpty) {
+              remoteId = tareas.first.remoteId;
+            }
+          }
+          final tid = remoteId ?? localTareaId ?? '';
+          await service.syncGlpiDocument(tid, payload);
+        }
+
+        // GLPI VALIDATION
+        if (item.entidad == 'glpi_validation' &&
+            item.accion == 'create' &&
+            item.payload != null) {
+          final payload = Map<String, dynamic>.from(item.payload!);
+          final localTareaId = payload['tareaId'] as String?;
+          String? remoteId;
+          if (localTareaId != null) {
+            final tareas = await (db.select(db.tareasTable)
+                  ..where((t) => t.id.equals(localTareaId)))
+                .get();
+            if (tareas.isNotEmpty) {
+              remoteId = tareas.first.remoteId;
+            }
+          }
+          final tid = remoteId ?? localTareaId ?? '';
+          await service.syncGlpiValidation(tid, payload);
         }
 
         // COMBUSTIBLE
         if (item.entidad == 'combustible_registro' &&
             item.accion == 'create' &&
             item.payload != null) {
-          await _zwFInAGM7m2fiphWfM5(item);
+          await _syncCombustibleItem(item);
         }
 
         // CAMBIO DE ESTADO DE REPORTE (backend → app)
         if (item.entidad == 'reporte_estado' && item.payload != null) {
           // aquí también podrías actualizar el reporte local
 
-          await vqn2Ij6l7vO3Tqq1.crear(
+          await notificacionRepo.crear(
             tipo: NotificacionTipo.reporte.name,
             titulo: 'Reporte resuelto',
             mensaje: 'Tu reporte fue marcado como resuelto',
@@ -129,7 +253,7 @@ class LKUO7gQ6CD {
 
         // NOTIFICACIÓN REMOTA
         if (item.entidad == 'notificacion' && item.payload != null) {
-          await vqn2Ij6l7vO3Tqq1.crear(
+          await notificacionRepo.crear(
             tipo: NotificacionTipo.sistema.name,
             titulo: item.payload!['titulo'] as String,
             mensaje: item.payload!['mensaje'] as String,
@@ -141,7 +265,7 @@ class LKUO7gQ6CD {
         if (item.entidad == 'ia_resultado' && item.payload != null) {
           // aquí luego podrás actualizar prioridad, responsables, etc.
 
-          await vqn2Ij6l7vO3Tqq1.crear(
+          await notificacionRepo.crear(
             tipo: NotificacionTipo.sistema.name,
             titulo: 'Clasificación automática',
             mensaje: 'IA asignó prioridad y responsables',
@@ -150,7 +274,7 @@ class LKUO7gQ6CD {
         }
 
         // ✅ MARCAR COMO PROCESADO
-        await (tz.update(tz.syncQueueTable)..where((q) => q.id.equals(item.id)))
+        await (db.update(db.syncQueueTable)..where((q) => q.id.equals(item.id)))
             .write(const SyncQueueTableCompanion(procesado: Value(true)));
 
         // ignore: avoid_print
@@ -160,21 +284,15 @@ class LKUO7gQ6CD {
         print(
           '[SYNC] ERROR ${item.entidad}:${item.accion} id=${item.entidadId} -> $e',
         );
-        // GLPI no debe bloquear el resto de sincronización.
-        // Se reintentará en la siguiente corrida (queda como no-procesado).
-        if (item.entidad == 'glpi_ticket') {
-          continue;
-        }
-
-        // Para el resto, si falla uno se detiene y se reintentará después.
-        break;
+        // No bloquear el resto del queue, se reintenta en la siguiente corrida
+        continue;
       }
     }
   }
 
-  Future<void> cbXIKoh8LV2R2Xesjr() async {
+  Future<void> runCombustibleOnly() async {
     final pendientes =
-        await (tz.select(tz.syncQueueTable)
+        await (db.select(db.syncQueueTable)
               ..where((q) {
                 return q.procesado.equals(false) &
                     q.entidad.equals('combustible_registro');
@@ -188,10 +306,10 @@ class LKUO7gQ6CD {
         print('[SYNC] Procesando combustible:create id=${item.entidadId}');
 
         if (item.payload != null) {
-          await _zwFInAGM7m2fiphWfM5(item);
+          await _syncCombustibleItem(item);
         }
 
-        await (tz.update(tz.syncQueueTable)..where((q) => q.id.equals(item.id)))
+        await (db.update(db.syncQueueTable)..where((q) => q.id.equals(item.id)))
             .write(const SyncQueueTableCompanion(procesado: Value(true)));
 
         // ignore: avoid_print
@@ -205,11 +323,11 @@ class LKUO7gQ6CD {
     }
   }
 
-  Future<void> _zwFInAGM7m2fiphWfM5(SyncQueueTableData item) async {
+  Future<void> _syncCombustibleItem(SyncQueueTableData item) async {
     try {
-      final res = await iSLajur.syncCombustibleRegistro(item.payload!);
+      final res = await service.syncCombustibleRegistro(item.payload!);
 
-      String jTNgXJS5W(dynamic data) {
+      String summarize(dynamic data) {
         if (data == null) return '';
         final s = data is String ? data : data.toString();
         return s.length > 1200 ? '${s.substring(0, 1200)}…' : s;
@@ -218,12 +336,12 @@ class LKUO7gQ6CD {
       final infoParts = <String>[
         'OK',
         if (res?.statusCode != null) 'status:${res!.statusCode}',
-        if ((res?.data) != null) jTNgXJS5W(res!.data),
+        if ((res?.data) != null) summarize(res!.data),
       ];
       final info = infoParts.where((p) => p.trim().isNotEmpty).join(' | ');
 
-      await (tz.update(
-        tz.combustibleRegistrosTable,
+      await (db.update(
+        db.combustibleRegistrosTable,
       )..where((t) => t.id.equals(item.entidadId))).write(
         CombustibleRegistrosTableCompanion(
           sincronizado: const Value(true),
@@ -252,8 +370,8 @@ class LKUO7gQ6CD {
         if (trimmed.isNotEmpty) trimmed,
       ].join(' | ');
 
-      await (tz.update(
-        tz.combustibleRegistrosTable,
+      await (db.update(
+        db.combustibleRegistrosTable,
       )..where((t) => t.id.equals(item.entidadId))).write(
         CombustibleRegistrosTableCompanion(
           syncError: Value(message),
@@ -266,8 +384,8 @@ class LKUO7gQ6CD {
       // Captura errores de validación/locales (ej. falta vehiculo en payload viejo)
       // para que el historial muestre el motivo real del fallo.
       final msg = e.toString();
-      await (tz.update(
-        tz.combustibleRegistrosTable,
+      await (db.update(
+        db.combustibleRegistrosTable,
       )..where((t) => t.id.equals(item.entidadId))).write(
         CombustibleRegistrosTableCompanion(
           syncError: Value(

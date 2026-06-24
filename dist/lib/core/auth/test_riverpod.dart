@@ -1,8 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 final counterProvider =
-    StateNotifierProvider<CErVfRX, int>((ref) => CErVfRX());
+    StateNotifierProvider<Counter, int>((ref) => Counter());
 
-class CErVfRX extends StateNotifier<int> {
-  CErVfRX() : super(0);
+class Counter extends StateNotifier<int> {
+  Counter() : super(0);
 }

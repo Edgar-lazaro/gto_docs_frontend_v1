@@ -2,12 +2,12 @@ import 'package:dio/dio.dart';
 
 import '../domain/activo.dart';
 
-class Egx5YFxPIPYFUxIPtvJNo3n {
-  final Dio uBg;
+class InventarioApiRepository {
+  final Dio dio;
 
-  Egx5YFxPIPYFUxIPtvJNo3n({required this.uBg});
+  InventarioApiRepository({required this.dio});
 
-  Future<List<Activo>> wmuYVH0gfQc4yjImI({
+  Future<List<Activo>> obtenerInventario({
     int? gerenciaId,
     int? jefaturaId,
   }) async {
@@ -15,24 +15,24 @@ class Egx5YFxPIPYFUxIPtvJNo3n {
       // Endpoint confirmado: /api/inventario-tics
       _RequestCandidate(
         '/inventario-tics',
-        _xe(gerenciaId: gerenciaId, jefaturaId: jefaturaId),
+        _qp(gerenciaId: gerenciaId, jefaturaId: jefaturaId),
       ),
       _RequestCandidate(
         '/inventario_tics',
-        _xe(gerenciaId: gerenciaId, jefaturaId: jefaturaId),
+        _qp(gerenciaId: gerenciaId, jefaturaId: jefaturaId),
       ),
       _RequestCandidate(
         '/inventarios',
-        _xe(gerenciaId: gerenciaId, jefaturaId: jefaturaId),
+        _qp(gerenciaId: gerenciaId, jefaturaId: jefaturaId),
       ),
       _RequestCandidate(
         '/inventario',
-        _xe(gerenciaId: gerenciaId, jefaturaId: jefaturaId),
+        _qp(gerenciaId: gerenciaId, jefaturaId: jefaturaId),
       ),
     ];
 
-    final res = await _xcgF2wYzgt(candidates);
-    final list = _v1azHL7mHkf(res.data);
+    final res = await _getFirstOk(candidates);
+    final list = _extractList(res.data);
 
     return list
         .whereType<Map>()
@@ -40,7 +40,7 @@ class Egx5YFxPIPYFUxIPtvJNo3n {
         .toList();
   }
 
-  Future<Activo> eQ7AqLn0bj3(Activo activo) async {
+  Future<Activo> crearActivo(Activo activo) async {
     final payload = activo.toJson()..remove('id');
 
     final candidates = <String>[
@@ -52,7 +52,7 @@ class Egx5YFxPIPYFUxIPtvJNo3n {
 
     for (final path in candidates) {
       try {
-        final res = await _k6F4aRLh8rVIjQpHTz7TupnlMtckrC(
+        final res = await _requestWithOptionalApiFallback(
           method: 'POST',
           path: path,
           data: payload,
@@ -73,7 +73,7 @@ class Egx5YFxPIPYFUxIPtvJNo3n {
     throw StateError('Inventario: no se encontró endpoint para crear');
   }
 
-  Future<void> wQeNzbhAilqc4rEk(Activo activo) async {
+  Future<void> actualizarActivo(Activo activo) async {
     final payload = activo.toJson();
     final id = activo.id;
 
@@ -86,7 +86,7 @@ class Egx5YFxPIPYFUxIPtvJNo3n {
     DioException? last;
     for (final path in candidates) {
       try {
-        await _k6F4aRLh8rVIjQpHTz7TupnlMtckrC(
+        await _requestWithOptionalApiFallback(
           method: 'PUT',
           path: path,
           data: payload,
@@ -98,7 +98,7 @@ class Egx5YFxPIPYFUxIPtvJNo3n {
         // Algunos backends solo aceptan PATCH
         if (e.response?.statusCode == 405) {
           try {
-            await _k6F4aRLh8rVIjQpHTz7TupnlMtckrC(
+            await _requestWithOptionalApiFallback(
               method: 'PATCH',
               path: path,
               data: payload,
@@ -116,7 +116,7 @@ class Egx5YFxPIPYFUxIPtvJNo3n {
     throw StateError('Inventario: no se encontró endpoint para actualizar');
   }
 
-  Future<void> lAPlOXMzXjXRUy(String id) async {
+  Future<void> eliminarActivo(String id) async {
     final candidates = <String>[
       '/inventario-tics/$id',
       '/inventarios/$id',
@@ -126,7 +126,7 @@ class Egx5YFxPIPYFUxIPtvJNo3n {
     DioException? last;
     for (final path in candidates) {
       try {
-        await _k6F4aRLh8rVIjQpHTz7TupnlMtckrC(method: 'DELETE', path: path);
+        await _requestWithOptionalApiFallback(method: 'DELETE', path: path);
         return;
       } on DioException catch (e) {
         last = e;
@@ -139,7 +139,7 @@ class Egx5YFxPIPYFUxIPtvJNo3n {
     throw StateError('Inventario: no se encontró endpoint para eliminar');
   }
 
-  Map<String, dynamic>? _xe({int? gerenciaId, int? jefaturaId}) {
+  Map<String, dynamic>? _qp({int? gerenciaId, int? jefaturaId}) {
     final qp = <String, dynamic>{};
     if (gerenciaId != null) {
       qp['gerencia'] = gerenciaId;
@@ -154,14 +154,14 @@ class Egx5YFxPIPYFUxIPtvJNo3n {
     return qp.isEmpty ? null : qp;
   }
 
-  Future<Response<dynamic>> _xcgF2wYzgt(
+  Future<Response<dynamic>> _getFirstOk(
     List<_RequestCandidate> candidates,
   ) async {
     DioException? lastDioError;
 
     for (final c in candidates) {
       try {
-        return await _k6F4aRLh8rVIjQpHTz7TupnlMtckrC(
+        return await _requestWithOptionalApiFallback(
           method: 'GET',
           path: c.path,
           queryParameters: c.queryParameters,
@@ -181,7 +181,7 @@ class Egx5YFxPIPYFUxIPtvJNo3n {
     throw StateError('Inventario: no se encontró un endpoint disponible');
   }
 
-  List<dynamic> _v1azHL7mHkf(dynamic data) {
+  List<dynamic> _extractList(dynamic data) {
     if (data is List) return data;
     if (data is Map) {
       final map = data.cast<String, dynamic>();
@@ -191,14 +191,14 @@ class Egx5YFxPIPYFUxIPtvJNo3n {
     return const [];
   }
 
-  Future<Response<dynamic>> _k6F4aRLh8rVIjQpHTz7TupnlMtckrC({
+  Future<Response<dynamic>> _requestWithOptionalApiFallback({
     required String method,
     required String path,
     Map<String, dynamic>? queryParameters,
     dynamic data,
   }) async {
     try {
-      return await uBg.request(
+      return await dio.request(
         path,
         options: Options(method: method),
         queryParameters: queryParameters,
@@ -206,7 +206,7 @@ class Egx5YFxPIPYFUxIPtvJNo3n {
       );
     } on DioException catch (e) {
       final status = e.response?.statusCode;
-      final baseUrl = uBg.options.baseUrl;
+      final baseUrl = dio.options.baseUrl;
       final is404 = status == 404;
 
       if (!is404 || !path.startsWith('/')) rethrow;
@@ -214,7 +214,7 @@ class Egx5YFxPIPYFUxIPtvJNo3n {
       // Si baseUrl NO termina con /api pero el backend real vive bajo /api,
       // probamos agregando /api al path.
       if (!baseUrl.endsWith('/api') && !path.startsWith('/api/')) {
-        return await uBg.request(
+        return await dio.request(
           '/api$path',
           options: Options(method: method),
           queryParameters: queryParameters,
@@ -231,7 +231,7 @@ class Egx5YFxPIPYFUxIPtvJNo3n {
             (k, v) => MapEntry(k, v?.toString() ?? ''),
           ),
         );
-        return await uBg.requestUri(
+        return await dio.requestUri(
           uri,
           options: Options(method: method),
           data: data,

@@ -1,15 +1,15 @@
-class UBvcxBeUEmMtGiRJj {
-  final String lm;
-  final String eYZp9TFDs;
-  final String cOvFXl0;
-  final String wJudXEA;
-  final DateTime yFXYhCOJ;
+class ReporteComentario {
+  final String id;
+  final String reporteId;
+  final String autorId;
+  final String mensaje;
+  final DateTime creadoEn;
 
-  UBvcxBeUEmMtGiRJj({
-    required this.lm,
-    required this.eYZp9TFDs,
-    required this.cOvFXl0,
-    required this.wJudXEA,
-    required this.yFXYhCOJ,
+  ReporteComentario({
+    required this.id,
+    required this.reporteId,
+    required this.autorId,
+    required this.mensaje,
+    required this.creadoEn,
   });
 }

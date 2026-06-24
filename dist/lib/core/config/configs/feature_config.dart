@@ -1,11 +1,11 @@
-class TwmDvGjPWAbsR {
-  final bool m9oFNzpgDqoJblwa;
-  final bool lUdiDMpH;
-  final bool keRW229tOX;
+class FeatureConfig {
+  final bool enableBiometrics;
+  final bool enableIA;
+  final bool enablePush;
 
-  const TwmDvGjPWAbsR({
-    required this.m9oFNzpgDqoJblwa,
-    required this.lUdiDMpH,
-    required this.keRW229tOX,
+  const FeatureConfig({
+    required this.enableBiometrics,
+    required this.enableIA,
+    required this.enablePush,
   });
 }

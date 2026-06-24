@@ -1,34 +1,34 @@
 /// Motivos por los cuales la aplicación puede ser deshabilitada
 /// Importante: estos valores se usan para auditoría y mensajes
-enum MbEHQlSm7QuXHG {
+enum AppBlockReason {
   /// Bloqueo manual ejecutado por el desarrollador (kill switch)
-  dPNaqxtQQHtz5ugCVCQk,
+  manualDeveloperBlock,
 
   /// Riesgo de seguridad (debug, tamper, integridad)
-  mBeYn13MTJu4,
+  securityRisk,
 
   /// Incumplimiento operativo o administrativo
-  k8tSnngdH7N8soIEN,
+  contractViolation,
 }
 
 
-class JyKCDl3xPcu45E1G {
-  final bool k6UOhan;
-  final MbEHQlSm7QuXHG? c6UmdP;
+class KillSwitchStatus {
+  final bool blocked;
+  final AppBlockReason? reason;
 
-  const JyKCDl3xPcu45E1G({
-    required this.k6UOhan,
-    this.c6UmdP,
+  const KillSwitchStatus({
+    required this.blocked,
+    this.reason,
   });
 
-  factory JyKCDl3xPcu45E1G.hnmGyW() {
-    return const JyKCDl3xPcu45E1G(k6UOhan: false);
+  factory KillSwitchStatus.active() {
+    return const KillSwitchStatus(blocked: false);
   }
 
-  factory JyKCDl3xPcu45E1G.px8NoMu(MbEHQlSm7QuXHG reason) {
-    return JyKCDl3xPcu45E1G(
-      k6UOhan: true,
-      c6UmdP: reason,
+  factory KillSwitchStatus.blocked(AppBlockReason reason) {
+    return KillSwitchStatus(
+      blocked: true,
+      reason: reason,
     );
   }
 }

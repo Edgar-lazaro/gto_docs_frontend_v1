@@ -6,38 +6,54 @@ import 'package:image_picker/image_picker.dart';
 import '../../../core/auth/auth_models.dart';
 import '../../../core/auth/auth_providers.dart';
 import '../../../core/auth/role_utils.dart';
+import '../../../core/database/database_providers.dart';
+import '../../../core/network/providers.dart';
 import '../../../core/users/users_providers.dart';
 import '../../../shared/ui/theme/gerencia_config.dart';
+import '../data/tarea_avances_api_repository.dart';
+import '../data/tarea_timeline_api_repository.dart';
 import '../domain/tarea.dart';
 import '../domain/tarea_adjunto.dart';
 import '../domain/tarea_comentario.dart';
+import 'tarea_glpi_actions.dart';
 import 'tareas_providers.dart';
 
-class UxxIZKOxhp0dVMt9SSl7a extends ConsumerStatefulWidget {
-  final GerenciaTheme meoZv;
-  final String nRze6RO;
-  final Tarea? bg6QWa2E;
+class TareaGrupoDetallePage extends ConsumerStatefulWidget {
+  final GerenciaTheme theme;
+  final String groupId;
+  final Tarea? fallback;
 
-  const UxxIZKOxhp0dVMt9SSl7a({
+  const TareaGrupoDetallePage({
     super.key,
-    required this.meoZv,
-    required this.nRze6RO,
-    this.bg6QWa2E,
+    required this.theme,
+    required this.groupId,
+    this.fallback,
   });
 
   @override
-  ConsumerState<UxxIZKOxhp0dVMt9SSl7a> createState() =>
-      _YVq0ZgHwk9ya6Hg0jdvie61ivj();
+  ConsumerState<TareaGrupoDetallePage> createState() =>
+      _TareaGrupoDetallePageState();
 }
 
-class _YVq0ZgHwk9ya6Hg0jdvie61ivj extends ConsumerState<UxxIZKOxhp0dVMt9SSl7a> {
-  final _hq26IBiSYNb2eE = TextEditingController();
-  final _qHM49C = ImagePicker();
+class _TareaGrupoDetallePageState extends ConsumerState<TareaGrupoDetallePage> {
+  final _comentarioCtrl = TextEditingController();
+  final _picker = ImagePicker();
 
   @override
   void dispose() {
-    _hq26IBiSYNb2eE.dispose();
+    _comentarioCtrl.dispose();
     super.dispose();
+  }
+
+  void _submitComentario(String currentUserId) {
+    final txt = _comentarioCtrl.text.trim();
+    if (txt.isEmpty) return;
+    _comentarioCtrl.clear();
+    ref.read(tareaComentariosRepositoryProvider).agregarComentario(
+      tareaId: widget.groupId,
+      autorId: currentUserId,
+      mensaje: txt,
+    );
   }
 
   @override
@@ -51,16 +67,32 @@ class _YVq0ZgHwk9ya6Hg0jdvie61ivj extends ConsumerState<UxxIZKOxhp0dVMt9SSl7a> {
 
     final allAsync = ref.watch(todasLasTareasProvider);
     final comentariosAsync = ref.watch(
-      tareaComentariosProvider(widget.nRze6RO),
+      tareaComentariosProvider(widget.groupId),
     );
-    final adjuntosAsync = ref.watch(tareaAdjuntosProvider(widget.nRze6RO));
+    final adjuntosAsync = ref.watch(tareaAdjuntosProvider(widget.groupId));
+
+    final headTarea = ref.watch(todasLasTareasProvider).valueOrNull
+        ?.where(
+          (t) =>
+              (t.groupId?.trim().isNotEmpty ?? false) &&
+              t.groupId == widget.groupId,
+        )
+        .firstOrNull;
+    final hasGlpiTicket = false; // We'll check the tarea from API later
+    if (headTarea != null) {
+      // hasGlpiTicket = headTarea.glpiTicketId != null;
+    }
 
     return Scaffold(
       backgroundColor: Colors.grey[50],
+      floatingActionButton: TareaGlpiFab(
+        theme: widget.theme,
+        tareaId: widget.groupId,
+      ),
       appBar: AppBar(
-        backgroundColor: widget.meoZv.colorPrimario,
+        backgroundColor: widget.theme.colorPrimario,
         elevation: 4,
-        shadowColor: widget.meoZv.colorPrimario.withValues(alpha: 0.15),
+        shadowColor: widget.theme.colorPrimario.withValues(alpha: 0.15),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () => Navigator.of(context).pop(),
@@ -84,14 +116,14 @@ class _YVq0ZgHwk9ya6Hg0jdvie61ivj extends ConsumerState<UxxIZKOxhp0dVMt9SSl7a> {
               .where(
                 (t) =>
                     (t.groupId?.trim().isNotEmpty ?? false) &&
-                    t.groupId == widget.nRze6RO,
+                    t.groupId == widget.groupId,
               )
               .toList(growable: false);
 
           final effective = group.isNotEmpty
               ? group
-              : (widget.bg6QWa2E != null
-                    ? <Tarea>[widget.bg6QWa2E!]
+              : (widget.fallback != null
+                    ? <Tarea>[widget.fallback!]
                     : const <Tarea>[]);
 
           if (effective.isEmpty) {
@@ -104,7 +136,7 @@ class _YVq0ZgHwk9ya6Hg0jdvie61ivj extends ConsumerState<UxxIZKOxhp0dVMt9SSl7a> {
           final gerenciaId = user.resolvedGerenciaId;
           final usersAsync = ref.watch(usersListByGerenciaProvider(gerenciaId));
 
-          String sejdvPIY5p2XY(TareaEstado estado) {
+          String displayEstado(TareaEstado estado) {
             return switch (estado) {
               TareaEstado.pendiente => 'Pendiente',
               TareaEstado.enProceso => 'En proceso',
@@ -160,18 +192,18 @@ class _YVq0ZgHwk9ya6Hg0jdvie61ivj extends ConsumerState<UxxIZKOxhp0dVMt9SSl7a> {
                                 ),
                               ),
                               const SizedBox(height: 12),
-                              _qCx('Descripción', head.descripcion),
-                              _qCx(
+                              _row('Descripción', head.descripcion),
+                              _row(
                                 'Reporte',
                                 head.reporteId.isEmpty ? '-' : head.reporteId,
                               ),
-                              _qCx(
+                              _row(
                                 'Asignadores',
                                 (head.creadoPor ?? '').isEmpty
                                     ? '-'
                                     : head.creadoPor!,
                               ),
-                              _qCx('Grupo', widget.nRze6RO),
+                              _row('Grupo', widget.groupId),
                             ],
                           ),
                         ),
@@ -192,10 +224,11 @@ class _YVq0ZgHwk9ya6Hg0jdvie61ivj extends ConsumerState<UxxIZKOxhp0dVMt9SSl7a> {
                               loading: () => const Center(
                                 child: CircularProgressIndicator(),
                               ),
-                              error: (error, stackTrace) => _rEnac1ja0iiHL(
+                              error: (error, stackTrace) => _assigneesList(
                                 context,
                                 effective,
-                                sejdvPIY5p2XY,
+                                displayEstado,
+                                theme: widget.theme,
                                 nameForUserId: (id) => id,
                                 canEdit: (t) =>
                                     user.isSupervisor ||
@@ -206,33 +239,60 @@ class _YVq0ZgHwk9ya6Hg0jdvie61ivj extends ConsumerState<UxxIZKOxhp0dVMt9SSl7a> {
                                 final byId = <String, String>{
                                   for (final u in users) u.id: u.name,
                                 };
-                                return _rEnac1ja0iiHL(
+                                return _assigneesList(
                                   context,
                                   effective,
-                                  sejdvPIY5p2XY,
+                                  displayEstado,
+                                  theme: widget.theme,
                                   nameForUserId: (id) => byId[id] ?? id,
                                   canEdit: (t) =>
                                       user.isSupervisor ||
                                       t.asignadoA == user.id ||
                                       t.creadoPor == user.id,
-                                  onEstadoChanged: (t, next) async {
-                                    await ref
-                                        .read(tareaRepositoryProvider)
-                                        .actualizarEstado(
-                                          tareaId: t.id,
-                                          estado: next,
-                                        );
-                                    ref.invalidate(todasLasTareasProvider);
-                                  },
+                                onEstadoChanged: (t, next) async {
+                                  // Try to get the backend numeric ID for API call
+                                  String? backendId;
+                                  try {
+                                    final db = ref.read(appDatabaseProvider);
+                                    final rows = await (db.select(db.tareasTable)
+                                          ..where(
+                                            (tbl) => tbl.id.equals(t.id),
+                                          ))
+                                        .get();
+                                    if (rows.isNotEmpty) {
+                                      backendId = rows.first.remoteId;
+                                    }
+                                  } catch (_) {}
+                                  final dio = ref.read(dioProvider);
+                                  final apiId = backendId ?? t.id;
+                                  try {
+                                    await dio.patch(
+                                      '/tareas/$apiId/estado',
+                                      data: {
+                                        'estado': next.name == 'enProceso'
+                                            ? 'en_proceso'
+                                            : next.name,
+                                      },
+                                    );
+                                  } catch (_) {}
+                                  await ref
+                                      .read(tareaRepositoryProvider)
+                                      .actualizarEstado(
+                                        tareaId: t.id,
+                                        estado: next,
+                                      );
+                                  ref.invalidate(todasLasTareasProvider);
+                                },
                                 );
                               },
                             ),
-                            _gQsv01B3AugCap(
+                            _comentariosTab(
                               context,
                               comentariosAsync,
                               currentUserId: user.id,
+                              tareaId: widget.groupId,
                             ),
-                            _qT2X1qe2dP6(context, adjuntosAsync),
+                            _adjuntosTab(context, adjuntosAsync),
                           ],
                         ),
                       ),
@@ -247,11 +307,28 @@ class _YVq0ZgHwk9ya6Hg0jdvie61ivj extends ConsumerState<UxxIZKOxhp0dVMt9SSl7a> {
     );
   }
 
-  Widget _gQsv01B3AugCap(
+  Widget _comentariosTab(
     BuildContext context,
     AsyncValue<List<TareaComentario>> comentariosAsync, {
     required String currentUserId,
+    String? tareaId,
   }) {
+    final apiAvancesAsync = (tareaId != null)
+        ? ref.watch(tareaAvancesApiProvider(tareaId))
+        : null;
+    final timelineAsync = (tareaId != null)
+        ? ref.watch(tareaTimelineApiProvider(tareaId))
+        : null;
+
+    Future<void> _onRefresh() async {
+      if (tareaId != null) {
+        ref.invalidate(tareaComentariosProvider(tareaId));
+        ref.invalidate(tareaAvancesApiProvider(tareaId));
+        ref.invalidate(tareaTimelineApiProvider(tareaId));
+      }
+      await Future.delayed(const Duration(milliseconds: 300));
+    }
+
     return Column(
       children: [
         Expanded(
@@ -259,45 +336,28 @@ class _YVq0ZgHwk9ya6Hg0jdvie61ivj extends ConsumerState<UxxIZKOxhp0dVMt9SSl7a> {
             loading: () => const Center(child: CircularProgressIndicator()),
             error: (e, _) => Center(child: Text('Error: $e')),
             data: (comentarios) {
-              final list = comentarios;
-              if (list.isEmpty) {
-                return const Center(child: Text('Sin comentarios'));
-              }
-              return ListView.separated(
-                itemCount: list.length,
-                separatorBuilder: (context, index) =>
-                    const SizedBox(height: 8),
-                itemBuilder: (_, i) {
-                  final c = list[i];
-                  final autor = c.autorId;
-                  final mensaje = c.mensaje;
-                  final creadoEn = c.creadoEn;
-                  final cs = Theme.of(context).colorScheme;
-                  return Card(
-                    child: Padding(
-                      padding: const EdgeInsets.all(12),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            autor == currentUserId ? 'Tú' : autor,
-                            style: Theme.of(context).textTheme.titleSmall
-                                ?.copyWith(fontWeight: FontWeight.w800),
-                          ),
-                          const SizedBox(height: 6),
-                          Text(mensaje),
-                          const SizedBox(height: 6),
-                          Text(
-                            creadoEn.toLocal().toString(),
-                            style: Theme.of(context).textTheme.bodySmall
-                                ?.copyWith(color: cs.onSurfaceVariant),
-                          ),
-                        ],
-                      ),
+              return apiAvancesAsync?.when(
+                    loading: () => const Center(
+                      child: CircularProgressIndicator(),
                     ),
+                    error: (e, _) => const SizedBox.shrink(),
+                    data: (apiAvances) {
+                      return _buildComentariosList(
+                        comentarios,
+                        apiAvances,
+                        timelineAsync,
+                        currentUserId,
+                        _onRefresh,
+                      );
+                    },
+                  ) ??
+                  _buildComentariosList(
+                    comentarios,
+                    [],
+                    null,
+                    currentUserId,
+                    _onRefresh,
                   );
-                },
-              );
             },
           ),
         ),
@@ -306,31 +366,23 @@ class _YVq0ZgHwk9ya6Hg0jdvie61ivj extends ConsumerState<UxxIZKOxhp0dVMt9SSl7a> {
           children: [
             Expanded(
               child: TextField(
-                controller: _hq26IBiSYNb2eE,
+                controller: _comentarioCtrl,
                 decoration: const InputDecoration(
                   hintText: 'Escribe un comentario…',
                   isDense: true,
                 ),
                 minLines: 1,
                 maxLines: 3,
+                onTapOutside: (_) {
+                  FocusScope.of(context).unfocus();
+                },
               ),
             ),
             const SizedBox(width: 8),
             IconButton(
               tooltip: 'Enviar',
               icon: const Icon(Icons.send),
-              onPressed: () async {
-                final txt = _hq26IBiSYNb2eE.text.trim();
-                if (txt.isEmpty) return;
-                _hq26IBiSYNb2eE.clear();
-                await ref
-                    .read(tareaComentariosRepositoryProvider)
-                    .agregarComentario(
-                      tareaId: widget.nRze6RO,
-                      autorId: currentUserId,
-                      mensaje: txt,
-                    );
-              },
+              onPressed: () => _submitComentario(currentUserId),
             ),
           ],
         ),
@@ -338,7 +390,121 @@ class _YVq0ZgHwk9ya6Hg0jdvie61ivj extends ConsumerState<UxxIZKOxhp0dVMt9SSl7a> {
     );
   }
 
-  Widget _qT2X1qe2dP6(
+  Widget _buildComentariosList(
+    List<TareaComentario> comentarios,
+    List<TareaAvanceApi> apiAvances,
+    AsyncValue<List<TareaTimelineItem>>? timelineAsync,
+    String currentUserId,
+    Future<void> Function() onRefresh,
+  ) {
+    final items = <_ComentarioItem>[
+      for (final c in comentarios)
+        _ComentarioItem(
+          texto: c.mensaje,
+          autor: c.autorId == currentUserId ? 'Tú' : c.autorId,
+          fecha: c.creadoEn.toLocal().toString(),
+          autorId: c.autorId,
+        ),
+      for (final a in apiAvances)
+        _ComentarioItem(
+          texto: a.descripcion,
+          autor: a.usuarioNombre ?? a.usuarioId ?? '?',
+          fecha: a.fechaCreacion ?? '',
+          autorId: a.usuarioId,
+        ),
+      if (timelineAsync != null)
+        ...timelineAsync.maybeWhen(
+          data: (items) => items.map((t) => _ComentarioItem(
+            texto: t.contenido,
+            autor: t.usuarioNombre ?? 'GLPI',
+            fecha: t.fecha,
+            tipo: t.tipo,
+          )),
+          orElse: () => <_ComentarioItem>[],
+        ),
+    ];
+    items.sort((a, b) => a.fecha.compareTo(b.fecha));
+    return RefreshIndicator(
+      onRefresh: onRefresh,
+      child: _buildCommentList(items),
+    );
+  }
+
+  String _tipoLabel(String tipo) {
+    switch (tipo) {
+      case 'followup':
+        return 'Comentario';
+      case 'task':
+        return 'Tarea';
+      case 'solution':
+        return 'Solución';
+      case 'validation':
+        return 'Validación';
+      default:
+        return tipo;
+    }
+  }
+
+  Widget _buildCommentList(List<_ComentarioItem> items) {
+    if (items.isEmpty) {
+      return const Center(child: Text('Sin comentarios'));
+    }
+    return ListView.separated(
+      itemCount: items.length,
+      separatorBuilder: (context, index) => const SizedBox(height: 8),
+      itemBuilder: (_, i) {
+        final item = items[i];
+        final cs = Theme.of(context).colorScheme;
+        final isGlpi = item.tipo != null;
+        return Card(
+          child: Padding(
+            padding: const EdgeInsets.all(12),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    if (isGlpi)
+                      Padding(
+                        padding: const EdgeInsets.only(right: 6),
+                        child: Icon(
+                          Icons.cloud_sync,
+                          size: 16,
+                          color: cs.primary,
+                        ),
+                      ),
+                    Expanded(
+                      child: Text(
+                        isGlpi
+                            ? '${item.autor} - ${_tipoLabel(item.tipo!)}'
+                            : item.autor,
+                        style: Theme.of(context)
+                            .textTheme
+                            .titleSmall
+                            ?.copyWith(fontWeight: FontWeight.w800),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 6),
+                Text(item.texto),
+                const SizedBox(height: 6),
+                Text(
+                  item.fecha,
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodySmall
+                      ?.copyWith(color: cs.onSurfaceVariant),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _adjuntosTab(
     BuildContext context,
     AsyncValue<List<TareaAdjunto>> adjuntosAsync,
   ) {
@@ -372,7 +538,7 @@ class _YVq0ZgHwk9ya6Hg0jdvie61ivj extends ConsumerState<UxxIZKOxhp0dVMt9SSl7a> {
                     ),
                   );
                   if (source == null) return;
-                  final file = await _qHM49C.pickImage(
+                  final file = await _picker.pickImage(
                     source: source,
                     imageQuality: 85,
                   );
@@ -380,7 +546,7 @@ class _YVq0ZgHwk9ya6Hg0jdvie61ivj extends ConsumerState<UxxIZKOxhp0dVMt9SSl7a> {
                   await ref
                       .read(tareaAdjuntosRepositoryProvider)
                       .agregarAdjunto(
-                        tareaId: widget.nRze6RO,
+                        tareaId: widget.groupId,
                         tipo: TareaAdjuntoTipo.foto,
                         nombre: file.name,
                         localPath: file.path,
@@ -404,7 +570,7 @@ class _YVq0ZgHwk9ya6Hg0jdvie61ivj extends ConsumerState<UxxIZKOxhp0dVMt9SSl7a> {
                   await ref
                       .read(tareaAdjuntosRepositoryProvider)
                       .agregarAdjunto(
-                        tareaId: widget.nRze6RO,
+                        tareaId: widget.groupId,
                         tipo: TareaAdjuntoTipo.documento,
                         nombre: picked.name,
                         localPath: path,
@@ -470,7 +636,7 @@ class _YVq0ZgHwk9ya6Hg0jdvie61ivj extends ConsumerState<UxxIZKOxhp0dVMt9SSl7a> {
     );
   }
 
-  static Widget _qCx(String label, String value) {
+  static Widget _row(String label, String value) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 10),
       child: Row(
@@ -492,10 +658,11 @@ class _YVq0ZgHwk9ya6Hg0jdvie61ivj extends ConsumerState<UxxIZKOxhp0dVMt9SSl7a> {
     );
   }
 
-  static Widget _rEnac1ja0iiHL(
+  static Widget _assigneesList(
     BuildContext context,
     List<Tarea> tasks,
     String Function(TareaEstado) displayEstado, {
+    required GerenciaTheme theme,
     required String Function(String userId) nameForUserId,
     required bool Function(Tarea tarea) canEdit,
     Future<void> Function(Tarea tarea, TareaEstado next)? onEstadoChanged,
@@ -522,26 +689,99 @@ class _YVq0ZgHwk9ya6Hg0jdvie61ivj extends ConsumerState<UxxIZKOxhp0dVMt9SSl7a> {
             leading: const Icon(Icons.person),
             title: Text(nameForUserId(t.asignadoA)),
             subtitle: Text(displayEstado(t.estado)),
-            trailing: DropdownButton<TareaEstado>(
-              value: t.estado,
-              onChanged: (!editable || onEstadoChanged == null)
-                  ? null
-                  : (v) async {
-                      if (v == null) return;
-                      await onEstadoChanged(t, v);
-                    },
-              items: TareaEstado.values
-                  .map(
-                    (e) => DropdownMenuItem(
-                      value: e,
-                      child: Text(displayEstado(e)),
+            trailing: editable && onEstadoChanged != null
+                ? TextButton.icon(
+                    onPressed: () => _showEstadoDialog(
+                      context,
+                      theme: theme,
+                      current: t.estado,
+                      onSelected: (next) async {
+                        if (onEstadoChanged != null) {
+                          await onEstadoChanged(t, next);
+                        }
+                      },
                     ),
+                    icon: const Icon(Icons.edit),
+                    label: const Text('Cambiar'),
                   )
-                  .toList(growable: false),
-            ),
+                : null,
           ),
         );
       },
     );
   }
+
+  static void _showEstadoDialog(
+    BuildContext context, {
+    required GerenciaTheme theme,
+    required TareaEstado current,
+    required Future<void> Function(TareaEstado) onSelected,
+  }) {
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Cambiar estatus'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: TareaEstado.values.map((estado) {
+            final selected = estado == current;
+            return Padding(
+              padding: const EdgeInsets.symmetric(vertical: 4),
+              child: SizedBox(
+                width: double.infinity,
+                child: OutlinedButton(
+                  style: OutlinedButton.styleFrom(
+                    backgroundColor:
+                        selected ? theme.colorPrimario.withValues(alpha: 0.1) : null,
+                    side: BorderSide(
+                      color: selected ? theme.colorPrimario : Colors.grey[300]!,
+                    ),
+                  ),
+                  onPressed: () async {
+                    Navigator.pop(ctx);
+                    if (estado != current) {
+                      await onSelected(estado);
+                    }
+                  },
+                  child: Text(
+                    {
+                      TareaEstado.pendiente: 'Pendiente',
+                      TareaEstado.enProceso: 'En proceso',
+                      TareaEstado.completada: 'Completada',
+                    }[estado]!,
+                    style: TextStyle(
+                      color: selected ? theme.colorPrimario : null,
+                      fontWeight: selected ? FontWeight.bold : null,
+                    ),
+                  ),
+                ),
+              ),
+            );
+          }).toList(),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: const Text('Cancelar'),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _ComentarioItem {
+  final String texto;
+  final String autor;
+  final String fecha;
+  final String? autorId;
+  final String? tipo;
+
+  _ComentarioItem({
+    required this.texto,
+    required this.autor,
+    required this.fecha,
+    this.autorId,
+    this.tipo,
+  });
 }

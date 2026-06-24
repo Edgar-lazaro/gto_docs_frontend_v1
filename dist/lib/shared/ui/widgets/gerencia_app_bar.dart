@@ -2,18 +2,18 @@ import 'package:flutter/material.dart';
 
 import '../theme/gerencia_config.dart';
 
-class YgZFetYh1vLyAe extends StatelessWidget implements PreferredSizeWidget {
-  final GerenciaTheme vGZ4q;
-  final String fBFkV;
-  final List<Widget>? bQCu54C;
-  final bool bPUFmYe3;
+class GerenciaAppBar extends StatelessWidget implements PreferredSizeWidget {
+  final GerenciaTheme theme;
+  final String title;
+  final List<Widget>? actions;
+  final bool showBack;
 
-  const YgZFetYh1vLyAe({
+  const GerenciaAppBar({
     super.key,
-    required this.vGZ4q,
-    required this.fBFkV,
-    this.bQCu54C,
-    this.bPUFmYe3 = true,
+    required this.theme,
+    required this.title,
+    this.actions,
+    this.showBack = true,
   });
 
   @override
@@ -31,21 +31,21 @@ class YgZFetYh1vLyAe extends StatelessWidget implements PreferredSizeWidget {
     );
 
     return AppBar(
-      backgroundColor: vGZ4q.colorPrimario,
+      backgroundColor: theme.colorPrimario,
       elevation: 4,
       scrolledUnderElevation: 0,
       centerTitle: true,
       foregroundColor: Colors.white,
       iconTheme: const IconThemeData(color: Colors.white),
-      leading: bPUFmYe3
+      leading: showBack
           ? IconButton(
               icon: const Icon(Icons.arrow_back),
               onPressed: () => Navigator.of(context).pop(),
             )
           : null,
-      title: Text(fBFkV, style: titleStyle),
-      actions: bQCu54C,
-      shadowColor: vGZ4q.colorPrimario.withAlpha(60),
+      title: Text(title, style: titleStyle),
+      actions: actions,
+      shadowColor: theme.colorPrimario.withAlpha(60),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(bottom: Radius.circular(radius)),
       ),

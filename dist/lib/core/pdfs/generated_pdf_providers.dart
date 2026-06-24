@@ -8,10 +8,10 @@ final sharedPreferencesProvider = Provider<SharedPreferences>((ref) {
   throw UnimplementedError('sharedPreferencesProvider no inicializado');
 });
 
-final generatedPdfRepositoryProvider = Provider<V2f48toe1jh85XfKaDD13v>((ref) {
-  return V2f48toe1jh85XfKaDD13v(ref.read(sharedPreferencesProvider));
+final generatedPdfRepositoryProvider = Provider<GeneratedPdfRepository>((ref) {
+  return GeneratedPdfRepository(ref.read(sharedPreferencesProvider));
 });
 
-final generatedPdfsProvider = FutureProvider<List<Q3ORRT7xmyLi>>((ref) async {
-  return ref.read(generatedPdfRepositoryProvider).irrmmV0();
+final generatedPdfsProvider = FutureProvider<List<GeneratedPdf>>((ref) async {
+  return ref.read(generatedPdfRepositoryProvider).listAll();
 });

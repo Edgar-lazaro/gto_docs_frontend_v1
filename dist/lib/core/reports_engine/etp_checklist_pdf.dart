@@ -5,16 +5,16 @@ import 'package:pdf/widgets.dart' as pw;
 
 import 'etp_models.dart';
 
-class Z5GmlKPdd3BaxOC {
-  static Future<Uint8List> zQg8s({
-    required TOrYuZvGOIatVhQ7HHjUs5 definition,
-    required NfW2LWZq2KjvbSa3C draft,
+class EtpChecklistPdf {
+  static Future<Uint8List> build({
+    required EtpChecklistDefinition definition,
+    required EtpChecklistDraft draft,
     String leftLogoAsset = 'assets/img/login.png',
     String rightLogoAsset = 'assets/img/logo_ae.png',
   }) async {
     final pdf = pw.Document();
 
-    final now = draft.qOp52xkYl;
+    final now = draft.createdAt;
     final dia = DateFormat('dd').format(now);
     final mes = DateFormat('MM').format(now);
     final year = DateFormat('yyyy').format(now);
@@ -47,7 +47,7 @@ class Z5GmlKPdd3BaxOC {
                   ),
                   pw.Expanded(
                     child: pw.Text(
-                      definition.gIVWK0AnkqvrFz,
+                      definition.pdfHeaderTitle,
                       style: pw.TextStyle(
                         fontSize: 15,
                         fontWeight: pw.FontWeight.bold,
@@ -70,7 +70,7 @@ class Z5GmlKPdd3BaxOC {
             pw.Row(
               mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
               children: [
-                pw.Expanded(child: pw.Text('Nombre: ${draft.t3aSr7z2}')),
+                pw.Expanded(child: pw.Text('Nombre: ${draft.userName}')),
                 pw.Expanded(
                   child: pw.Text(
                     'Fecha: $dia/$mes/$year',
@@ -83,7 +83,7 @@ class Z5GmlKPdd3BaxOC {
             pw.Row(
               mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
               children: [
-                pw.Expanded(child: pw.Text('Area: ${draft.k7YAey0RC6sEJ}')),
+                pw.Expanded(child: pw.Text('Area: ${draft.checklistName}')),
                 pw.Expanded(child: pw.Text('', textAlign: pw.TextAlign.end)),
               ],
             ),
@@ -104,13 +104,13 @@ class Z5GmlKPdd3BaxOC {
                 'Anomalías',
                 'Observaciones',
               ],
-              data: draft.kfQ8o.map((it) {
+              data: draft.items.map((it) {
                 return [
-                  it.gFSF1,
-                  it.ybLGi2BbR ? 'X' : '',
-                  it.myA5Emfw ? 'X' : '',
-                  it.mKlRFyNhx,
-                  it.aBEipUYKaEqit,
+                  it.label,
+                  it.cableRoto ? 'X' : '',
+                  it.fallaRed ? 'X' : '',
+                  it.anomalias,
+                  it.observaciones,
                 ];
               }).toList(),
             ),
@@ -133,11 +133,11 @@ class Z5GmlKPdd3BaxOC {
                   ),
                   pw.SizedBox(height: 8),
                   pw.Text(
-                    'Total de sistemas revisados: ${draft.kfQ8o.length}',
+                    'Total de sistemas revisados: ${draft.items.length}',
                     style: const pw.TextStyle(fontSize: 12),
                   ),
                   pw.Text(
-                    'Sistemas con anomalías: ${draft.kfQ8o.where((p) => p.mKlRFyNhx.isNotEmpty).length}',
+                    'Sistemas con anomalías: ${draft.items.where((p) => p.anomalias.isNotEmpty).length}',
                     style: const pw.TextStyle(fontSize: 12),
                   ),
                 ],

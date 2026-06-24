@@ -1,15 +1,15 @@
 import 'session_manager.dart';
 
-abstract class SQrj3Cecjbvq0H {
+abstract class AuthRepository {
   /// Login contra API 
-  Future<ZUV35mlB33k> inKrK({
+  Future<SessionData> login({
     required String username,
     required String password,
   });
 
   /// Logout lógico
-  Future<void> bGwfss();
+  Future<void> logout();
 
   /// Obtiene sesión persistida 
-  Future<ZUV35mlB33k?> ygDJQag3yA();
+  Future<SessionData?> getSession();
 }

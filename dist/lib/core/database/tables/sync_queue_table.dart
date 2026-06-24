@@ -1,29 +1,29 @@
 import 'dart:convert';
 import 'package:drift/drift.dart';
 
-class GWqmPL1h92soN8 extends Table {
-  IntColumn get f4 => integer().autoIncrement()();
+class SyncQueueTable extends Table {
+  IntColumn get id => integer().autoIncrement()();
 
-  TextColumn get s5lJvd3 => text()();
+  TextColumn get entidad => text()();
 
-  TextColumn get opiJZDaB0 => text()(); 
+  TextColumn get entidadId => text()(); 
   // Para GLPI usamos un UUID local o timestamp
 
-  TextColumn get dQ2fJw => text()(); // create, update, delete
+  TextColumn get accion => text()(); // create, update, delete
 
-  TextColumn get v3Dvw1i =>
-      text().map(const CH4QcDZ8hi5WYcPfn8gxACzf()).nullable()();
+  TextColumn get payload =>
+      text().map(const SyncPayloadTypeConverter()).nullable()();
 
-  BoolColumn get tFiRWl5I4 =>
+  BoolColumn get procesado =>
       boolean().withDefault(const Constant(false))();
 
-  DateTimeColumn get iGXSnoPMI =>
+  DateTimeColumn get createdAt =>
       dateTime().withDefault(currentDateAndTime)();
 }
 
-class CH4QcDZ8hi5WYcPfn8gxACzf
+class SyncPayloadTypeConverter
     extends TypeConverter<Map<String, dynamic>, String> {
-  const CH4QcDZ8hi5WYcPfn8gxACzf();
+  const SyncPayloadTypeConverter();
 
   @override
   Map<String, dynamic> fromSql(String fromDb) =>

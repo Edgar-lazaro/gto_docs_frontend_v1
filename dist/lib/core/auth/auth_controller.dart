@@ -7,64 +7,69 @@ import '../network/lan_status.dart';
 import '../network/lan_status_provider.dart';
 import '../config/config_provider.dart';
 
-class Q1AxIGqmhlVvio extends StateNotifier<VgJlYXlcR> {
-  final SQrj3Cecjbvq0H jal3;
-  final PDrvVgaQueI15K yLINSHk;
-  final Ref kdj;
+class AuthController extends StateNotifier<AuthState> {
+  final AuthRepository repo;
+  final SessionManager session;
+  final Ref ref;
 
-  Q1AxIGqmhlVvio({required this.jal3, required this.yLINSHk, required this.kdj})
-    : super(VgJlYXlcR.i5Gzg0e()) {
-    _peej1LtPEoZ();
+  AuthController({required this.repo, required this.session, required this.ref})
+    : super(AuthState.unknown()) {
+    _loadSession();
   }
 
-  Future<void> _peej1LtPEoZ() async {
-    final user = await yLINSHk.zXZOOZY();
-    if (user != null) {
-      final config = kdj.read(appConfigProvider);
-      if (config.useJwt) {
-        final token = await yLINSHk.lVlMk1NQ();
-        if (token == null || token.trim().isEmpty) {
-          await yLINSHk.rAn5s();
-          state = VgJlYXlcR.zZoZETFaKv1JC1h();
-          return;
+  Future<void> _loadSession() async {
+    try {
+      final user = await session.getUser();
+      if (user != null) {
+        final config = ref.read(appConfigProvider);
+        if (config.useJwt) {
+          final token = await session.getToken();
+          if (token == null || token.trim().isEmpty) {
+            await session.clear();
+            state = AuthState.unauthenticated();
+            return;
+          }
         }
-      }
 
-      state = VgJlYXlcR.i6EtUTyVpISly(user);
-    } else {
-      state = VgJlYXlcR.zZoZETFaKv1JC1h();
+        state = AuthState.authenticated(user);
+      } else {
+        state = AuthState.unauthenticated();
+      }
+    } catch (_) {
+      await session.clear();
+      state = AuthState.unauthenticated();
     }
   }
 
-  Future<void> pPCVW(String username, String password) async {
-    final lanStatus = kdj
+  Future<void> login(String username, String password) async {
+    final lanStatus = ref
         .read(lanStatusProvider)
         .maybeWhen(data: (s) => s, orElse: () => LanStatus.disconnected);
 
     try {
-      final sessionData = await jal3.inKrK(
+      final sessionData = await repo.login(
         username: username,
         password: password,
       );
 
-      await yLINSHk.cHip(sessionData);
+      await session.save(sessionData);
 
-      state = VgJlYXlcR.i6EtUTyVpISly(sessionData.goQt);
+      state = AuthState.authenticated(sessionData.user);
     } catch (e, st) {
       if (kDebugMode) {
         debugPrint('[AUTH] login failed (lan=$lanStatus): $e');
         debugPrint('$st');
       }
-      state = VgJlYXlcR.zZoZETFaKv1JC1h();
+      state = AuthState.unauthenticated();
     }
   }
 
-  Future<void> aZQAoR() async {
-    await yLINSHk.rAn5s();
-    state = VgJlYXlcR.zZoZETFaKv1JC1h();
+  Future<void> logout() async {
+    await session.clear();
+    state = AuthState.unauthenticated();
   }
 
-  void bKBfanzh() {
-    state = VgJlYXlcR.blocked();
+  void blockApp() {
+    state = AuthState.blocked();
   }
 }

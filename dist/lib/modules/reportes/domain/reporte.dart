@@ -1,104 +1,104 @@
-enum HlMouyaCbw9yY {
-  bdQnDoJ,     // recién creado
-  yXwvbRktv,   // ya tomado / asignado
-  zZIp8Sjm,    // solucionado
-  iNuTYHG9X,   // no aplica / duplicado
+enum ReporteEstado {
+  enviado,     // recién creado
+  enProceso,   // ya tomado / asignado
+  resuelto,    // solucionado
+  rechazado,   // no aplica / duplicado
 }
 
-extension GnfAloBobpmw8O on HlMouyaCbw9yY {
+extension ReporteEstadoX on ReporteEstado {
   String get asString {
     switch (this) {
-      case HlMouyaCbw9yY.bdQnDoJ:
+      case ReporteEstado.enviado:
         return 'enviado';
-      case HlMouyaCbw9yY.yXwvbRktv:
+      case ReporteEstado.enProceso:
         return 'en_proceso';
-      case HlMouyaCbw9yY.zZIp8Sjm:
+      case ReporteEstado.resuelto:
         return 'resuelto';
-      case HlMouyaCbw9yY.iNuTYHG9X:
+      case ReporteEstado.rechazado:
         return 'rechazado';
     }
   }
 
-  static HlMouyaCbw9yY fromString(String value) {
+  static ReporteEstado fromString(String value) {
     switch (value) {
       case 'en_proceso':
-        return HlMouyaCbw9yY.yXwvbRktv;
+        return ReporteEstado.enProceso;
       case 'resuelto':
-        return HlMouyaCbw9yY.zZIp8Sjm;
+        return ReporteEstado.resuelto;
       case 'rechazado':
-        return HlMouyaCbw9yY.iNuTYHG9X;
+        return ReporteEstado.rechazado;
       case 'enviado':
       default:
-        return HlMouyaCbw9yY.bdQnDoJ;
+        return ReporteEstado.enviado;
     }
   }
 }
 
-class RVvHrcu {
-  final String nw;                 // UUID local
-  final String fLDsk3;             // corto y claro
-  final String pEPjdZSkNOy;        // detalle del problema
-  final String uNi3cuOrY;          // Mantenimiento, Seguridad, TI, etc.
-  final String fC75;               // área/gerencia
-  final String? hNs7uz;            // opcional (banda, vehículo, equipo)
-  final String? hR7QgJ6k0;         // opcional (puerta, hangar)
-  final String i8cwuPOLI;          // userId (requester)
-  final DateTime yKBfFdgp;
-  final HlMouyaCbw9yY qV3ur4;
+class Reporte {
+  final String id;                 // UUID local
+  final String titulo;             // corto y claro
+  final String descripcion;        // detalle del problema
+  final String categoria;          // Mantenimiento, Seguridad, TI, etc.
+  final String area;               // área/gerencia
+  final String? activo;            // opcional (banda, vehículo, equipo)
+  final String? ubicacion;         // opcional (puerta, hangar)
+  final String creadoPor;          // userId (requester)
+  final DateTime creadoEn;
+  final ReporteEstado estado;
 
   // Relación con GLPI (opcional)
-  final String? r1a7BwNGpWB3;      // ID en backend/GLPI cuando exista
+  final String? glpiTicketId;      // ID en backend/GLPI cuando exista
 
   // Extra para crecer (IA, contexto, sensores, etc.)
-  final Map<String, dynamic>? qE1nVVjA;
+  final Map<String, dynamic>? metadata;
 
-  RVvHrcu({
-    required this.nw,
-    required this.fLDsk3,
-    required this.pEPjdZSkNOy,
-    required this.uNi3cuOrY,
-    required this.fC75,
-    required this.i8cwuPOLI,
-    required this.yKBfFdgp,
-    this.qV3ur4 = HlMouyaCbw9yY.bdQnDoJ,
-    this.hNs7uz,
-    this.hR7QgJ6k0,
-    this.r1a7BwNGpWB3,
-    this.qE1nVVjA,
+  Reporte({
+    required this.id,
+    required this.titulo,
+    required this.descripcion,
+    required this.categoria,
+    required this.area,
+    required this.creadoPor,
+    required this.creadoEn,
+    this.estado = ReporteEstado.enviado,
+    this.activo,
+    this.ubicacion,
+    this.glpiTicketId,
+    this.metadata,
   });
 
-  RVvHrcu xfvP527J({
-    HlMouyaCbw9yY? estado,
+  Reporte copyWith({
+    ReporteEstado? estado,
     String? glpiTicketId,
   }) {
-    return RVvHrcu(
-      nw: nw,
-      fLDsk3: fLDsk3,
-      pEPjdZSkNOy: pEPjdZSkNOy,
-      uNi3cuOrY: uNi3cuOrY,
-      fC75: fC75,
-      i8cwuPOLI: i8cwuPOLI,
-      yKBfFdgp: yKBfFdgp,
-      qV3ur4: estado ?? this.qV3ur4,
-      hNs7uz: hNs7uz,
-      hR7QgJ6k0: hR7QgJ6k0,
-      r1a7BwNGpWB3: glpiTicketId ?? this.r1a7BwNGpWB3,
-      qE1nVVjA: qE1nVVjA,
+    return Reporte(
+      id: id,
+      titulo: titulo,
+      descripcion: descripcion,
+      categoria: categoria,
+      area: area,
+      creadoPor: creadoPor,
+      creadoEn: creadoEn,
+      estado: estado ?? this.estado,
+      activo: activo,
+      ubicacion: ubicacion,
+      glpiTicketId: glpiTicketId ?? this.glpiTicketId,
+      metadata: metadata,
     );
   }
 
-  Map<String, dynamic> vssPSD() => {
-        'id': nw,
-        'titulo': fLDsk3,
-        'descripcion': pEPjdZSkNOy,
-        'categoria': uNi3cuOrY,
-        'area': fC75,
-        'activo': hNs7uz,
-        'ubicacion': hR7QgJ6k0,
-        'creadoPor': i8cwuPOLI,
-        'creadoEn': yKBfFdgp.toIso8601String(),
-        'estado': qV3ur4.asString,
-        'glpiTicketId': r1a7BwNGpWB3,
-        'metadata': qE1nVVjA,
+  Map<String, dynamic> toJson() => {
+        'id': id,
+        'titulo': titulo,
+        'descripcion': descripcion,
+        'categoria': categoria,
+        'area': area,
+        'activo': activo,
+        'ubicacion': ubicacion,
+        'creadoPor': creadoPor,
+        'creadoEn': creadoEn.toIso8601String(),
+        'estado': estado.asString,
+        'glpiTicketId': glpiTicketId,
+        'metadata': metadata,
       };
 }

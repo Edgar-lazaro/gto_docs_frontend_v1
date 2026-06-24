@@ -1,18 +1,18 @@
 import 'package:drift/drift.dart';
 
-class FkEyrbbzxWi8ot92tX extends Table {
-  TextColumn get vP => text()();
-  TextColumn get qRHtWp8 => text()();
+class TareaAdjuntosTable extends Table {
+  TextColumn get id => text()();
+  TextColumn get tareaId => text()();
 
   /// 'foto' o 'documento'
-  TextColumn get bMc2 => text()();
+  TextColumn get tipo => text()();
 
-  TextColumn get nPMyMr => text()();
-  TextColumn get eW08p7uUz => text()();
-  TextColumn get oZsPNvga => text().nullable()();
-  TextColumn get m0br3yhQ5 => text().nullable()();
-  DateTimeColumn get dCJLg8oA => dateTime()();
+  TextColumn get nombre => text()();
+  TextColumn get localPath => text()();
+  TextColumn get mimeType => text().nullable()();
+  TextColumn get remoteUrl => text().nullable()();
+  DateTimeColumn get creadoEn => dateTime()();
 
   @override
-  Set<Column> get primaryKey => {vP};
+  Set<Column> get primaryKey => {id};
 }

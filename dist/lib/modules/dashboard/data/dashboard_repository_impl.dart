@@ -1,15 +1,15 @@
 import '../../../core/database/app_database.dart';
 import '../domain/dashboard_metrics.dart';
 
-class QCAyhDdUmOcfY2VIHVu {
-  final AppDatabase ap;
+class DashboardRepository {
+  final AppDatabase db;
 
-  QCAyhDdUmOcfY2VIHVu(this.ap);
+  DashboardRepository(this.db);
 
-  Future<DashboardMetrics> s1NcpF6m1BYc8S1() async {
-    final reportes = await ap.select(ap.reportesTable).get();
-    final tareas = await ap.select(ap.tareasTable).get();
-    final evidencias = await ap.select(ap.reporteEvidenciasTable).get();
+  Future<DashboardMetrics> obtenerMetricas() async {
+    final reportes = await db.select(db.reportesTable).get();
+    final tareas = await db.select(db.tareasTable).get();
+    final evidencias = await db.select(db.reporteEvidenciasTable).get();
 
     final now = DateTime.now();
 

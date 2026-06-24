@@ -13,72 +13,72 @@ import '../../../shared/ui/widgets/gerencia_app_bar.dart';
 import 'combustible_providers.dart';
 import 'combustible_historial_page.dart';
 
-class Zy1QHYyt2ixrp90 extends ConsumerStatefulWidget {
-  final GerenciaTheme dWOfN;
+class CombustiblePage extends ConsumerStatefulWidget {
+  final GerenciaTheme theme;
 
-  const Zy1QHYyt2ixrp90({super.key, required this.dWOfN});
+  const CombustiblePage({super.key, required this.theme});
 
   @override
-  ConsumerState<Zy1QHYyt2ixrp90> createState() => _QISmtDZDqmxWhYdIpVPQ();
+  ConsumerState<CombustiblePage> createState() => _CombustiblePageState();
 }
 
-class _QISmtDZDqmxWhYdIpVPQ extends ConsumerState<Zy1QHYyt2ixrp90> {
-  String _pxwBWBWontuW = 'usar_vehiculo';
-  final ImagePicker _yxqA2F = ImagePicker();
+class _CombustiblePageState extends ConsumerState<CombustiblePage> {
+  String _selectedMode = 'usar_vehiculo';
+  final ImagePicker _picker = ImagePicker();
 
   // Listas para almacenar fotos
-  final List<XFile> _cbZA8TaYgKnD = [];
-  final List<XFile> _wZrKJpLU7R3CAo = [];
-  final List<XFile> _vmybZ3VSdyy = [];
+  final List<XFile> _fotosKmAntes = [];
+  final List<XFile> _fotosKmDespues = [];
+  final List<XFile> _fotosTicket = [];
 
   // Listas para fotos de usar vehículo
-  final List<XFile> _g4O9joQmGonv3hXMpLmP = [];
-  final List<XFile> _ca6von1vUumXHtrfLD = [];
+  final List<XFile> _fotosRegistroInicial = [];
+  final List<XFile> _fotosRegistroFinal = [];
 
   // Controllers para Usar Vehículo
-  final _b5JFu7ZL6sHiWkLi = TextEditingController();
-  final _tmVVsZqJ7S8AXjldiY = TextEditingController();
-  final _wRV5xqcKPQZkMq3dG = TextEditingController();
-  final _ymrOmbvZmsYQtip53zJJ = TextEditingController();
-  final _xYDX3FM1QUVzmIDAGP7ztPVS9Y6G = TextEditingController();
-  final _bCs2HEcLesKbbDfnvPPvfCxaRW5y = TextEditingController();
-  final _eL76aAqBDANtwOAAb7I = TextEditingController();
-  final _xUUg3VG9boilrwKaQnnkjk3s6H = TextEditingController();
-  final _oW1xNeOeXiFysCdsrxgLMNeb3g = TextEditingController();
+  final _nombreController = TextEditingController();
+  final _vehiculoController = TextEditingController();
+  final _destinoController = TextEditingController();
+  final _horaInicioController = TextEditingController();
+  final _combustibleInicialController = TextEditingController();
+  final _kilometrajeInicialController = TextEditingController();
+  final _horaFinalController = TextEditingController();
+  final _combustibleFinalController = TextEditingController();
+  final _kilometrajeFinalController = TextEditingController();
 
   // Controllers para Cargar Combustible
-  final _etLMIfTDFaTx9LSleVXg = TextEditingController();
-  final _me2Vfny7UQXGWhUmkf = TextEditingController();
-  final _uwZZBZyOhu1VN4ml6note5v = TextEditingController();
-  final _mygVaHTguRQwjkdqUxOchF = TextEditingController();
-  final _jb4X4KGtlXRRbUwpvnHqu0KT = TextEditingController();
+  final _fechaCargaController = TextEditingController();
+  final _operadorController = TextEditingController();
+  final _vehiculoCargaController = TextEditingController();
+  final _kmAntesCargaController = TextEditingController();
+  final _kmDespuesCargaController = TextEditingController();
 
   @override
   void dispose() {
-    _b5JFu7ZL6sHiWkLi.dispose();
-    _tmVVsZqJ7S8AXjldiY.dispose();
-    _wRV5xqcKPQZkMq3dG.dispose();
-    _ymrOmbvZmsYQtip53zJJ.dispose();
-    _xYDX3FM1QUVzmIDAGP7ztPVS9Y6G.dispose();
-    _bCs2HEcLesKbbDfnvPPvfCxaRW5y.dispose();
-    _eL76aAqBDANtwOAAb7I.dispose();
-    _xUUg3VG9boilrwKaQnnkjk3s6H.dispose();
-    _oW1xNeOeXiFysCdsrxgLMNeb3g.dispose();
-    _etLMIfTDFaTx9LSleVXg.dispose();
-    _me2Vfny7UQXGWhUmkf.dispose();
-    _uwZZBZyOhu1VN4ml6note5v.dispose();
-    _mygVaHTguRQwjkdqUxOchF.dispose();
-    _jb4X4KGtlXRRbUwpvnHqu0KT.dispose();
+    _nombreController.dispose();
+    _vehiculoController.dispose();
+    _destinoController.dispose();
+    _horaInicioController.dispose();
+    _combustibleInicialController.dispose();
+    _kilometrajeInicialController.dispose();
+    _horaFinalController.dispose();
+    _combustibleFinalController.dispose();
+    _kilometrajeFinalController.dispose();
+    _fechaCargaController.dispose();
+    _operadorController.dispose();
+    _vehiculoCargaController.dispose();
+    _kmAntesCargaController.dispose();
+    _kmDespuesCargaController.dispose();
     super.dispose();
   }
 
-  LinearGradient get _isfRlHc9V0tzjj => LinearGradient(
+  LinearGradient get _headerGradient => LinearGradient(
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
-    colors: [widget.dWOfN.colorPrimario, widget.dWOfN.colorSecundario],
+    colors: [widget.theme.colorPrimario, widget.theme.colorSecundario],
   );
 
-  Future<XFile?> _wKKZ9vaMCbWR(XFile file, {required String prefix}) async {
+  Future<XFile?> _persistImage(XFile file, {required String prefix}) async {
     final sourcePath = file.path;
     final sourceFile = File(sourcePath);
     if (!await sourceFile.exists()) return null;
@@ -96,7 +96,7 @@ class _QISmtDZDqmxWhYdIpVPQ extends ConsumerState<Zy1QHYyt2ixrp90> {
     return XFile(newPath);
   }
 
-  Future<void> _zrLTpoUiw(String tipo) async {
+  Future<void> _pickImage(String tipo) async {
     showModalBottomSheet(
       context: context,
       shape: const RoundedRectangleBorder(
@@ -111,12 +111,12 @@ class _QISmtDZDqmxWhYdIpVPQ extends ConsumerState<Zy1QHYyt2ixrp90> {
               ListTile(
                 leading: Icon(
                   Icons.camera_alt,
-                  color: widget.dWOfN.colorPrimario,
+                  color: widget.theme.colorPrimario,
                 ),
                 title: const Text('Tomar foto'),
                 onTap: () async {
                   Navigator.pop(context);
-                  final photo = await _yxqA2F.pickImage(
+                  final photo = await _picker.pickImage(
                     source: ImageSource.camera,
                     imageQuality: 70,
                     maxWidth: 1600,
@@ -124,36 +124,36 @@ class _QISmtDZDqmxWhYdIpVPQ extends ConsumerState<Zy1QHYyt2ixrp90> {
                   );
                   if (photo == null || !mounted) return;
                   try {
-                    final stored = await _wKKZ9vaMCbWR(photo, prefix: tipo);
+                    final stored = await _persistImage(photo, prefix: tipo);
                     if (stored == null || !mounted) return;
                     setState(() {
                       if (tipo == 'kmAntes') {
-                        _cbZA8TaYgKnD.add(stored);
+                        _fotosKmAntes.add(stored);
                       } else if (tipo == 'kmDespues') {
-                        _wZrKJpLU7R3CAo.add(stored);
+                        _fotosKmDespues.add(stored);
                       } else if (tipo == 'ticket') {
-                        _vmybZ3VSdyy.add(stored);
+                        _fotosTicket.add(stored);
                       } else if (tipo == 'registroInicial') {
-                        _g4O9joQmGonv3hXMpLmP.add(stored);
+                        _fotosRegistroInicial.add(stored);
                       } else if (tipo == 'registroFinal') {
-                        _ca6von1vUumXHtrfLD.add(stored);
+                        _fotosRegistroFinal.add(stored);
                       }
                     });
                   } catch (_) {
                     if (!mounted) return;
-                    _gFWbjB37b('No se pudo guardar la foto.');
+                    _showError('No se pudo guardar la foto.');
                   }
                 },
               ),
               ListTile(
                 leading: Icon(
                   Icons.photo_library,
-                  color: widget.dWOfN.colorPrimario,
+                  color: widget.theme.colorPrimario,
                 ),
                 title: const Text('Seleccionar de galería'),
                 onTap: () async {
                   Navigator.pop(context);
-                  final photo = await _yxqA2F.pickImage(
+                  final photo = await _picker.pickImage(
                     source: ImageSource.gallery,
                     imageQuality: 70,
                     maxWidth: 1600,
@@ -161,24 +161,24 @@ class _QISmtDZDqmxWhYdIpVPQ extends ConsumerState<Zy1QHYyt2ixrp90> {
                   );
                   if (photo == null || !mounted) return;
                   try {
-                    final stored = await _wKKZ9vaMCbWR(photo, prefix: tipo);
+                    final stored = await _persistImage(photo, prefix: tipo);
                     if (stored == null || !mounted) return;
                     setState(() {
                       if (tipo == 'kmAntes') {
-                        _cbZA8TaYgKnD.add(stored);
+                        _fotosKmAntes.add(stored);
                       } else if (tipo == 'kmDespues') {
-                        _wZrKJpLU7R3CAo.add(stored);
+                        _fotosKmDespues.add(stored);
                       } else if (tipo == 'ticket') {
-                        _vmybZ3VSdyy.add(stored);
+                        _fotosTicket.add(stored);
                       } else if (tipo == 'registroInicial') {
-                        _g4O9joQmGonv3hXMpLmP.add(stored);
+                        _fotosRegistroInicial.add(stored);
                       } else if (tipo == 'registroFinal') {
-                        _ca6von1vUumXHtrfLD.add(stored);
+                        _fotosRegistroFinal.add(stored);
                       }
                     });
                   } catch (_) {
                     if (!mounted) return;
-                    _gFWbjB37b('No se pudo guardar la foto.');
+                    _showError('No se pudo guardar la foto.');
                   }
                 },
               ),
@@ -189,7 +189,7 @@ class _QISmtDZDqmxWhYdIpVPQ extends ConsumerState<Zy1QHYyt2ixrp90> {
     );
   }
 
-  void _gFWbjB37b(String message) {
+  void _showError(String message) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Row(
@@ -206,30 +206,30 @@ class _QISmtDZDqmxWhYdIpVPQ extends ConsumerState<Zy1QHYyt2ixrp90> {
     );
   }
 
-  Future<void> _vH5nGeyxAQBEM8P602GQtCpror() async {
+  Future<void> _guardarRegistroUsoVehiculo() async {
     final auth = ref.read(authControllerProvider);
     final userId = auth.user?.id;
     final gerenciaNombre = auth.user?.gerencia;
     final gerenciaId = auth.user?.resolvedGerenciaId;
     if (userId == null || userId.isEmpty) {
-      _gFWbjB37b('Sesión no válida. Inicia sesión de nuevo.');
+      _showError('Sesión no válida. Inicia sesión de nuevo.');
       return;
     }
 
-    final nombre = _b5JFu7ZL6sHiWkLi.text.trim();
-    final destino = _wRV5xqcKPQZkMq3dG.text.trim();
-    final vehiculo = _tmVVsZqJ7S8AXjldiY.text.trim();
+    final nombre = _nombreController.text.trim();
+    final destino = _destinoController.text.trim();
+    final vehiculo = _vehiculoController.text.trim();
     if (nombre.isEmpty || destino.isEmpty || vehiculo.isEmpty) {
-      _gFWbjB37b('Completa nombre, vehículo y destino.');
+      _showError('Completa nombre, vehículo y destino.');
       return;
     }
 
-    final kmIni = int.tryParse(_bCs2HEcLesKbbDfnvPPvfCxaRW5y.text.trim());
-    final kmFin = int.tryParse(_oW1xNeOeXiFysCdsrxgLMNeb3g.text.trim());
+    final kmIni = int.tryParse(_kilometrajeInicialController.text.trim());
+    final kmFin = int.tryParse(_kilometrajeFinalController.text.trim());
 
     final metadata = <String, dynamic>{
-      'fotosRegistroInicial': _g4O9joQmGonv3hXMpLmP.map((f) => f.path).toList(),
-      'fotosRegistroFinal': _ca6von1vUumXHtrfLD.map((f) => f.path).toList(),
+      'fotosRegistroInicial': _fotosRegistroInicial.map((f) => f.path).toList(),
+      'fotosRegistroFinal': _fotosRegistroFinal.map((f) => f.path).toList(),
     };
 
     await ref
@@ -241,19 +241,19 @@ class _QISmtDZDqmxWhYdIpVPQ extends ConsumerState<Zy1QHYyt2ixrp90> {
           nombre: nombre,
           vehiculo: vehiculo,
           destino: destino,
-          horaInicio: _ymrOmbvZmsYQtip53zJJ.text.trim().isEmpty
+          horaInicio: _horaInicioController.text.trim().isEmpty
               ? null
-              : _ymrOmbvZmsYQtip53zJJ.text.trim(),
-          combustibleInicial: _xYDX3FM1QUVzmIDAGP7ztPVS9Y6G.text.trim().isEmpty
+              : _horaInicioController.text.trim(),
+          combustibleInicial: _combustibleInicialController.text.trim().isEmpty
               ? null
-              : _xYDX3FM1QUVzmIDAGP7ztPVS9Y6G.text.trim(),
+              : _combustibleInicialController.text.trim(),
           kilometrajeInicial: kmIni,
-          horaFinal: _eL76aAqBDANtwOAAb7I.text.trim().isEmpty
+          horaFinal: _horaFinalController.text.trim().isEmpty
               ? null
-              : _eL76aAqBDANtwOAAb7I.text.trim(),
-          combustibleFinal: _xUUg3VG9boilrwKaQnnkjk3s6H.text.trim().isEmpty
+              : _horaFinalController.text.trim(),
+          combustibleFinal: _combustibleFinalController.text.trim().isEmpty
               ? null
-              : _xUUg3VG9boilrwKaQnnkjk3s6H.text.trim(),
+              : _combustibleFinalController.text.trim(),
           kilometrajeFinal: kmFin,
           metadata: metadata,
         );
@@ -275,43 +275,43 @@ class _QISmtDZDqmxWhYdIpVPQ extends ConsumerState<Zy1QHYyt2ixrp90> {
     );
   }
 
-  Future<void> _zt5k2e6xgT1WicFZEJC2e60() async {
+  Future<void> _guardarCargaCombustible() async {
     final auth = ref.read(authControllerProvider);
     final userId = auth.user?.id;
     final gerenciaNombre = auth.user?.gerencia;
     final gerenciaId = auth.user?.resolvedGerenciaId;
     if (userId == null || userId.isEmpty) {
-      _gFWbjB37b('Sesión no válida. Inicia sesión de nuevo.');
+      _showError('Sesión no válida. Inicia sesión de nuevo.');
       return;
     }
 
-    final operador = _me2Vfny7UQXGWhUmkf.text.trim();
-    final vehiculo = _uwZZBZyOhu1VN4ml6note5v.text.trim();
+    final operador = _operadorController.text.trim();
+    final vehiculo = _vehiculoCargaController.text.trim();
     if (operador.isEmpty || vehiculo.isEmpty) {
-      _gFWbjB37b('Ingresa operador y vehículo.');
+      _showError('Ingresa operador y vehículo.');
       return;
     }
 
-    final kmAntes = int.tryParse(_mygVaHTguRQwjkdqUxOchF.text.trim());
-    final kmDespues = int.tryParse(_jb4X4KGtlXRRbUwpvnHqu0KT.text.trim());
+    final kmAntes = int.tryParse(_kmAntesCargaController.text.trim());
+    final kmDespues = int.tryParse(_kmDespuesCargaController.text.trim());
     if (kmAntes == null || kmDespues == null) {
-      _gFWbjB37b('Ingresa kilometraje antes y después.');
+      _showError('Ingresa kilometraje antes y después.');
       return;
     }
 
     final metadata = <String, dynamic>{
-      'fotosKmAntes': _cbZA8TaYgKnD.map((f) => f.path).toList(),
-      'fotosKmDespues': _wZrKJpLU7R3CAo.map((f) => f.path).toList(),
-      'fotosTicket': _vmybZ3VSdyy.map((f) => f.path).toList(),
+      'fotosKmAntes': _fotosKmAntes.map((f) => f.path).toList(),
+      'fotosKmDespues': _fotosKmDespues.map((f) => f.path).toList(),
+      'fotosTicket': _fotosTicket.map((f) => f.path).toList(),
     };
 
     await ref
         .read(combustibleRepositoryProvider)
         .guardarCargaCombustible(
           usuarioId: userId,
-          fechaCarga: _etLMIfTDFaTx9LSleVXg.text.trim().isEmpty
+          fechaCarga: _fechaCargaController.text.trim().isEmpty
               ? null
-              : _etLMIfTDFaTx9LSleVXg.text.trim(),
+              : _fechaCargaController.text.trim(),
           operador: operador,
           vehiculo: vehiculo,
           gerenciaNombre: gerenciaNombre,
@@ -338,18 +338,18 @@ class _QISmtDZDqmxWhYdIpVPQ extends ConsumerState<Zy1QHYyt2ixrp90> {
     );
   }
 
-  void _akrih0BkcXo(String tipo, int index) {
+  void _removeImage(String tipo, int index) {
     setState(() {
       if (tipo == 'kmAntes') {
-        _cbZA8TaYgKnD.removeAt(index);
+        _fotosKmAntes.removeAt(index);
       } else if (tipo == 'kmDespues') {
-        _wZrKJpLU7R3CAo.removeAt(index);
+        _fotosKmDespues.removeAt(index);
       } else if (tipo == 'ticket') {
-        _vmybZ3VSdyy.removeAt(index);
+        _fotosTicket.removeAt(index);
       } else if (tipo == 'registroInicial') {
-        _g4O9joQmGonv3hXMpLmP.removeAt(index);
+        _fotosRegistroInicial.removeAt(index);
       } else if (tipo == 'registroFinal') {
-        _ca6von1vUumXHtrfLD.removeAt(index);
+        _fotosRegistroFinal.removeAt(index);
       }
     });
   }
@@ -370,7 +370,7 @@ class _QISmtDZDqmxWhYdIpVPQ extends ConsumerState<Zy1QHYyt2ixrp90> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: GerenciaAppBar(
-        theme: widget.dWOfN,
+        theme: widget.theme,
         title: 'Combustible',
         showBack: false,
         actions: [
@@ -380,7 +380,7 @@ class _QISmtDZDqmxWhYdIpVPQ extends ConsumerState<Zy1QHYyt2ixrp90> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (_) => Wf4ddykqAEjGBjQGuK0wZvrD(hVHqc: widget.dWOfN),
+                  builder: (_) => CombustibleHistorialPage(theme: widget.theme),
                 ),
               );
             },
@@ -424,11 +424,11 @@ class _QISmtDZDqmxWhYdIpVPQ extends ConsumerState<Zy1QHYyt2ixrp90> {
               Container(
                 padding: const EdgeInsets.all(20.0),
                 decoration: BoxDecoration(
-                  gradient: _isfRlHc9V0tzjj,
+                  gradient: _headerGradient,
                   borderRadius: BorderRadius.circular(16),
                   boxShadow: [
                     BoxShadow(
-                      color: widget.dWOfN.colorPrimario.withValues(alpha: 0.3),
+                      color: widget.theme.colorPrimario.withValues(alpha: 0.3),
                       blurRadius: 20,
                       offset: const Offset(0, 10),
                     ),
@@ -463,26 +463,26 @@ class _QISmtDZDqmxWhYdIpVPQ extends ConsumerState<Zy1QHYyt2ixrp90> {
                 child: Row(
                   children: [
                     Expanded(
-                      child: _WRGFf1GQve(
-                        erl7t: widget.dWOfN,
-                        mZky: Icons.directions_car,
-                        dEfrh: 'Usar Vehículo',
-                        tW39qbU9: 'Registrar uso',
-                        u6QXMZTrTK: _pxwBWBWontuW == 'usar_vehiculo',
-                        z68ux: () =>
-                            setState(() => _pxwBWBWontuW = 'usar_vehiculo'),
+                      child: _OptionCard(
+                        theme: widget.theme,
+                        icon: Icons.directions_car,
+                        title: 'Usar Vehículo',
+                        subtitle: 'Registrar uso',
+                        isSelected: _selectedMode == 'usar_vehiculo',
+                        onTap: () =>
+                            setState(() => _selectedMode = 'usar_vehiculo'),
                       ),
                     ),
                     const SizedBox(width: 12),
                     Expanded(
-                      child: _WRGFf1GQve(
-                        erl7t: widget.dWOfN,
-                        mZky: Icons.local_gas_station,
-                        dEfrh: 'Cargar Combustible',
-                        tW39qbU9: 'Registrar carga',
-                        u6QXMZTrTK: _pxwBWBWontuW == 'cargar_combustible',
-                        z68ux: () => setState(
-                          () => _pxwBWBWontuW = 'cargar_combustible',
+                      child: _OptionCard(
+                        theme: widget.theme,
+                        icon: Icons.local_gas_station,
+                        title: 'Cargar Combustible',
+                        subtitle: 'Registrar carga',
+                        isSelected: _selectedMode == 'cargar_combustible',
+                        onTap: () => setState(
+                          () => _selectedMode = 'cargar_combustible',
                         ),
                       ),
                     ),
@@ -492,14 +492,14 @@ class _QISmtDZDqmxWhYdIpVPQ extends ConsumerState<Zy1QHYyt2ixrp90> {
               const SizedBox(height: 24),
 
               // Formulario dinámico
-              _pxwBWBWontuW == 'usar_vehiculo'
+              _selectedMode == 'usar_vehiculo'
                   ? KeyedSubtree(
                       key: const ValueKey('usar_vehiculo_form'),
-                      child: _f2i8QA2RDLwGCNZfqX3ki(),
+                      child: _buildUsarVehiculoForm(),
                     )
                   : KeyedSubtree(
                       key: const ValueKey('cargar_combustible_form'),
-                      child: _boy9EAD3E6ZGFhBIjRWHGOaKOC(),
+                      child: _buildCargarCombustibleForm(),
                     ),
 
               const SizedBox(height: 80),
@@ -510,55 +510,55 @@ class _QISmtDZDqmxWhYdIpVPQ extends ConsumerState<Zy1QHYyt2ixrp90> {
     );
   }
 
-  Widget _f2i8QA2RDLwGCNZfqX3ki() {
+  Widget _buildUsarVehiculoForm() {
     return Column(
       children: [
-        _J8hFuTasO0s(
-          mKaS0: widget.dWOfN,
-          qCA7B: 'Información del Conductor',
-          dfmD: Icons.person,
-          wK4E4H7j: [
-            _MggxJjOvK(
-              icxZzHVnGY: _b5JFu7ZL6sHiWkLi,
-              xzFSr: 'Nombre del conductor',
-              tVLT: 'Ingrese nombre completo',
-              l4w3: Icons.badge,
-              zpggd: widget.dWOfN,
+        _SectionCard(
+          theme: widget.theme,
+          title: 'Información del Conductor',
+          icon: Icons.person,
+          children: [
+            _TextField(
+              controller: _nombreController,
+              label: 'Nombre del conductor',
+              hint: 'Ingrese nombre completo',
+              icon: Icons.badge,
+              theme: widget.theme,
             ),
             const SizedBox(height: 16),
-            _MggxJjOvK(
-              icxZzHVnGY: _tmVVsZqJ7S8AXjldiY,
-              xzFSr: 'Vehículo',
-              tVLT: 'Ej: unidad / placas / ID',
-              l4w3: Icons.directions_car,
-              zpggd: widget.dWOfN,
+            _TextField(
+              controller: _vehiculoController,
+              label: 'Vehículo',
+              hint: 'Ej: unidad / placas / ID',
+              icon: Icons.directions_car,
+              theme: widget.theme,
             ),
             const SizedBox(height: 16),
-            _MggxJjOvK(
-              icxZzHVnGY: _wRV5xqcKPQZkMq3dG,
-              xzFSr: 'Destino',
-              tVLT: 'Ingrese destino',
-              l4w3: Icons.location_on,
-              zpggd: widget.dWOfN,
+            _TextField(
+              controller: _destinoController,
+              label: 'Destino',
+              hint: 'Ingrese destino',
+              icon: Icons.location_on,
+              theme: widget.theme,
             ),
           ],
         ),
         const SizedBox(height: 24),
-        _J8hFuTasO0s(
-          mKaS0: widget.dWOfN,
-          qCA7B: 'Registro Inicial',
-          dfmD: Icons.play_circle_outline,
-          wK4E4H7j: [
+        _SectionCard(
+          theme: widget.theme,
+          title: 'Registro Inicial',
+          icon: Icons.play_circle_outline,
+          children: [
             Row(
               children: [
                 Expanded(
-                  child: _MggxJjOvK(
-                    icxZzHVnGY: _ymrOmbvZmsYQtip53zJJ,
-                    xzFSr: 'Hora de inicio',
-                    tVLT: 'Seleccionar',
-                    l4w3: Icons.access_time,
-                    iE7Dedg9: true,
-                    zpggd: widget.dWOfN,
+                  child: _TextField(
+                    controller: _horaInicioController,
+                    label: 'Hora de inicio',
+                    hint: 'Seleccionar',
+                    icon: Icons.access_time,
+                    readOnly: true,
+                    theme: widget.theme,
                   ),
                 ),
                 const SizedBox(width: 12),
@@ -566,7 +566,7 @@ class _QISmtDZDqmxWhYdIpVPQ extends ConsumerState<Zy1QHYyt2ixrp90> {
                   height: 56,
                   width: 56,
                   decoration: BoxDecoration(
-                    gradient: _isfRlHc9V0tzjj,
+                    gradient: _headerGradient,
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: IconButton(
@@ -577,7 +577,7 @@ class _QISmtDZDqmxWhYdIpVPQ extends ConsumerState<Zy1QHYyt2ixrp90> {
                       );
                       if (picked != null && mounted) {
                         setState(() {
-                          _ymrOmbvZmsYQtip53zJJ.text = picked.format(context);
+                          _horaInicioController.text = picked.format(context);
                         });
                       }
                     },
@@ -591,48 +591,48 @@ class _QISmtDZDqmxWhYdIpVPQ extends ConsumerState<Zy1QHYyt2ixrp90> {
               ],
             ),
             const SizedBox(height: 16),
-            _MggxJjOvK(
-              icxZzHVnGY: _xYDX3FM1QUVzmIDAGP7ztPVS9Y6G,
-              xzFSr: 'Nivel de combustible',
-              tVLT: 'Ej: 3/4, 1/2, Full',
-              l4w3: Icons.local_gas_station,
-              zpggd: widget.dWOfN,
+            _TextField(
+              controller: _combustibleInicialController,
+              label: 'Nivel de combustible',
+              hint: 'Ej: 3/4, 1/2, Full',
+              icon: Icons.local_gas_station,
+              theme: widget.theme,
             ),
             const SizedBox(height: 16),
-            _MggxJjOvK(
-              icxZzHVnGY: _bCs2HEcLesKbbDfnvPPvfCxaRW5y,
-              xzFSr: 'Kilometraje',
-              tVLT: 'Ingrese kilometraje',
-              l4w3: Icons.speed,
-              hc2WD7LXkZwJ: TextInputType.number,
-              zpggd: widget.dWOfN,
+            _TextField(
+              controller: _kilometrajeInicialController,
+              label: 'Kilometraje',
+              hint: 'Ingrese kilometraje',
+              icon: Icons.speed,
+              keyboardType: TextInputType.number,
+              theme: widget.theme,
             ),
             const SizedBox(height: 16),
-            _Pv08QYJgiL9C(
-              qb8Q6: widget.dWOfN,
-              iHcAp: 'Fotos del registro inicial',
-              beJvB: _g4O9joQmGonv3hXMpLmP,
-              ytSbn: () => _zrLTpoUiw('registroInicial'),
-              fXO5ulZgBb: (i) => _akrih0BkcXo('registroInicial', i),
+            _PhotoSection(
+              theme: widget.theme,
+              title: 'Fotos del registro inicial',
+              files: _fotosRegistroInicial,
+              onAdd: () => _pickImage('registroInicial'),
+              onRemoveAt: (i) => _removeImage('registroInicial', i),
             ),
           ],
         ),
         const SizedBox(height: 24),
-        _J8hFuTasO0s(
-          mKaS0: widget.dWOfN,
-          qCA7B: 'Registro Final',
-          dfmD: Icons.stop_circle_outlined,
-          wK4E4H7j: [
+        _SectionCard(
+          theme: widget.theme,
+          title: 'Registro Final',
+          icon: Icons.stop_circle_outlined,
+          children: [
             Row(
               children: [
                 Expanded(
-                  child: _MggxJjOvK(
-                    icxZzHVnGY: _eL76aAqBDANtwOAAb7I,
-                    xzFSr: 'Hora final',
-                    tVLT: 'Seleccionar',
-                    l4w3: Icons.access_time,
-                    iE7Dedg9: true,
-                    zpggd: widget.dWOfN,
+                  child: _TextField(
+                    controller: _horaFinalController,
+                    label: 'Hora final',
+                    hint: 'Seleccionar',
+                    icon: Icons.access_time,
+                    readOnly: true,
+                    theme: widget.theme,
                   ),
                 ),
                 const SizedBox(width: 12),
@@ -640,7 +640,7 @@ class _QISmtDZDqmxWhYdIpVPQ extends ConsumerState<Zy1QHYyt2ixrp90> {
                   height: 56,
                   width: 56,
                   decoration: BoxDecoration(
-                    gradient: _isfRlHc9V0tzjj,
+                    gradient: _headerGradient,
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: IconButton(
@@ -651,7 +651,7 @@ class _QISmtDZDqmxWhYdIpVPQ extends ConsumerState<Zy1QHYyt2ixrp90> {
                       );
                       if (picked != null && mounted) {
                         setState(() {
-                          _eL76aAqBDANtwOAAb7I.text = picked.format(context);
+                          _horaFinalController.text = picked.format(context);
                         });
                       }
                     },
@@ -665,29 +665,29 @@ class _QISmtDZDqmxWhYdIpVPQ extends ConsumerState<Zy1QHYyt2ixrp90> {
               ],
             ),
             const SizedBox(height: 16),
-            _MggxJjOvK(
-              icxZzHVnGY: _xUUg3VG9boilrwKaQnnkjk3s6H,
-              xzFSr: 'Nivel de combustible',
-              tVLT: 'Ej: 3/4, 1/2, Full',
-              l4w3: Icons.local_gas_station,
-              zpggd: widget.dWOfN,
+            _TextField(
+              controller: _combustibleFinalController,
+              label: 'Nivel de combustible',
+              hint: 'Ej: 3/4, 1/2, Full',
+              icon: Icons.local_gas_station,
+              theme: widget.theme,
             ),
             const SizedBox(height: 16),
-            _MggxJjOvK(
-              icxZzHVnGY: _oW1xNeOeXiFysCdsrxgLMNeb3g,
-              xzFSr: 'Kilometraje',
-              tVLT: 'Ingrese kilometraje',
-              l4w3: Icons.speed,
-              hc2WD7LXkZwJ: TextInputType.number,
-              zpggd: widget.dWOfN,
+            _TextField(
+              controller: _kilometrajeFinalController,
+              label: 'Kilometraje',
+              hint: 'Ingrese kilometraje',
+              icon: Icons.speed,
+              keyboardType: TextInputType.number,
+              theme: widget.theme,
             ),
             const SizedBox(height: 16),
-            _Pv08QYJgiL9C(
-              qb8Q6: widget.dWOfN,
-              iHcAp: 'Fotos del registro final',
-              beJvB: _ca6von1vUumXHtrfLD,
-              ytSbn: () => _zrLTpoUiw('registroFinal'),
-              fXO5ulZgBb: (i) => _akrih0BkcXo('registroFinal', i),
+            _PhotoSection(
+              theme: widget.theme,
+              title: 'Fotos del registro final',
+              files: _fotosRegistroFinal,
+              onAdd: () => _pickImage('registroFinal'),
+              onRemoveAt: (i) => _removeImage('registroFinal', i),
             ),
           ],
         ),
@@ -696,7 +696,7 @@ class _QISmtDZDqmxWhYdIpVPQ extends ConsumerState<Zy1QHYyt2ixrp90> {
           width: double.infinity,
           child: ElevatedButton.icon(
             style: ElevatedButton.styleFrom(
-              backgroundColor: widget.dWOfN.colorPrimario,
+              backgroundColor: widget.theme.colorPrimario,
               foregroundColor: Colors.white,
               padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 32),
               shape: RoundedRectangleBorder(
@@ -705,7 +705,7 @@ class _QISmtDZDqmxWhYdIpVPQ extends ConsumerState<Zy1QHYyt2ixrp90> {
               elevation: 4,
             ),
             onPressed: () {
-              _vH5nGeyxAQBEM8P602GQtCpror();
+              _guardarRegistroUsoVehiculo();
             },
             icon: const Icon(Icons.save, size: 20),
             label: const Text(
@@ -718,24 +718,24 @@ class _QISmtDZDqmxWhYdIpVPQ extends ConsumerState<Zy1QHYyt2ixrp90> {
     );
   }
 
-  Widget _boy9EAD3E6ZGFhBIjRWHGOaKOC() {
+  Widget _buildCargarCombustibleForm() {
     return Column(
       children: [
-        _J8hFuTasO0s(
-          mKaS0: widget.dWOfN,
-          qCA7B: 'Información de Carga',
-          dfmD: Icons.local_gas_station,
-          wK4E4H7j: [
+        _SectionCard(
+          theme: widget.theme,
+          title: 'Información de Carga',
+          icon: Icons.local_gas_station,
+          children: [
             Row(
               children: [
                 Expanded(
-                  child: _MggxJjOvK(
-                    icxZzHVnGY: _etLMIfTDFaTx9LSleVXg,
-                    xzFSr: 'Fecha de carga',
-                    tVLT: 'Seleccionar',
-                    l4w3: Icons.calendar_today,
-                    iE7Dedg9: true,
-                    zpggd: widget.dWOfN,
+                  child: _TextField(
+                    controller: _fechaCargaController,
+                    label: 'Fecha de carga',
+                    hint: 'Seleccionar',
+                    icon: Icons.calendar_today,
+                    readOnly: true,
+                    theme: widget.theme,
                   ),
                 ),
                 const SizedBox(width: 12),
@@ -743,7 +743,7 @@ class _QISmtDZDqmxWhYdIpVPQ extends ConsumerState<Zy1QHYyt2ixrp90> {
                   height: 56,
                   width: 56,
                   decoration: BoxDecoration(
-                    gradient: _isfRlHc9V0tzjj,
+                    gradient: _headerGradient,
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: IconButton(
@@ -756,7 +756,7 @@ class _QISmtDZDqmxWhYdIpVPQ extends ConsumerState<Zy1QHYyt2ixrp90> {
                       );
                       if (picked != null && mounted) {
                         setState(() {
-                          _etLMIfTDFaTx9LSleVXg.text =
+                          _fechaCargaController.text =
                               '${picked.day}/${picked.month}/${picked.year}';
                         });
                       }
@@ -771,83 +771,83 @@ class _QISmtDZDqmxWhYdIpVPQ extends ConsumerState<Zy1QHYyt2ixrp90> {
               ],
             ),
             const SizedBox(height: 16),
-            _MggxJjOvK(
-              icxZzHVnGY: _me2Vfny7UQXGWhUmkf,
-              xzFSr: 'Operador',
-              tVLT: 'Nombre del operador',
-              l4w3: Icons.person,
-              zpggd: widget.dWOfN,
+            _TextField(
+              controller: _operadorController,
+              label: 'Operador',
+              hint: 'Nombre del operador',
+              icon: Icons.person,
+              theme: widget.theme,
             ),
             const SizedBox(height: 16),
-            _MggxJjOvK(
-              icxZzHVnGY: _uwZZBZyOhu1VN4ml6note5v,
-              xzFSr: 'Vehículo',
-              tVLT: 'Ej: unidad / placas / ID',
-              l4w3: Icons.directions_car,
-              zpggd: widget.dWOfN,
+            _TextField(
+              controller: _vehiculoCargaController,
+              label: 'Vehículo',
+              hint: 'Ej: unidad / placas / ID',
+              icon: Icons.directions_car,
+              theme: widget.theme,
             ),
           ],
         ),
         const SizedBox(height: 24),
-        _J8hFuTasO0s(
-          mKaS0: widget.dWOfN,
-          qCA7B: 'Kilometraje Antes de Cargar',
-          dfmD: Icons.speed,
-          wK4E4H7j: [
-            _MggxJjOvK(
-              icxZzHVnGY: _mygVaHTguRQwjkdqUxOchF,
-              xzFSr: 'Kilómetros antes',
-              tVLT: 'Ingrese kilometraje',
-              l4w3: Icons.speed,
-              hc2WD7LXkZwJ: TextInputType.number,
-              zpggd: widget.dWOfN,
+        _SectionCard(
+          theme: widget.theme,
+          title: 'Kilometraje Antes de Cargar',
+          icon: Icons.speed,
+          children: [
+            _TextField(
+              controller: _kmAntesCargaController,
+              label: 'Kilómetros antes',
+              hint: 'Ingrese kilometraje',
+              icon: Icons.speed,
+              keyboardType: TextInputType.number,
+              theme: widget.theme,
             ),
             const SizedBox(height: 16),
-            _Pv08QYJgiL9C(
-              qb8Q6: widget.dWOfN,
-              iHcAp: 'Foto de kilometraje antes',
-              beJvB: _cbZA8TaYgKnD,
-              ytSbn: () => _zrLTpoUiw('kmAntes'),
-              fXO5ulZgBb: (i) => _akrih0BkcXo('kmAntes', i),
+            _PhotoSection(
+              theme: widget.theme,
+              title: 'Foto de kilometraje antes',
+              files: _fotosKmAntes,
+              onAdd: () => _pickImage('kmAntes'),
+              onRemoveAt: (i) => _removeImage('kmAntes', i),
             ),
           ],
         ),
         const SizedBox(height: 24),
-        _J8hFuTasO0s(
-          mKaS0: widget.dWOfN,
-          qCA7B: 'Kilometraje Después de Cargar',
-          dfmD: Icons.speed,
-          wK4E4H7j: [
-            _MggxJjOvK(
-              icxZzHVnGY: _jb4X4KGtlXRRbUwpvnHqu0KT,
-              xzFSr: 'Kilómetros después',
-              tVLT: 'Ingrese kilometraje',
-              l4w3: Icons.speed,
-              hc2WD7LXkZwJ: TextInputType.number,
-              zpggd: widget.dWOfN,
+        _SectionCard(
+          theme: widget.theme,
+          title: 'Kilometraje Después de Cargar',
+          icon: Icons.speed,
+          children: [
+            _TextField(
+              controller: _kmDespuesCargaController,
+              label: 'Kilómetros después',
+              hint: 'Ingrese kilometraje',
+              icon: Icons.speed,
+              keyboardType: TextInputType.number,
+              theme: widget.theme,
             ),
             const SizedBox(height: 16),
-            _Pv08QYJgiL9C(
-              qb8Q6: widget.dWOfN,
-              iHcAp: 'Foto de kilometraje después',
-              beJvB: _wZrKJpLU7R3CAo,
-              ytSbn: () => _zrLTpoUiw('kmDespues'),
-              fXO5ulZgBb: (i) => _akrih0BkcXo('kmDespues', i),
+            _PhotoSection(
+              theme: widget.theme,
+              title: 'Foto de kilometraje después',
+              files: _fotosKmDespues,
+              onAdd: () => _pickImage('kmDespues'),
+              onRemoveAt: (i) => _removeImage('kmDespues', i),
             ),
           ],
         ),
         const SizedBox(height: 24),
-        _J8hFuTasO0s(
-          mKaS0: widget.dWOfN,
-          qCA7B: 'Ticket de Carga',
-          dfmD: Icons.receipt,
-          wK4E4H7j: [
-            _Pv08QYJgiL9C(
-              qb8Q6: widget.dWOfN,
-              iHcAp: 'Foto del ticket',
-              beJvB: _vmybZ3VSdyy,
-              ytSbn: () => _zrLTpoUiw('ticket'),
-              fXO5ulZgBb: (i) => _akrih0BkcXo('ticket', i),
+        _SectionCard(
+          theme: widget.theme,
+          title: 'Ticket de Carga',
+          icon: Icons.receipt,
+          children: [
+            _PhotoSection(
+              theme: widget.theme,
+              title: 'Foto del ticket',
+              files: _fotosTicket,
+              onAdd: () => _pickImage('ticket'),
+              onRemoveAt: (i) => _removeImage('ticket', i),
             ),
           ],
         ),
@@ -856,7 +856,7 @@ class _QISmtDZDqmxWhYdIpVPQ extends ConsumerState<Zy1QHYyt2ixrp90> {
           width: double.infinity,
           child: ElevatedButton.icon(
             style: ElevatedButton.styleFrom(
-              backgroundColor: widget.dWOfN.colorPrimario,
+              backgroundColor: widget.theme.colorPrimario,
               foregroundColor: Colors.white,
               padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 32),
               shape: RoundedRectangleBorder(
@@ -865,7 +865,7 @@ class _QISmtDZDqmxWhYdIpVPQ extends ConsumerState<Zy1QHYyt2ixrp90> {
               elevation: 4,
             ),
             onPressed: () {
-              _zt5k2e6xgT1WicFZEJC2e60();
+              _guardarCargaCombustible();
             },
             icon: const Icon(Icons.save, size: 20),
             label: const Text('Guardar Carga', style: TextStyle(fontSize: 16)),
@@ -876,27 +876,27 @@ class _QISmtDZDqmxWhYdIpVPQ extends ConsumerState<Zy1QHYyt2ixrp90> {
   }
 }
 
-class _WRGFf1GQve extends StatelessWidget {
-  final GerenciaTheme erl7t;
-  final IconData mZky;
-  final String dEfrh;
-  final String tW39qbU9;
-  final bool u6QXMZTrTK;
-  final VoidCallback z68ux;
+class _OptionCard extends StatelessWidget {
+  final GerenciaTheme theme;
+  final IconData icon;
+  final String title;
+  final String subtitle;
+  final bool isSelected;
+  final VoidCallback onTap;
 
-  const _WRGFf1GQve({
-    required this.erl7t,
-    required this.mZky,
-    required this.dEfrh,
-    required this.tW39qbU9,
-    required this.u6QXMZTrTK,
-    required this.z68ux,
+  const _OptionCard({
+    required this.theme,
+    required this.icon,
+    required this.title,
+    required this.subtitle,
+    required this.isSelected,
+    required this.onTap,
   });
 
-  LinearGradient get _zhTJh5aK => LinearGradient(
+  LinearGradient get _gradient => LinearGradient(
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
-    colors: [erl7t.colorPrimario, erl7t.colorSecundario],
+    colors: [theme.colorPrimario, theme.colorSecundario],
   );
 
   @override
@@ -906,13 +906,13 @@ class _WRGFf1GQve extends StatelessWidget {
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: u6QXMZTrTK ? erl7t.colorPrimario : Colors.grey[300]!,
-          width: u6QXMZTrTK ? 2 : 1,
+          color: isSelected ? theme.colorPrimario : Colors.grey[300]!,
+          width: isSelected ? 2 : 1,
         ),
         boxShadow: [
-          if (u6QXMZTrTK)
+          if (isSelected)
             BoxShadow(
-              color: erl7t.colorPrimario.withValues(alpha: 0.2),
+              color: theme.colorPrimario.withValues(alpha: 0.2),
               blurRadius: 10,
               offset: const Offset(0, 4),
             ),
@@ -921,7 +921,7 @@ class _WRGFf1GQve extends StatelessWidget {
       child: Material(
         color: Colors.transparent,
         child: InkWell(
-          onTap: z68ux,
+          onTap: onTap,
           borderRadius: BorderRadius.circular(16),
           child: Padding(
             padding: const EdgeInsets.all(16),
@@ -931,28 +931,28 @@ class _WRGFf1GQve extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
-                    gradient: u6QXMZTrTK ? _zhTJh5aK : null,
-                    color: u6QXMZTrTK ? null : Colors.grey[200],
+                    gradient: isSelected ? _gradient : null,
+                    color: isSelected ? null : Colors.grey[200],
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Icon(
-                    mZky,
-                    color: u6QXMZTrTK ? Colors.white : Colors.grey[600],
+                    icon,
+                    color: isSelected ? Colors.white : Colors.grey[600],
                     size: 32,
                   ),
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  dEfrh,
+                  title,
                   style: TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.bold,
-                    color: u6QXMZTrTK ? erl7t.colorPrimario : Colors.grey[800],
+                    color: isSelected ? theme.colorPrimario : Colors.grey[800],
                   ),
                   textAlign: TextAlign.center,
                 ),
                 Text(
-                  tW39qbU9,
+                  subtitle,
                   style: TextStyle(fontSize: 14, color: Colors.grey[600]),
                   textAlign: TextAlign.center,
                 ),
@@ -965,17 +965,17 @@ class _WRGFf1GQve extends StatelessWidget {
   }
 }
 
-class _J8hFuTasO0s extends StatelessWidget {
-  final GerenciaTheme mKaS0;
-  final String qCA7B;
-  final IconData dfmD;
-  final List<Widget> wK4E4H7j;
+class _SectionCard extends StatelessWidget {
+  final GerenciaTheme theme;
+  final String title;
+  final IconData icon;
+  final List<Widget> children;
 
-  const _J8hFuTasO0s({
-    required this.mKaS0,
-    required this.qCA7B,
-    required this.dfmD,
-    required this.wK4E4H7j,
+  const _SectionCard({
+    required this.theme,
+    required this.title,
+    required this.icon,
+    required this.children,
   });
 
   @override
@@ -1001,7 +1001,7 @@ class _J8hFuTasO0s extends StatelessWidget {
               gradient: LinearGradient(
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
-                colors: [mKaS0.colorPrimario, mKaS0.colorSecundario],
+                colors: [theme.colorPrimario, theme.colorSecundario],
               ),
               borderRadius: const BorderRadius.vertical(
                 top: Radius.circular(16),
@@ -1009,11 +1009,11 @@ class _J8hFuTasO0s extends StatelessWidget {
             ),
             child: Row(
               children: [
-                Icon(dfmD, color: Colors.white, size: 24),
+                Icon(icon, color: Colors.white, size: 24),
                 const SizedBox(width: 12),
                 Expanded(
                   child: Text(
-                    qCA7B,
+                    title,
                     style: const TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
@@ -1026,7 +1026,7 @@ class _J8hFuTasO0s extends StatelessWidget {
           ),
           Padding(
             padding: const EdgeInsets.all(16),
-            child: Column(children: wK4E4H7j),
+            child: Column(children: children),
           ),
         ],
       ),
@@ -1034,23 +1034,23 @@ class _J8hFuTasO0s extends StatelessWidget {
   }
 }
 
-class _MggxJjOvK extends StatelessWidget {
-  final TextEditingController icxZzHVnGY;
-  final String xzFSr;
-  final String tVLT;
-  final IconData l4w3;
-  final GerenciaTheme zpggd;
-  final bool iE7Dedg9;
-  final TextInputType? hc2WD7LXkZwJ;
+class _TextField extends StatelessWidget {
+  final TextEditingController controller;
+  final String label;
+  final String hint;
+  final IconData icon;
+  final GerenciaTheme theme;
+  final bool readOnly;
+  final TextInputType? keyboardType;
 
-  const _MggxJjOvK({
-    required this.icxZzHVnGY,
-    required this.xzFSr,
-    required this.tVLT,
-    required this.l4w3,
-    required this.zpggd,
-    this.iE7Dedg9 = false,
-    this.hc2WD7LXkZwJ,
+  const _TextField({
+    required this.controller,
+    required this.label,
+    required this.hint,
+    required this.icon,
+    required this.theme,
+    this.readOnly = false,
+    this.keyboardType,
   });
 
   @override
@@ -1058,35 +1058,35 @@ class _MggxJjOvK extends StatelessWidget {
     final cs = Theme.of(context).colorScheme;
 
     return TextField(
-      controller: icxZzHVnGY,
-      readOnly: iE7Dedg9,
-      keyboardType: hc2WD7LXkZwJ,
+      controller: controller,
+      readOnly: readOnly,
+      keyboardType: keyboardType,
       maxLines: 1,
-      cursorColor: zpggd.colorPrimario,
+      cursorColor: theme.colorPrimario,
       decoration: InputDecoration(
-        labelText: xzFSr,
-        hintText: tVLT,
+        labelText: label,
+        hintText: hint,
         labelStyle: TextStyle(color: cs.onSurfaceVariant),
         floatingLabelStyle: TextStyle(color: cs.primary),
-        prefixIcon: Icon(l4w3, color: cs.primary),
+        prefixIcon: Icon(icon, color: cs.primary),
       ),
     );
   }
 }
 
-class _Pv08QYJgiL9C extends StatelessWidget {
-  final GerenciaTheme qb8Q6;
-  final String iHcAp;
-  final List<XFile> beJvB;
-  final VoidCallback ytSbn;
-  final void Function(int index) fXO5ulZgBb;
+class _PhotoSection extends StatelessWidget {
+  final GerenciaTheme theme;
+  final String title;
+  final List<XFile> files;
+  final VoidCallback onAdd;
+  final void Function(int index) onRemoveAt;
 
-  const _Pv08QYJgiL9C({
-    required this.qb8Q6,
-    required this.iHcAp,
-    required this.beJvB,
-    required this.ytSbn,
-    required this.fXO5ulZgBb,
+  const _PhotoSection({
+    required this.theme,
+    required this.title,
+    required this.files,
+    required this.onAdd,
+    required this.onRemoveAt,
   });
 
   @override
@@ -1097,7 +1097,7 @@ class _Pv08QYJgiL9C extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          iHcAp,
+          title,
           style: TextStyle(
             fontSize: 14,
             fontWeight: FontWeight.bold,
@@ -1105,7 +1105,7 @@ class _Pv08QYJgiL9C extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 12),
-        if (beJvB.isEmpty)
+        if (files.isEmpty)
           Container(
             width: double.infinity,
             padding: const EdgeInsets.all(40),
@@ -1131,13 +1131,13 @@ class _Pv08QYJgiL9C extends StatelessWidget {
             spacing: 8,
             runSpacing: 8,
             children: [
-              for (var i = 0; i < beJvB.length; i++)
+              for (var i = 0; i < files.length; i++)
                 Stack(
                   children: [
                     ClipRRect(
                       borderRadius: BorderRadius.circular(8),
                       child: Image.file(
-                        File(beJvB[i].path),
+                        File(files[i].path),
                         width: isTablet ? 120 : 100,
                         height: isTablet ? 120 : 100,
                         fit: BoxFit.cover,
@@ -1147,7 +1147,7 @@ class _Pv08QYJgiL9C extends StatelessWidget {
                       top: 4,
                       right: 4,
                       child: GestureDetector(
-                        onTap: () => fXO5ulZgBb(i),
+                        onTap: () => onRemoveAt(i),
                         child: Container(
                           padding: const EdgeInsets.all(4),
                           decoration: const BoxDecoration(
@@ -1170,12 +1170,12 @@ class _Pv08QYJgiL9C extends StatelessWidget {
         SizedBox(
           width: double.infinity,
           child: OutlinedButton.icon(
-            onPressed: ytSbn,
+            onPressed: onAdd,
             icon: const Icon(Icons.add_a_photo),
             label: const Text('Agregar foto'),
             style: OutlinedButton.styleFrom(
-              foregroundColor: qb8Q6.colorPrimario,
-              side: BorderSide(color: qb8Q6.colorPrimario),
+              foregroundColor: theme.colorPrimario,
+              side: BorderSide(color: theme.colorPrimario),
               padding: const EdgeInsets.symmetric(vertical: 12),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12),

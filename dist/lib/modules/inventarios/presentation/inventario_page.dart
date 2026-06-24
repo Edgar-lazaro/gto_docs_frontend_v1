@@ -9,22 +9,22 @@ import '../../../shared/ui/widgets/gerencia_app_bar.dart';
 import '../domain/activo.dart';
 import 'inventario_providers.dart';
 
-class PBDyUOohYkRmCY extends ConsumerStatefulWidget {
-  final GerenciaTheme s49Kw;
+class InventarioPage extends ConsumerStatefulWidget {
+  final GerenciaTheme theme;
 
-  const PBDyUOohYkRmCY({super.key, required this.s49Kw});
+  const InventarioPage({super.key, required this.theme});
 
   @override
-  ConsumerState<PBDyUOohYkRmCY> createState() => _Th0uvKq1RbiI5n8dJCh();
+  ConsumerState<InventarioPage> createState() => _InventarioPageState();
 }
 
-class _Th0uvKq1RbiI5n8dJCh extends ConsumerState<PBDyUOohYkRmCY> {
-  final _iIoSHNhBKndnL3a6 = TextEditingController();
-  String _nB11aksxec5 = '';
+class _InventarioPageState extends ConsumerState<InventarioPage> {
+  final _searchController = TextEditingController();
+  String _searchQuery = '';
 
   @override
   void dispose() {
-    _iIoSHNhBKndnL3a6.dispose();
+    _searchController.dispose();
     super.dispose();
   }
 
@@ -51,10 +51,10 @@ class _Th0uvKq1RbiI5n8dJCh extends ConsumerState<PBDyUOohYkRmCY> {
     final inventarioAsync = ref.watch(inventarioItemsProvider);
 
     return Scaffold(
-      appBar: GerenciaAppBar(theme: widget.s49Kw, title: 'Inventario'),
+      appBar: GerenciaAppBar(theme: widget.theme, title: 'Inventario'),
       floatingActionButton: canCrud
           ? FloatingActionButton.extended(
-              onPressed: () => _zcGC6o6pF6WmMxAC(context),
+              onPressed: () => _openCreateDialog(context),
               icon: const Icon(Icons.add),
               label: const Text('Agregar'),
             )
@@ -68,7 +68,7 @@ class _Th0uvKq1RbiI5n8dJCh extends ConsumerState<PBDyUOohYkRmCY> {
           ),
         ),
         data: (items) {
-          final filtered = _ayluIZfpi7o(items);
+          final filtered = _applySearch(items);
 
           return RefreshIndicator(
             onRefresh: () async {
@@ -82,8 +82,8 @@ class _Th0uvKq1RbiI5n8dJCh extends ConsumerState<PBDyUOohYkRmCY> {
               ),
               children: [
                 TextField(
-                  controller: _iIoSHNhBKndnL3a6,
-                  onChanged: (v) => setState(() => _nB11aksxec5 = v),
+                  controller: _searchController,
+                  onChanged: (v) => setState(() => _searchQuery = v),
                   decoration: InputDecoration(
                     hintText: 'Buscar en inventario…',
                     prefixIcon: const Icon(Icons.search),
@@ -93,11 +93,11 @@ class _Th0uvKq1RbiI5n8dJCh extends ConsumerState<PBDyUOohYkRmCY> {
                 if (items.isEmpty)
                   const Center(child: Text('No hay registros de inventario')),
                 ...filtered.map(
-                  (a) => _O0xhg5lQIi(
-                    oYWMgy: a,
-                    yuysQNl: canCrud,
-                    pgiW6m: () => _j9lxeNazyNwsyQ(context, a),
-                    ybjwa11n: () => _am2Q9kEgYfPc2(context, a),
+                  (a) => _ActivoCard(
+                    activo: a,
+                    canCrud: canCrud,
+                    onEdit: () => _openEditDialog(context, a),
+                    onDelete: () => _confirmDelete(context, a),
                   ),
                 ),
               ],
@@ -108,10 +108,10 @@ class _Th0uvKq1RbiI5n8dJCh extends ConsumerState<PBDyUOohYkRmCY> {
     );
   }
 
-  Future<void> _zcGC6o6pF6WmMxAC(BuildContext context) async {
+  Future<void> _openCreateDialog(BuildContext context) async {
     final created = await showDialog<Activo>(
       context: context,
-      builder: (_) => _TJhdL7Hgd4q9(hnj0b: widget.s49Kw),
+      builder: (_) => _ActivoDialog(theme: widget.theme),
     );
     if (created == null) return;
 
@@ -126,10 +126,10 @@ class _Th0uvKq1RbiI5n8dJCh extends ConsumerState<PBDyUOohYkRmCY> {
     }
   }
 
-  Future<void> _j9lxeNazyNwsyQ(BuildContext context, Activo activo) async {
+  Future<void> _openEditDialog(BuildContext context, Activo activo) async {
     final updated = await showDialog<Activo>(
       context: context,
-      builder: (_) => _TJhdL7Hgd4q9(hnj0b: widget.s49Kw, ygJrsoe: activo),
+      builder: (_) => _ActivoDialog(theme: widget.theme, initial: activo),
     );
     if (updated == null) return;
 
@@ -144,7 +144,7 @@ class _Th0uvKq1RbiI5n8dJCh extends ConsumerState<PBDyUOohYkRmCY> {
     }
   }
 
-  Future<void> _am2Q9kEgYfPc2(BuildContext context, Activo activo) async {
+  Future<void> _confirmDelete(BuildContext context, Activo activo) async {
     final ok = await showDialog<bool>(
       context: context,
       builder: (_) => AlertDialog(
@@ -176,8 +176,8 @@ class _Th0uvKq1RbiI5n8dJCh extends ConsumerState<PBDyUOohYkRmCY> {
     }
   }
 
-  List<Activo> _ayluIZfpi7o(List<Activo> items) {
-    final q = _nB11aksxec5.trim().toLowerCase();
+  List<Activo> _applySearch(List<Activo> items) {
+    final q = _searchQuery.trim().toLowerCase();
     if (q.isEmpty) return items;
     return items.where((a) {
       final hay = '${a.nombre} ${a.tipo} ${a.ubicacion} ${a.estado}'
@@ -187,18 +187,18 @@ class _Th0uvKq1RbiI5n8dJCh extends ConsumerState<PBDyUOohYkRmCY> {
   }
 }
 
-class _O0xhg5lQIi extends StatelessWidget {
-  final Activo oYWMgy;
+class _ActivoCard extends StatelessWidget {
+  final Activo activo;
 
-  final bool yuysQNl;
-  final VoidCallback? pgiW6m;
-  final VoidCallback? ybjwa11n;
+  final bool canCrud;
+  final VoidCallback? onEdit;
+  final VoidCallback? onDelete;
 
-  const _O0xhg5lQIi({
-    required this.oYWMgy,
-    required this.yuysQNl,
-    this.pgiW6m,
-    this.ybjwa11n,
+  const _ActivoCard({
+    required this.activo,
+    required this.canCrud,
+    this.onEdit,
+    this.onDelete,
   });
 
   @override
@@ -241,7 +241,7 @@ class _O0xhg5lQIi extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    oYWMgy.nombre,
+                    activo.nombre,
                     style: TextStyle(
                       fontSize: isTablet ? 18 : 16,
                       fontWeight: FontWeight.bold,
@@ -255,26 +255,26 @@ class _O0xhg5lQIi extends StatelessWidget {
                     spacing: 10,
                     runSpacing: 6,
                     children: [
-                      if (oYWMgy.tipo.isNotEmpty)
-                        _Xl0R(huqB: oYWMgy.tipo, rhou: Icons.category),
-                      if (oYWMgy.ubicacion.isNotEmpty)
-                        _Xl0R(huqB: oYWMgy.ubicacion, rhou: Icons.place),
-                      if (oYWMgy.estado.isNotEmpty)
-                        _Xl0R(huqB: oYWMgy.estado, rhou: Icons.info_outline),
-                      _Xl0R(
-                        huqB: 'Cant: ${oYWMgy.cantidad}',
-                        rhou: Icons.numbers,
+                      if (activo.tipo.isNotEmpty)
+                        _Chip(text: activo.tipo, icon: Icons.category),
+                      if (activo.ubicacion.isNotEmpty)
+                        _Chip(text: activo.ubicacion, icon: Icons.place),
+                      if (activo.estado.isNotEmpty)
+                        _Chip(text: activo.estado, icon: Icons.info_outline),
+                      _Chip(
+                        text: 'Cant: ${activo.cantidad}',
+                        icon: Icons.numbers,
                       ),
                     ],
                   ),
                 ],
               ),
             ),
-            if (yuysQNl)
+            if (canCrud)
               PopupMenuButton<String>(
                 onSelected: (v) {
-                  if (v == 'edit') pgiW6m?.call();
-                  if (v == 'delete') ybjwa11n?.call();
+                  if (v == 'edit') onEdit?.call();
+                  if (v == 'delete') onDelete?.call();
                 },
                 itemBuilder: (_) => const [
                   PopupMenuItem(value: 'edit', child: Text('Editar')),
@@ -288,45 +288,45 @@ class _O0xhg5lQIi extends StatelessWidget {
   }
 }
 
-class _TJhdL7Hgd4q9 extends StatefulWidget {
-  final GerenciaTheme hnj0b;
-  final Activo? ygJrsoe;
+class _ActivoDialog extends StatefulWidget {
+  final GerenciaTheme theme;
+  final Activo? initial;
 
-  const _TJhdL7Hgd4q9({required this.hnj0b, this.ygJrsoe});
+  const _ActivoDialog({required this.theme, this.initial});
 
   @override
-  State<_TJhdL7Hgd4q9> createState() => _YpqdJ5qKnniBPwB7t();
+  State<_ActivoDialog> createState() => _ActivoDialogState();
 }
 
-class _YpqdJ5qKnniBPwB7t extends State<_TJhdL7Hgd4q9> {
-  final _xAotw5Y = GlobalKey<FormState>();
-  late final TextEditingController _gxU0yv;
-  late final TextEditingController _hrMa;
-  late final TextEditingController _aaTUFbhND;
-  late final TextEditingController _pHk3eB;
-  late final TextEditingController _zBiaPlCm;
-  late final TextEditingController _iy7B8FfaPls;
+class _ActivoDialogState extends State<_ActivoDialog> {
+  final _formKey = GlobalKey<FormState>();
+  late final TextEditingController _nombre;
+  late final TextEditingController _tipo;
+  late final TextEditingController _ubicacion;
+  late final TextEditingController _estado;
+  late final TextEditingController _cantidad;
+  late final TextEditingController _descripcion;
 
   @override
   void initState() {
     super.initState();
-    final a = widget.ygJrsoe;
-    _gxU0yv = TextEditingController(text: a?.nombre ?? '');
-    _hrMa = TextEditingController(text: a?.tipo ?? '');
-    _aaTUFbhND = TextEditingController(text: a?.ubicacion ?? '');
-    _pHk3eB = TextEditingController(text: a?.estado ?? '');
-    _zBiaPlCm = TextEditingController(text: (a?.cantidad ?? 0).toString());
-    _iy7B8FfaPls = TextEditingController(text: a?.descripcion ?? '');
+    final a = widget.initial;
+    _nombre = TextEditingController(text: a?.nombre ?? '');
+    _tipo = TextEditingController(text: a?.tipo ?? '');
+    _ubicacion = TextEditingController(text: a?.ubicacion ?? '');
+    _estado = TextEditingController(text: a?.estado ?? '');
+    _cantidad = TextEditingController(text: (a?.cantidad ?? 0).toString());
+    _descripcion = TextEditingController(text: a?.descripcion ?? '');
   }
 
   @override
   void dispose() {
-    _gxU0yv.dispose();
-    _hrMa.dispose();
-    _aaTUFbhND.dispose();
-    _pHk3eB.dispose();
-    _zBiaPlCm.dispose();
-    _iy7B8FfaPls.dispose();
+    _nombre.dispose();
+    _tipo.dispose();
+    _ubicacion.dispose();
+    _estado.dispose();
+    _cantidad.dispose();
+    _descripcion.dispose();
     super.dispose();
   }
 
@@ -341,12 +341,12 @@ class _YpqdJ5qKnniBPwB7t extends State<_TJhdL7Hgd4q9> {
             width: 40,
             height: 40,
             decoration: BoxDecoration(
-              color: widget.hnj0b.colorPrimario.withAlpha(22),
+              color: widget.theme.colorPrimario.withAlpha(22),
               borderRadius: BorderRadius.circular(14),
             ),
             child: Icon(
-              widget.ygJrsoe == null ? Icons.add : Icons.edit,
-              color: widget.hnj0b.colorPrimario,
+              widget.initial == null ? Icons.add : Icons.edit,
+              color: widget.theme.colorPrimario,
               size: 20,
             ),
           ),
@@ -356,7 +356,7 @@ class _YpqdJ5qKnniBPwB7t extends State<_TJhdL7Hgd4q9> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  widget.ygJrsoe == null ? 'Agregar activo' : 'Editar activo',
+                  widget.initial == null ? 'Agregar activo' : 'Editar activo',
                 ),
                 const SizedBox(height: 2),
                 Text(
@@ -374,43 +374,43 @@ class _YpqdJ5qKnniBPwB7t extends State<_TJhdL7Hgd4q9> {
       content: SizedBox(
         width: 520,
         child: Form(
-          key: _xAotw5Y,
+          key: _formKey,
           child: SingleChildScrollView(
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
                 TextFormField(
-                  controller: _gxU0yv,
+                  controller: _nombre,
                   decoration: const InputDecoration(labelText: 'Nombre'),
                   validator: (v) =>
                       (v == null || v.trim().isEmpty) ? 'Requerido' : null,
                 ),
                 const SizedBox(height: 12),
                 TextFormField(
-                  controller: _hrMa,
+                  controller: _tipo,
                   decoration: const InputDecoration(
                     labelText: 'Tipo/Categoría',
                   ),
                 ),
                 const SizedBox(height: 12),
                 TextFormField(
-                  controller: _aaTUFbhND,
+                  controller: _ubicacion,
                   decoration: const InputDecoration(labelText: 'Ubicación'),
                 ),
                 const SizedBox(height: 12),
                 TextFormField(
-                  controller: _pHk3eB,
+                  controller: _estado,
                   decoration: const InputDecoration(labelText: 'Estado'),
                 ),
                 const SizedBox(height: 12),
                 TextFormField(
-                  controller: _zBiaPlCm,
+                  controller: _cantidad,
                   keyboardType: TextInputType.number,
                   decoration: const InputDecoration(labelText: 'Cantidad'),
                 ),
                 const SizedBox(height: 12),
                 TextFormField(
-                  controller: _iy7B8FfaPls,
+                  controller: _descripcion,
                   decoration: const InputDecoration(labelText: 'Descripción'),
                   maxLines: 2,
                 ),
@@ -424,38 +424,38 @@ class _YpqdJ5qKnniBPwB7t extends State<_TJhdL7Hgd4q9> {
           onPressed: () => Navigator.pop(context),
           child: const Text('Cancelar'),
         ),
-        FilledButton(onPressed: _zUKi4P, child: const Text('Guardar')),
+        FilledButton(onPressed: _onSave, child: const Text('Guardar')),
       ],
     );
   }
 
-  void _zUKi4P() {
-    if (!_xAotw5Y.currentState!.validate()) return;
+  void _onSave() {
+    if (!_formKey.currentState!.validate()) return;
     final id =
-        widget.ygJrsoe?.id ?? DateTime.now().millisecondsSinceEpoch.toString();
-    final cant = int.tryParse(_zBiaPlCm.text.trim()) ?? 0;
+        widget.initial?.id ?? DateTime.now().millisecondsSinceEpoch.toString();
+    final cant = int.tryParse(_cantidad.text.trim()) ?? 0;
     Navigator.pop(
       context,
       Activo(
         id: id,
-        nombre: _gxU0yv.text.trim(),
-        tipo: _hrMa.text.trim(),
-        ubicacion: _aaTUFbhND.text.trim(),
-        estado: _pHk3eB.text.trim(),
+        nombre: _nombre.text.trim(),
+        tipo: _tipo.text.trim(),
+        ubicacion: _ubicacion.text.trim(),
+        estado: _estado.text.trim(),
         cantidad: cant,
-        descripcion: _iy7B8FfaPls.text.trim().isEmpty
+        descripcion: _descripcion.text.trim().isEmpty
             ? null
-            : _iy7B8FfaPls.text.trim(),
+            : _descripcion.text.trim(),
       ),
     );
   }
 }
 
-class _Xl0R extends StatelessWidget {
-  final String huqB;
-  final IconData rhou;
+class _Chip extends StatelessWidget {
+  final String text;
+  final IconData icon;
 
-  const _Xl0R({required this.huqB, required this.rhou});
+  const _Chip({required this.text, required this.icon});
 
   @override
   Widget build(BuildContext context) {
@@ -468,9 +468,9 @@ class _Xl0R extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(rhou, size: 14, color: Colors.grey[700]),
+          Icon(icon, size: 14, color: Colors.grey[700]),
           const SizedBox(width: 6),
-          Text(huqB, style: TextStyle(fontSize: 14, color: Colors.grey[800])),
+          Text(text, style: TextStyle(fontSize: 14, color: Colors.grey[800])),
         ],
       ),
     );

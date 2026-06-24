@@ -6,12 +6,12 @@ import '../domain/asistencia.dart';
 import '../domain/asistencia_repository.dart';
 
 class AsistenciaState {
-  final bool bAPqE08;
-  final String? ibhrX;
+  final bool loading;
+  final String? error;
 
   const AsistenciaState({
-    this.bAPqE08 = false,
-    this.ibhrX,
+    this.loading = false,
+    this.error,
   });
 
   AsistenciaState copyWith({
@@ -19,27 +19,27 @@ class AsistenciaState {
     String? error,
   }) {
     return AsistenciaState(
-      bAPqE08: loading ?? this.bAPqE08,
-      ibhrX: error,
+      loading: loading ?? this.loading,
+      error: error,
     );
   }
 }
 
-class WFCAuC3v1ianMKpJAKtS
+class AsistenciaController
     extends StateNotifier<AsistenciaState> {
-  final AsistenciaRepository eAIrDoPzhH;
-  final Ref gV2;
+  final AsistenciaRepository repository;
+  final Ref ref;
 
-  WFCAuC3v1ianMKpJAKtS(this.eAIrDoPzhH, this.gV2)
+  AsistenciaController(this.repository, this.ref)
       : super(const AsistenciaState());
 
-  Future<void> uJdPtHtTtxc2AOJBQlk({
+  Future<void> registrarAsistencia({
     required String usuarioId,
     required TipoAsistencia tipo,
     String metodo = 'manual',
   }) async {
     // Validar LAN
-    final lanStatus = gV2.read(lanStatusProvider).maybeWhen(
+    final lanStatus = ref.read(lanStatusProvider).maybeWhen(
           data: (s) => s,
           orElse: () => LanStatus.disconnected,
         );
@@ -55,7 +55,7 @@ class WFCAuC3v1ianMKpJAKtS
     state = state.copyWith(loading: true, error: null);
 
     try {
-      await eAIrDoPzhH.registrar(
+      await repository.registrar(
         usuarioId: usuarioId,
         tipo: tipo,
         metodo: metodo,

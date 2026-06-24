@@ -1,26 +1,26 @@
-enum T8YWRFGIjddgKqji {
-  ns5r,
-  n59mswxFyhl,
-  n03uct0,
-  zuvpx,
+enum AsistenciaStatus {
+  idle,
+  checkingLan,
+  success,
+  error,
 }
 
-class TIvHO3IpwKq8h6r {
-  final T8YWRFGIjddgKqji ew1svY;
-  final String? dNkWxlu;
+class AsistenciaState {
+  final AsistenciaStatus status;
+  final String? message;
 
-  const TIvHO3IpwKq8h6r({
-    this.ew1svY = T8YWRFGIjddgKqji.ns5r,
-    this.dNkWxlu,
+  const AsistenciaState({
+    this.status = AsistenciaStatus.idle,
+    this.message,
   });
 
-  TIvHO3IpwKq8h6r hFkHQFYX({
-    T8YWRFGIjddgKqji? status,
+  AsistenciaState copyWith({
+    AsistenciaStatus? status,
     String? message,
   }) {
-    return TIvHO3IpwKq8h6r(
-      ew1svY: status ?? this.ew1svY,
-      dNkWxlu: message,
+    return AsistenciaState(
+      status: status ?? this.status,
+      message: message,
     );
   }
 }

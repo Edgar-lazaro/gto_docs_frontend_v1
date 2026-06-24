@@ -4,58 +4,58 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'generated_pdf.dart';
 
-class V2f48toe1jh85XfKaDD13v {
-  static const _tre = 'generated_pdfs_v1';
+class GeneratedPdfRepository {
+  static const _key = 'generated_pdfs_v1';
 
-  final SharedPreferences aPFsr;
+  final SharedPreferences prefs;
 
-  V2f48toe1jh85XfKaDD13v(this.aPFsr);
+  GeneratedPdfRepository(this.prefs);
 
-  List<Q3ORRT7xmyLi> irrmmV0() {
-    final raw = aPFsr.getStringList(_tre) ?? const <String>[];
-    final out = <Q3ORRT7xmyLi>[];
+  List<GeneratedPdf> listAll() {
+    final raw = prefs.getStringList(_key) ?? const <String>[];
+    final out = <GeneratedPdf>[];
     for (final s in raw) {
       try {
         final m = jsonDecode(s);
         if (m is Map) {
-          out.add(Q3ORRT7xmyLi.yOIFNA3A(m.cast<String, dynamic>()));
+          out.add(GeneratedPdf.fromJson(m.cast<String, dynamic>()));
         }
       } catch (_) {}
     }
-    out.sort((a, b) => b.e8oZ3Wfig.compareTo(a.e8oZ3Wfig));
+    out.sort((a, b) => b.createdAt.compareTo(a.createdAt));
     return out;
   }
 
-  Future<void> fIk(Q3ORRT7xmyLi pdf) async {
-    final list = irrmmV0();
+  Future<void> add(GeneratedPdf pdf) async {
+    final list = listAll();
     final next = [
       pdf,
       ...list,
-    ].map((e) => jsonEncode(e.nZyuVf())).toList(growable: false);
-    await aPFsr.setStringList(_tre, next);
+    ].map((e) => jsonEncode(e.toJson())).toList(growable: false);
+    await prefs.setStringList(_key, next);
   }
 
-  bool pTHv4pd7AbrL(String path) {
-    return irrmmV0().any((p) => p.bsgnqUUkv == path);
+  bool existsByPath(String path) {
+    return listAll().any((p) => p.localPath == path);
   }
 
-  Future<void> jJb8lfsBjq7k({required String id, required String url}) async {
-    final list = irrmmV0();
+  Future<void> markUploaded({required String id, required String url}) async {
+    final list = listAll();
     final next = list
         .map(
-          (e) => e.n4 == id ? e.phnNhahU(uploaded: true, uploadedUrl: url) : e,
+          (e) => e.id == id ? e.copyWith(uploaded: true, uploadedUrl: url) : e,
         )
-        .map((e) => jsonEncode(e.nZyuVf()))
+        .map((e) => jsonEncode(e.toJson()))
         .toList(growable: false);
-    await aPFsr.setStringList(_tre, next);
+    await prefs.setStringList(_key, next);
   }
 
-  Q3ORRT7xmyLi? iKnYcR9suLAUJyiI2h({
+  GeneratedPdf? latestForChecklist({
     required int jefaturaId,
     required int checklistId,
   }) {
-    for (final p in irrmmV0()) {
-      if (p.aMJZYEAeTh == jefaturaId && p.zXBUacE2fth == checklistId) return p;
+    for (final p in listAll()) {
+      if (p.jefaturaId == jefaturaId && p.checklistId == checklistId) return p;
     }
     return null;
   }

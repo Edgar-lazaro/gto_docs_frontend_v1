@@ -1,18 +1,18 @@
 import 'package:drift/drift.dart';
 
-class JUDTRkll5SW extends Table {
-  TextColumn get af => text()();
+class TareasTable extends Table {
+  TextColumn get id => text()();
   // ID que devuelve el backend 
-  TextColumn get dLgRo6Yc => text().nullable()();
+  TextColumn get remoteId => text().nullable()();
   // Agrupador M:M: 
-  TextColumn get xaGllZx => text().nullable()();
-  TextColumn get lk7PrhZQJ => text()();
-  TextColumn get cR8WrZ => text()();
-  TextColumn get rrh87HdesU9 => text().withDefault(const Constant(''))();
-  TextColumn get usVA1m1vs => text().nullable()();
-  TextColumn get hfzQuOYjV => text()();
-  TextColumn get zmlGl6 => text()();
+  TextColumn get groupId => text().nullable()();
+  TextColumn get reporteId => text()();
+  TextColumn get titulo => text()();
+  TextColumn get descripcion => text().withDefault(const Constant(''))();
+  TextColumn get creadoPor => text().nullable()();
+  TextColumn get asignadoA => text()();
+  TextColumn get estado => text()();
 
   @override
-  Set<Column> get primaryKey => {af};
+  Set<Column> get primaryKey => {id};
 }

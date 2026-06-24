@@ -57,28 +57,28 @@ final dioProvider = Provider<Dio>((ref) {
 
 /// Network checker
 final networkCheckerProvider =
-    Provider<DzFehef3VL4MoV>((ref) {
-  return DzFehef3VL4MoV();
+    Provider<NetworkChecker>((ref) {
+  return NetworkChecker();
 });
 
 /// Server probe
 final serverProbeProvider =
-    Provider<VSMjebYuPdJ>((ref) {
-  return VSMjebYuPdJ();
+    Provider<ServerProbe>((ref) {
+  return ServerProbe();
 });
 
 /// LAN Guard
-final lanGuardProvider = Provider<CA4pt8U5>((ref) {
+final lanGuardProvider = Provider<LanGuard>((ref) {
   final config = ref.read(appConfigProvider);
 
   final protocol = config.useHttps ? 'https' : 'http';
   final healthUrl =
       '$protocol://${config.apiBaseUrl}:${config.apiPort}/api/health';
 
-  return CA4pt8U5(
-    aKhxd5xHS8RGYc: ref.read(networkCheckerProvider),
-    thbjNLmqO6g: ref.read(serverProbeProvider),
-    fNFxH7Ml7: healthUrl,
-    dx4Y3NHECPz2G1: true,
+  return LanGuard(
+    networkChecker: ref.read(networkCheckerProvider),
+    serverProbe: ref.read(serverProbeProvider),
+    healthUrl: healthUrl,
+    enforceLanOnly: true,
   );
 });

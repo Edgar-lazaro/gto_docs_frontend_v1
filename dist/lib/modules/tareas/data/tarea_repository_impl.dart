@@ -4,15 +4,15 @@ import '../../../core/database/app_database.dart';
 import '../domain/tarea.dart';
 import '../domain/tarea_repository.dart';
 
-class Z8gTxYj2MLOinJ0B3zI implements TareaRepository {
-  final AppDatabase fU;
+class TareaRepositoryImpl implements TareaRepository {
+  final AppDatabase db;
 
-  Z8gTxYj2MLOinJ0B3zI(this.fU);
+  TareaRepositoryImpl(this.db);
 
   @override
   Future<void> crearTarea(Tarea tarea) async {
-    await fU
-        .into(fU.tareasTable)
+    await db
+        .into(db.tareasTable)
         .insert(
           TareasTableCompanion.insert(
             id: tarea.id,
@@ -26,8 +26,8 @@ class Z8gTxYj2MLOinJ0B3zI implements TareaRepository {
           ),
         );
 
-    await fU
-        .into(fU.syncQueueTable)
+    await db
+        .into(db.syncQueueTable)
         .insert(
           SyncQueueTableCompanion.insert(
             entidad: 'tarea',
@@ -56,12 +56,12 @@ class Z8gTxYj2MLOinJ0B3zI implements TareaRepository {
     required String tareaId,
     required TareaEstado estado,
   }) async {
-    await (fU.update(fU.tareasTable)..where((t) => t.id.equals(tareaId))).write(
+    await (db.update(db.tareasTable)..where((t) => t.id.equals(tareaId))).write(
       TareasTableCompanion(estado: Value(estado.name)),
     );
 
-    await fU
-        .into(fU.syncQueueTable)
+    await db
+        .into(db.syncQueueTable)
         .insert(
           SyncQueueTableCompanion.insert(
             entidad: 'tarea',
@@ -75,7 +75,7 @@ class Z8gTxYj2MLOinJ0B3zI implements TareaRepository {
   @override
   Future<List<Tarea>> obtenerPorAsignado(String asignadoA) async {
     final rows =
-        await (fU.select(fU.tareasTable)
+        await (db.select(db.tareasTable)
               ..where((t) => t.asignadoA.equals(asignadoA))
               ..orderBy([(t) => OrderingTerm.desc(t.titulo)]))
             .get();
@@ -99,7 +99,7 @@ class Z8gTxYj2MLOinJ0B3zI implements TareaRepository {
   @override
   Future<List<Tarea>> obtenerPorCreador(String creadoPor) async {
     final rows =
-        await (fU.select(fU.tareasTable)
+        await (db.select(db.tareasTable)
               ..where((t) => t.creadoPor.equals(creadoPor))
               ..orderBy([(t) => OrderingTerm.desc(t.titulo)]))
             .get();
@@ -122,8 +122,8 @@ class Z8gTxYj2MLOinJ0B3zI implements TareaRepository {
 
   @override
   Future<List<Tarea>> obtenerTodas() async {
-    final rows = await (fU.select(
-      fU.tareasTable,
+    final rows = await (db.select(
+      db.tareasTable,
     )..orderBy([(t) => OrderingTerm.desc(t.titulo)])).get();
 
     return rows
